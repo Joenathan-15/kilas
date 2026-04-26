@@ -8,6 +8,7 @@ import (
 	"github.com/joenathan-15/dto"
 	"github.com/joenathan-15/middleware"
 	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/utils"
 )
 
 type StudyHandler struct {
@@ -20,7 +21,7 @@ func NewStudyHandler(studyService *service.StudyService) *StudyHandler {
 
 func (h *StudyHandler) GetDueCards(c *gin.Context) {
 	userID, _ := middleware.GetUserID(c)
-	deckID, err := strconv.ParseUint(c.Param("deck_id"), 10, 32)
+	deckID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid deck id"})
 		return
@@ -47,7 +48,7 @@ func (h *StudyHandler) StartSession(c *gin.Context) {
 
 	var req dto.StartSessionRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 
@@ -70,7 +71,7 @@ func (h *StudyHandler) SubmitReview(c *gin.Context) {
 
 	var req dto.ReviewRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 
@@ -99,7 +100,7 @@ func (h *StudyHandler) EndSession(c *gin.Context) {
 
 	var req dto.EndSessionRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 

@@ -7,6 +7,7 @@ import (
 	"github.com/joenathan-15/dto"
 	"github.com/joenathan-15/middleware"
 	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/utils"
 )
 
 type AuthHandler struct {
@@ -20,7 +21,7 @@ func NewAuthHandler(authService *service.AuthService) *AuthHandler {
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req dto.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 
@@ -49,7 +50,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 
@@ -74,7 +75,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 func (h *AuthHandler) Refresh(c *gin.Context) {
 	var req dto.RefreshRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 

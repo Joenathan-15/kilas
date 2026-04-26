@@ -1,12 +1,19 @@
 package dto
 
 type GenerateCardsRequest struct {
-	Text   string `json:"text" binding:"required,min=10,max=3000"`
-	Count  int    `json:"count" binding:"required,min=1,max=20"`
-	DeckID uint   `json:"deck_id" binding:"required"`
+	Text  string `form:"text"`
+	Count int    `form:"count" binding:"omitempty,min=1,max=20"`
+	Title string `form:"title"`
 }
 
 type GeneratedCard struct {
 	Front string `json:"front"`
 	Back  string `json:"back"`
+}
+
+type GeneratedDeckData struct {
+	Title       string          `json:"title"`
+	Description string          `json:"description"`
+	Tags        []string        `json:"tags"`
+	Cards       []GeneratedCard `json:"cards"`
 }

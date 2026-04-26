@@ -8,6 +8,7 @@ import (
 	"github.com/joenathan-15/dto"
 	"github.com/joenathan-15/middleware"
 	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/utils"
 )
 
 type CardHandler struct {
@@ -21,7 +22,7 @@ func NewCardHandler(cardService *service.CardService, deckService *service.DeckS
 
 func (h *CardHandler) Create(c *gin.Context) {
 	userID, _ := middleware.GetUserID(c)
-	deckID, err := strconv.ParseUint(c.Param("deck_id"), 10, 32)
+	deckID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid deck id"})
 		return
@@ -29,7 +30,7 @@ func (h *CardHandler) Create(c *gin.Context) {
 
 	var req dto.CardRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 
@@ -48,7 +49,7 @@ func (h *CardHandler) Create(c *gin.Context) {
 
 func (h *CardHandler) List(c *gin.Context) {
 	userID, _ := middleware.GetUserID(c)
-	deckID, err := strconv.ParseUint(c.Param("deck_id"), 10, 32)
+	deckID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid deck id"})
 		return
@@ -84,7 +85,7 @@ func (h *CardHandler) Update(c *gin.Context) {
 
 	var req dto.CardRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 

@@ -41,8 +41,8 @@ func ApiRoutes(
 	decks.DELETE("/:id", deckHandler.Delete)
 
 	// Card routes under decks (protected)
-	decks.POST("/:deck_id/cards", cardHandler.Create)
-	decks.GET("/:deck_id/cards", cardHandler.List)
+	decks.POST("/:id/cards", cardHandler.Create)
+	decks.GET("/:id/cards", cardHandler.List)
 
 	// Card routes (protected)
 	cards := api.Group("/cards", middleware.AuthMiddleware())
@@ -50,7 +50,7 @@ func ApiRoutes(
 	cards.DELETE("/:id", cardHandler.Delete)
 
 	// Study routes
-	decks.GET("/:deck_id/study/due", studyHandler.GetDueCards)
+	decks.GET("/:id/study/due", studyHandler.GetDueCards)
 
 	study := api.Group("/study", middleware.AuthMiddleware())
 	study.POST("/sessions", studyHandler.StartSession)

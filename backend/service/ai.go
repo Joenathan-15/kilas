@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joenathan-15/dto"
 	"github.com/google/generative-ai-go/genai"
+	"github.com/joenathan-15/dto"
 	"google.golang.org/api/option"
 )
 
@@ -18,7 +18,7 @@ func NewAIService() *AIService {
 	return &AIService{}
 }
 
-func (s *AIService) GenerateCards(text string, count int) ([]dto.GeneratedCard, error) {
+func (s *AIService) GenerateCards(text string, count int) (*dto.GeneratedDeckData, error) {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	if apiKey == "" {
 		return nil, errors.New("AI not configured")
@@ -31,10 +31,10 @@ func (s *AIService) GenerateCards(text string, count int) ([]dto.GeneratedCard, 
 	}
 	defer client.Close()
 
-	model := client.GenerativeModel("gemini-3.5-flash")
+	model := client.GenerativeModel("gemini-flash-latest")
 
 	systemPrompt := fmt.Sprintf(
-		"You are an expert educator creating flashcards for Indonesian students. Generate exactly %d high-quality flashcard pairs from the study material. Return ONLY a valid JSON array, no other text: [{\"front\": \"question\", \"back\": \"answer\"}]. Keep answers concise. Use $LaTeX$ for math formulas.",
+		"You are an expert educator creating flashcards for Indonesian students. Generate a title, a short description, 3-5 relevant tags, and exactly %d high-quality flashcard pairs from the study material. Return ONLY a valid JSON object matching this schema: {\"title\": \"string\", \"description\": \"string\", \"tags\": [\"string\"], \"cards\": [{\"front\": \"question\", \"back\": \"answer\"}]}. Keep answers concise. Use $LaTeX$ for math formulas.",
 		count,
 	)
 
@@ -74,14 +74,14 @@ func (s *AIService) GenerateCards(text string, count int) ([]dto.GeneratedCard, 
 		}
 	}
 
-	var cards []dto.GeneratedCard
-	if err := json.Unmarshal([]byte(content), &cards); err != nil {
+	var data dto.GeneratedDeckData
+	if err := json.Unmarshal([]byte(content), &data); err != nil {
 		return nil, fmt.Errorf("failed to parse AI response: %w\nResponse was: %s", err, content)
 	}
 
-	if len(cards) == 0 {
+	if len(data.Cards) == 0 {
 		return nil, errors.New("AI returned no cards, try again")
 	}
 
-	return cards, nil
+	return &data, nil
 }

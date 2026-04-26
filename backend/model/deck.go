@@ -13,5 +13,5 @@ type Deck struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	User        User      `gorm:"foreignKey:UserID" json:"-"`
 	Cards       []Card    `gorm:"foreignKey:DeckID" json:"cards,omitempty"`
-	CardCount   int64     `gorm:"-" json:"card_count"`
+	CardCount   int64     `gorm:"->" json:"card_count"`
 }

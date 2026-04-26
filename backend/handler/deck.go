@@ -8,6 +8,7 @@ import (
 	"github.com/joenathan-15/dto"
 	"github.com/joenathan-15/middleware"
 	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/utils"
 )
 
 type DeckHandler struct {
@@ -63,7 +64,7 @@ func (h *DeckHandler) Create(c *gin.Context) {
 
 	var req dto.DeckRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 
@@ -130,7 +131,7 @@ func (h *DeckHandler) Update(c *gin.Context) {
 
 	var req dto.DeckRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
 		return
 	}
 

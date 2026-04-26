@@ -48,7 +48,7 @@ func main() {
 	studyHandler := handler.NewStudyHandler(studyService)
 	statsHandler := handler.NewStatsHandler(statsService)
 	libraryHandler := handler.NewLibraryHandler(libraryService)
-	aiHandler := handler.NewAIHandler(aiService, deckService)
+	aiHandler := handler.NewAIHandler(aiService, deckService, cardService)
 	oauthHandler := handler.NewOAuthHandler(userRepo, authService)
 
 	// Initialize Router

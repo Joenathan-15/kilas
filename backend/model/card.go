@@ -15,5 +15,6 @@ type Card struct {
 	DueDate       time.Time `json:"due_date"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
+	IsAICreated   bool      `gorm:"default:false" json:"is_ai_created"`
 	Deck          Deck      `gorm:"foreignKey:DeckID" json:"-"`
 }
