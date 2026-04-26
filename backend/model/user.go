@@ -1,9 +1,14 @@
 package model
 
+import "time"
+
 type User struct {
-	Id       uint   `gorm:"primaryKey"`
-	Email    string `gorm:"unique;not null"`
-	Username string `gorm:"not null"`
-	Password string `gorm:"not null"`
-	Provider string `gorm:"not null"`
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	Email     string    `gorm:"uniqueIndex;not null" json:"email"`
+	Username  string    `gorm:"not null" json:"username"`
+	Password  string    `json:"-"`
+	Provider  string    `gorm:"default:'local'" json:"provider"`
+	AvatarURL string    `json:"avatar_url"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

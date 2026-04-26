@@ -12,9 +12,15 @@ import (
 var DB *gorm.DB
 
 func autoMigrate() {
-	err := DB.AutoMigrate(&model.User{})
+	err := DB.AutoMigrate(
+		&model.User{},
+		&model.Deck{},
+		&model.Card{},
+		&model.StudySession{},
+		&model.CardReview{},
+	)
 	if err != nil {
-		log.Fatal("Error occurred while migrating the User table")
+		log.Fatal("Error occurred while migrating tables: ", err)
 	}
 }
 
@@ -27,7 +33,7 @@ func InitDB() {
 	dsn := dbUsername + ":" + dbPassword + "@(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Error Connecting to database")
+		log.Fatal("Error Connecting to database: ", err)
 	}
 	DB = db
 	autoMigrate()
