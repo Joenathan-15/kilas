@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/joenathan-15/model"
+	"github.com/joenathan-15/kilas/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

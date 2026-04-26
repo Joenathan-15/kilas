@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/joenathan-15/model"
-	"github.com/joenathan-15/repository"
+	"github.com/joenathan-15/kilas/model"
+	"github.com/joenathan-15/kilas/repository"
 	"gorm.io/gorm"
 )
 
@@ -139,15 +139,15 @@ func (s *LibraryService) Clone(sourceDeckID, userID uint) (*model.Deck, error) {
 	// Bulk-copy cards with reset SM-2 fields
 	for _, card := range source.Cards {
 		newCard := &model.Card{
-			DeckID:      newDeck.ID,
-			Front:       card.Front,
-			Back:        card.Back,
+			DeckID:        newDeck.ID,
+			Front:         card.Front,
+			Back:          card.Back,
 			FrontImageURL: card.FrontImageURL,
 			BackImageURL:  card.BackImageURL,
-			Interval:    0,
-			Repetitions: 0,
-			EaseFactor:  2.5,
-			DueDate:     time.Now(),
+			Interval:      0,
+			Repetitions:   0,
+			EaseFactor:    2.5,
+			DueDate:       time.Now(),
 		}
 		s.CardRepo.Create(newCard)
 	}

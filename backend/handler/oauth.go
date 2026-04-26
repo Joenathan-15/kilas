@@ -12,9 +12,9 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joenathan-15/model"
-	"github.com/joenathan-15/repository"
-	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/kilas/model"
+	"github.com/joenathan-15/kilas/repository"
+	"github.com/joenathan-15/kilas/service"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )

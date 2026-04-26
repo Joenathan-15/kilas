@@ -1,4 +1,4 @@
-module github.com/joenathan-15
+module github.com/joenathan-15/kilas
 
 go 1.25.0
 

@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/joenathan-15/handler"
-	"github.com/joenathan-15/middleware"
+	"github.com/joenathan-15/kilas/handler"
+	"github.com/joenathan-15/kilas/middleware"
 )
 
 func ApiRoutes(

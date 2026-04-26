@@ -3,7 +3,7 @@ package repository
 import (
 	"time"
 
-	"github.com/joenathan-15/model"
+	"github.com/joenathan-15/kilas/model"
 	"gorm.io/gorm"
 )
 

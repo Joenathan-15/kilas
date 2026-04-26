@@ -5,10 +5,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joenathan-15/dto"
-	"github.com/joenathan-15/middleware"
-	"github.com/joenathan-15/service"
-	"github.com/joenathan-15/utils"
+	"github.com/joenathan-15/kilas/dto"
+	"github.com/joenathan-15/kilas/middleware"
+	"github.com/joenathan-15/kilas/service"
+	"github.com/joenathan-15/kilas/utils"
 )
 
 type StudyHandler struct {

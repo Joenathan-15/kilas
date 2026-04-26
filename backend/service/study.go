@@ -5,8 +5,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/joenathan-15/model"
-	"github.com/joenathan-15/repository"
+	"github.com/joenathan-15/kilas/model"
+	"github.com/joenathan-15/kilas/repository"
 )
 
 type StudyService struct {

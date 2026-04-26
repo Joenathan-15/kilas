@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joenathan-15/middleware"
-	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/kilas/middleware"
+	"github.com/joenathan-15/kilas/service"
 )
 
 type LibraryHandler struct {

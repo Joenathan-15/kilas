@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/google/generative-ai-go/genai"
-	"github.com/joenathan-15/dto"
+	"github.com/joenathan-15/kilas/dto"
 	"google.golang.org/api/option"
 )
 

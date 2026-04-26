@@ -5,12 +5,12 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joenathan-15/database"
-	"github.com/joenathan-15/handler"
-	"github.com/joenathan-15/middleware"
-	"github.com/joenathan-15/repository"
-	"github.com/joenathan-15/router"
-	"github.com/joenathan-15/service"
+	"github.com/joenathan-15/kilas/database"
+	"github.com/joenathan-15/kilas/handler"
+	"github.com/joenathan-15/kilas/middleware"
+	"github.com/joenathan-15/kilas/repository"
+	"github.com/joenathan-15/kilas/router"
+	"github.com/joenathan-15/kilas/service"
 	"github.com/joho/godotenv"
 )
 
