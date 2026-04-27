@@ -56,6 +56,14 @@ func SeedProducts() {
 			IsListed:    true,
 			Description: "The ultimate value with a massive 100,000 tokens.",
 		},
+		{
+			Name:        "Super Plan",
+			Price:       250000,
+			Quantity:    0,
+			Type:        "subscription",
+			IsListed:    true,
+			Description: "Advanced features for power users. Unlimited daily generations and a 10% discount on token usage. (Monthly)",
+		},
 	}
 
 	for _, p := range products {

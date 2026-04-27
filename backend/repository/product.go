@@ -45,6 +45,6 @@ func (r *ProductRepository) FindTransactionsByUserID(userID uint) ([]model.Trans
 // FindTransactionByID returns a transaction by its ID.
 func (r *ProductRepository) FindTransactionByID(id uint) (*model.Transaction, error) {
 	var transaction model.Transaction
-	err := r.DB.First(&transaction, id).Error
+	err := r.DB.Preload("Product").First(&transaction, id).Error
 	return &transaction, err
 }

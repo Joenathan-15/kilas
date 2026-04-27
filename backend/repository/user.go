@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/joenathan-15/kilas/model"
 	"gorm.io/gorm"
 )
@@ -52,4 +54,21 @@ func (r *UserRepository) DeductTokens(userID uint, amount int) error {
 		return gorm.ErrRecordNotFound // insufficient tokens
 	}
 	return nil
+}
+
+// ExtendSubscription adds days to the user's subscription. If they don't have an active one, it starts from today.
+func (r *UserRepository) ExtendSubscription(userID uint, days int) error {
+	user, err := r.FindByID(userID)
+	if err != nil {
+		return err
+	}
+
+	var newExpiration time.Time
+	if user.SubscriptionUntil != nil && user.SubscriptionUntil.After(time.Now()) {
+		newExpiration = user.SubscriptionUntil.AddDate(0, 0, days)
+	} else {
+		newExpiration = time.Now().AddDate(0, 0, days)
+	}
+
+	return r.DB.Model(&model.User{}).Where("id = ?", userID).Update("subscription_until", newExpiration).Error
 }

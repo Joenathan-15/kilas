@@ -32,6 +32,7 @@ func main() {
 	cardRepo := repository.NewCardRepository(database.DB)
 	studyRepo := repository.NewStudyRepository(database.DB)
 	productRepo := repository.NewProductRepository(database.DB)
+	aiHistoryRepo := repository.NewAIHistoryRepository(database.DB)
 
 	// Initialize Services
 	authService := service.NewAuthService(userRepo)
@@ -50,7 +51,7 @@ func main() {
 	studyHandler := handler.NewStudyHandler(studyService)
 	statsHandler := handler.NewStatsHandler(statsService)
 	libraryHandler := handler.NewLibraryHandler(libraryService)
-	aiHandler := handler.NewAIHandler(aiService, deckService, cardService, authService)
+	aiHandler := handler.NewAIHandler(aiService, deckService, cardService, authService, aiHistoryRepo)
 	oauthHandler := handler.NewOAuthHandler(userRepo, authService)
 	productHandler := handler.NewProductHandler(productService)
 

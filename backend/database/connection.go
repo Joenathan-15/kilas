@@ -20,6 +20,7 @@ func autoMigrate() {
 		&model.CardReview{},
 		&model.Product{},
 		&model.Transaction{},
+		&model.AIGenerationHistory{},
 	)
 	if err != nil {
 		log.Fatal("Error occurred while migrating tables: ", err)

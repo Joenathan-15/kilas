@@ -154,10 +154,16 @@ func (s *ProductService) HandleNotification(orderID, transactionStatus, fraudSta
 		newStatus = "failed"
 	}
 
-	// If status changed to success, grant tokens
+	// If status changed to success, grant tokens or extend subscription
 	if newStatus == "success" && transaction.Status != "success" {
-		if err := s.UserRepo.AddTokens(transaction.UserID, transaction.Tokens); err != nil {
-			return fmt.Errorf("failed to grant tokens: %w", err)
+		if transaction.Product.Type == "subscription" {
+			if err := s.UserRepo.ExtendSubscription(transaction.UserID, 30); err != nil {
+				return fmt.Errorf("failed to extend subscription: %w", err)
+			}
+		} else {
+			if err := s.UserRepo.AddTokens(transaction.UserID, transaction.Tokens); err != nil {
+				return fmt.Errorf("failed to grant tokens: %w", err)
+			}
 		}
 	}
 

@@ -9,20 +9,22 @@ import (
 	"github.com/joenathan-15/kilas/dto"
 	"github.com/joenathan-15/kilas/middleware"
 	"github.com/joenathan-15/kilas/model"
+	"github.com/joenathan-15/kilas/repository"
 	"github.com/joenathan-15/kilas/service"
 	"github.com/joenathan-15/kilas/utils"
 	"github.com/ledongthuc/pdf"
 )
 
 type AIHandler struct {
-	AIService   *service.AIService
-	DeckService *service.DeckService
-	CardService *service.CardService
-	AuthService *service.AuthService
+	AIService     *service.AIService
+	DeckService   *service.DeckService
+	CardService   *service.CardService
+	AuthService   *service.AuthService
+	AIHistoryRepo *repository.AIHistoryRepository
 }
 
-func NewAIHandler(aiService *service.AIService, deckService *service.DeckService, cardService *service.CardService, authService *service.AuthService) *AIHandler {
-	return &AIHandler{AIService: aiService, DeckService: deckService, CardService: cardService, AuthService: authService}
+func NewAIHandler(aiService *service.AIService, deckService *service.DeckService, cardService *service.CardService, authService *service.AuthService, aiHistoryRepo *repository.AIHistoryRepository) *AIHandler {
+	return &AIHandler{AIService: aiService, DeckService: deckService, CardService: cardService, AuthService: authService, AIHistoryRepo: aiHistoryRepo}
 }
 
 func (h *AIHandler) GenerateCards(c *gin.Context) {
@@ -83,6 +85,31 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		return
 	}
 
+	// Fetch user details for power user status
+	user, err := h.AuthService.GetByID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch user details"})
+		return
+	}
+
+	isPowerUser := user.SubscriptionUntil != nil && user.SubscriptionUntil.After(time.Now())
+
+	if isPowerUser {
+		// Apply 10% discount
+		tokenCost = int(float64(tokenCost) * 0.9)
+	} else {
+		// Check daily generation limit (3x per day)
+		countToday, err := h.AIHistoryRepo.CountGenerationsToday(userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to check generation limits"})
+			return
+		}
+		if countToday >= 3 {
+			c.JSON(http.StatusTooManyRequests, gin.H{"error": "daily limit of 3 AI generations reached. please try again tomorrow."})
+			return
+		}
+	}
+
 	// Deduct tokens before generating (fail fast if insufficient)
 	if err := h.AuthService.DeductTokens(userID, tokenCost); err != nil {
 		c.JSON(http.StatusPaymentRequired, gin.H{
@@ -141,11 +168,20 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		savedCards = append(savedCards, *card)
 	}
 
+	// Record AI generation history
+	history := &model.AIGenerationHistory{
+		UserID:    userID,
+		Text:      text,
+		CardCount: len(savedCards),
+		CreatedAt: time.Now(),
+	}
+	_ = h.AIHistoryRepo.Create(history)
+
 	// Fetch updated user to get current token balance
-	user, _ := h.AuthService.GetByID(userID)
+	updatedUser, _ := h.AuthService.GetByID(userID)
 	tokensRemaining := 0
-	if user != nil {
-		tokensRemaining = user.Tokens
+	if updatedUser != nil {
+		tokensRemaining = updatedUser.Tokens
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
