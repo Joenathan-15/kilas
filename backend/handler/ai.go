@@ -36,6 +36,13 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 
 	text := req.Text
 
+	count := req.Count
+	if count <= 0 {
+		count = 10
+	}
+
+	tokenCost := count * 10
+
 	// Check if a file was uploaded
 	fileHeader, err := c.FormFile("file")
 	if err == nil {
@@ -59,6 +66,9 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 			return
 		}
 
+		numPages := pdfReader.NumPage()
+		tokenCost = numPages * 50
+
 		b, err := pdfReader.GetPlainText()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to extract text from PDF"})
@@ -73,18 +83,10 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		return
 	}
 
-	count := req.Count
-	if count <= 0 {
-		count = 10
-	}
-
-	// Calculate token cost: 10 tokens per card requested
-	tokenCost := count * 10
-
 	// Deduct tokens before generating (fail fast if insufficient)
 	if err := h.AuthService.DeductTokens(userID, tokenCost); err != nil {
 		c.JSON(http.StatusPaymentRequired, gin.H{
-			"error":          "insufficient tokens",
+			"error":           "insufficient tokens",
 			"tokens_required": tokenCost,
 		})
 		return
