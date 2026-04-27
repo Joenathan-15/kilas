@@ -20,6 +20,7 @@ type UserResponse struct {
 	Email     string `json:"email"`
 	Username  string `json:"username"`
 	AvatarURL string `json:"avatar_url"`
+	Tokens    int    `json:"tokens"`
 }
 
 type AuthResponse struct {

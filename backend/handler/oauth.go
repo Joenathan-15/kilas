@@ -116,6 +116,7 @@ func (h *OAuthHandler) GoogleCallback(c *gin.Context) {
 			Username:  username,
 			Provider:  "google",
 			AvatarURL: googleUser.Picture,
+			Tokens:    500,
 		}
 		if err := h.UserRepo.Create(user); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user"})

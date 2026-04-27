@@ -72,6 +72,7 @@ func (s *AuthService) Register(email, username, password string) (*model.User, s
 		Username: username,
 		Password: string(hashedPassword),
 		Provider: "local",
+		Tokens:   500,
 	}
 
 	if err := s.UserRepo.Create(user); err != nil {
@@ -155,4 +156,20 @@ func (s *AuthService) RefreshToken(refreshTokenStr string) (string, error) {
 // GetByID fetches a user by their ID.
 func (s *AuthService) GetByID(id uint) (*model.User, error) {
 	return s.UserRepo.FindByID(id)
+}
+
+// TopUp adds tokens to a user's balance.
+func (s *AuthService) TopUp(userID uint, amount int) (*model.User, error) {
+	if err := s.UserRepo.AddTokens(userID, amount); err != nil {
+		return nil, fmt.Errorf("failed to top up tokens: %w", err)
+	}
+	return s.UserRepo.FindByID(userID)
+}
+
+// DeductTokens subtracts tokens from a user's balance. Returns error if insufficient.
+func (s *AuthService) DeductTokens(userID uint, amount int) error {
+	if err := s.UserRepo.DeductTokens(userID, amount); err != nil {
+		return errors.New("insufficient tokens")
+	}
+	return nil
 }

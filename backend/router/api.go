@@ -16,6 +16,7 @@ func ApiRoutes(
 	libraryHandler *handler.LibraryHandler,
 	aiHandler *handler.AIHandler,
 	oauthHandler *handler.OAuthHandler,
+	productHandler *handler.ProductHandler,
 ) {
 	api := route.Group("/api")
 
@@ -31,6 +32,13 @@ func ApiRoutes(
 	auth.POST("/refresh", authHandler.Refresh)
 	auth.POST("/logout", authHandler.Logout)
 	auth.GET("/me", middleware.AuthMiddleware(), authHandler.Me)
+	auth.GET("/tokens", middleware.AuthMiddleware(), authHandler.GetTokens)
+
+	// Product routes (public list, protected purchase)
+	products := api.Group("/products")
+	products.GET("", productHandler.List)
+	products.POST("/purchase", middleware.AuthMiddleware(), productHandler.Purchase)
+	products.GET("/transactions", middleware.AuthMiddleware(), productHandler.Transactions)
 
 	// Deck routes (protected)
 	decks := api.Group("/decks", middleware.AuthMiddleware())

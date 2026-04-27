@@ -18,10 +18,15 @@ func autoMigrate() {
 		&model.Card{},
 		&model.StudySession{},
 		&model.CardReview{},
+		&model.Product{},
+		&model.Transaction{},
 	)
 	if err != nil {
 		log.Fatal("Error occurred while migrating tables: ", err)
 	}
+
+	// Seed default products
+	SeedProducts()
 }
 
 func InitDB() {

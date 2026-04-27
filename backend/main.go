@@ -31,6 +31,7 @@ func main() {
 	deckRepo := repository.NewDeckRepository(database.DB)
 	cardRepo := repository.NewCardRepository(database.DB)
 	studyRepo := repository.NewStudyRepository(database.DB)
+	productRepo := repository.NewProductRepository(database.DB)
 
 	// Initialize Services
 	authService := service.NewAuthService(userRepo)
@@ -40,6 +41,7 @@ func main() {
 	statsService := service.NewStatsService(database.DB)
 	libraryService := service.NewLibraryService(deckRepo, cardRepo, database.DB)
 	aiService := service.NewAIService()
+	productService := service.NewProductService(productRepo, userRepo)
 
 	// Initialize Handlers
 	authHandler := handler.NewAuthHandler(authService)
@@ -48,13 +50,14 @@ func main() {
 	studyHandler := handler.NewStudyHandler(studyService)
 	statsHandler := handler.NewStatsHandler(statsService)
 	libraryHandler := handler.NewLibraryHandler(libraryService)
-	aiHandler := handler.NewAIHandler(aiService, deckService, cardService)
+	aiHandler := handler.NewAIHandler(aiService, deckService, cardService, authService)
 	oauthHandler := handler.NewOAuthHandler(userRepo, authService)
+	productHandler := handler.NewProductHandler(productService)
 
 	// Initialize Router
 	r := gin.Default()
 	r.Use(middleware.CORSMiddleware())
-	router.ApiRoutes(r, authHandler, deckHandler, cardHandler, studyHandler, statsHandler, libraryHandler, aiHandler, oauthHandler)
+	router.ApiRoutes(r, authHandler, deckHandler, cardHandler, studyHandler, statsHandler, libraryHandler, aiHandler, oauthHandler, productHandler)
 
 	// Run the server
 	r.Run(appAddress + ":" + appPort)

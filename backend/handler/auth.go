@@ -41,6 +41,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			Email:     user.Email,
 			Username:  user.Username,
 			AvatarURL: user.AvatarURL,
+			Tokens:    user.Tokens,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -66,6 +67,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			Email:     user.Email,
 			Username:  user.Username,
 			AvatarURL: user.AvatarURL,
+			Tokens:    user.Tokens,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -111,5 +113,22 @@ func (h *AuthHandler) Me(c *gin.Context) {
 		Email:     user.Email,
 		Username:  user.Username,
 		AvatarURL: user.AvatarURL,
+		Tokens:    user.Tokens,
 	})
+}
+
+func (h *AuthHandler) GetTokens(c *gin.Context) {
+	userID, exists := middleware.GetUserID(c)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	user, err := h.AuthService.GetByID(userID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"tokens": user.Tokens})
 }

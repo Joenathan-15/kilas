@@ -18,10 +18,11 @@ type AIHandler struct {
 	AIService   *service.AIService
 	DeckService *service.DeckService
 	CardService *service.CardService
+	AuthService *service.AuthService
 }
 
-func NewAIHandler(aiService *service.AIService, deckService *service.DeckService, cardService *service.CardService) *AIHandler {
-	return &AIHandler{AIService: aiService, DeckService: deckService, CardService: cardService}
+func NewAIHandler(aiService *service.AIService, deckService *service.DeckService, cardService *service.CardService, authService *service.AuthService) *AIHandler {
+	return &AIHandler{AIService: aiService, DeckService: deckService, CardService: cardService, AuthService: authService}
 }
 
 func (h *AIHandler) GenerateCards(c *gin.Context) {
@@ -77,8 +78,22 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		count = 10
 	}
 
+	// Calculate token cost: 10 tokens per card requested
+	tokenCost := count * 10
+
+	// Deduct tokens before generating (fail fast if insufficient)
+	if err := h.AuthService.DeductTokens(userID, tokenCost); err != nil {
+		c.JSON(http.StatusPaymentRequired, gin.H{
+			"error":          "insufficient tokens",
+			"tokens_required": tokenCost,
+		})
+		return
+	}
+
 	generatedData, err := h.AIService.GenerateCards(text, count)
 	if err != nil {
+		// Refund tokens on AI failure
+		h.AuthService.TopUp(userID, tokenCost)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -98,6 +113,8 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		Tags:        generatedData.Tags,
 	})
 	if err != nil {
+		// Refund tokens on deck creation failure
+		h.AuthService.TopUp(userID, tokenCost)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create deck"})
 		return
 	}
@@ -122,8 +139,17 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		savedCards = append(savedCards, *card)
 	}
 
+	// Fetch updated user to get current token balance
+	user, _ := h.AuthService.GetByID(userID)
+	tokensRemaining := 0
+	if user != nil {
+		tokensRemaining = user.Tokens
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
-		"deck":  newDeck,
-		"cards": savedCards,
+		"deck":             newDeck,
+		"cards":            savedCards,
+		"tokens_used":      tokenCost,
+		"tokens_remaining": tokensRemaining,
 	})
 }
