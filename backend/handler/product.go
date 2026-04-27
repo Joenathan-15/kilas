@@ -68,8 +68,8 @@ func (h *ProductHandler) Purchase(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.PurchaseResponse{
-		Message:         "purchase successful",
-		TokensAdded:     transaction.Tokens,
+		Message:         "purchase initiated",
+		PaymentURL:      transaction.PaymentURL,
 		TokensRemaining: user.Tokens,
 		Transaction: dto.TransactionInfo{
 			ID:          transaction.ID,
@@ -107,4 +107,31 @@ func (h *ProductHandler) Transactions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": response})
+}
+
+// MidtransWebhook processes notifications sent by Midtrans.
+func (h *ProductHandler) MidtransWebhook(c *gin.Context) {
+	var notificationPayload map[string]interface{}
+	if err := c.ShouldBindJSON(&notificationPayload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payload"})
+		return
+	}
+
+	orderID, ok1 := notificationPayload["order_id"].(string)
+	transactionStatus, ok2 := notificationPayload["transaction_status"].(string)
+
+	if !ok1 || !ok2 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing essential fields"})
+		return
+	}
+
+	fraudStatus, _ := notificationPayload["fraud_status"].(string)
+
+	err := h.ProductService.HandleNotification(orderID, transactionStatus, fraudStatus)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }

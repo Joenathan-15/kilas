@@ -19,7 +19,7 @@ type PurchaseRequest struct {
 
 type PurchaseResponse struct {
 	Message         string          `json:"message"`
-	TokensAdded     int             `json:"tokens_added"`
+	PaymentURL      string          `json:"payment_url"`
 	TokensRemaining int             `json:"tokens_remaining"`
 	Transaction     TransactionInfo `json:"transaction"`
 }

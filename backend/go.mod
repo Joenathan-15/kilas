@@ -14,6 +14,8 @@ require (
 	gorm.io/gorm v1.31.1
 )
 
+require github.com/midtrans/midtrans-go v1.3.8 // indirect
+
 require (
 	cloud.google.com/go v0.115.0 // indirect
 	cloud.google.com/go/ai v0.8.0 // indirect

@@ -39,6 +39,7 @@ func ApiRoutes(
 	products.GET("", productHandler.List)
 	products.POST("/purchase", middleware.AuthMiddleware(), productHandler.Purchase)
 	products.GET("/transactions", middleware.AuthMiddleware(), productHandler.Transactions)
+	products.POST("/midtrans/webhook", productHandler.MidtransWebhook)
 
 	// Deck routes (protected)
 	decks := api.Group("/decks", middleware.AuthMiddleware())
