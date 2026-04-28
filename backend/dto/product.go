@@ -30,4 +30,5 @@ type TransactionInfo struct {
 	Amount      int       `json:"amount"`
 	Tokens      int       `json:"tokens"`
 	CreatedAt   time.Time `json:"created_at"`
+	Status      string    `json:"status"`
 }

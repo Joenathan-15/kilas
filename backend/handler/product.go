@@ -103,6 +103,7 @@ func (h *ProductHandler) Transactions(c *gin.Context) {
 			Amount:      t.Amount,
 			Tokens:      t.Tokens,
 			CreatedAt:   t.CreatedAt,
+			Status:      t.Status,
 		})
 	}
 
