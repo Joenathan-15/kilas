@@ -20,6 +20,7 @@ import type { OverviewStats, ActivityData, Deck } from '../types';
 export default function DashboardPage() {
   const { user, fetchMe } = useAuthStore();
   const [isClaiming, setIsClaiming] = React.useState(false);
+  const [activeDayIdx, setActiveDayIdx] = React.useState<number | null>(null);
 
   const { data: stats, refetch: refetchStats } = useQuery<OverviewStats>({
     queryKey: ['stats-overview'],
@@ -67,7 +68,7 @@ export default function DashboardPage() {
   const bestDeck = decks?.data?.find(d => d.card_count > 0);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500" onClick={() => setActiveDayIdx(null)}>
       
       {/* Header: Streak & Goal */}
       <section className="card-duo p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -183,12 +184,37 @@ export default function DashboardPage() {
                 if (day.count > 2) colorIdx = 2;
                 if (day.count > 9) colorIdx = 3;
 
+                const dateObj = new Date(day.date);
+                const isActive = activeDayIdx === i;
+
                 return (
                   <div 
                     key={i}
-                    title={`${day.date}: ${day.count} reviews`}
-                    className={`w-7 h-7 md:w-9 md:h-9 rounded-lg border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]}`}
-                  />
+                    className="relative"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveDayIdx(isActive ? null : i);
+                    }}
+                  >
+                    {/* Tooltip */}
+                    {isActive && (
+                      <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 z-50 animate-in zoom-in-95 duration-200">
+                        <div className="bg-gray-800 text-white p-3 rounded-2xl shadow-xl border-2 border-gray-700 w-32 text-center pointer-events-none">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                            {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)}
+                          </p>
+                          <p className="text-sm font-black whitespace-nowrap">
+                            {day.count} reviews
+                          </p>
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-gray-800" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div 
+                      className={`w-7 h-7 md:w-9 md:h-9 rounded-lg border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]} ${isActive ? 'ring-4 ring-sky-blue/20 scale-110 border-sky-blue' : ''}`}
+                    />
+                  </div>
                 );
               })
             ) : (
