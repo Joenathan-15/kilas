@@ -5,6 +5,7 @@ import DashboardPage from './pages/DashboardPage';
 import DecksPage from './pages/DecksPage';
 import DeckDetailsPage from './pages/DeckDetailsPage';
 import LibraryPage from './pages/LibraryPage';
+import StudyPage from './pages/StudyPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/decks" element={<DecksPage />} />
           <Route path="/decks/:id" element={<DeckDetailsPage />} />
+          <Route path="/decks/:id/study" element={<StudyPage />} />
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/stats" element={
             <div className="flex flex-col items-center justify-center h-64 border-4 border-dashed border-gray-200 rounded-3xl mt-12">
