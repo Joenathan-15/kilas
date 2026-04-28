@@ -1,0 +1,254 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Loader2, Sparkles, FileText, Upload, Plus } from 'lucide-react';
+import type { Deck } from '../../types';
+
+interface DeckModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: any, type: 'manual' | 'ai') => Promise<void>;
+  initialData?: Deck;
+  title: string;
+}
+
+export default function DeckModal({ isOpen, onClose, onSubmit, initialData, title }: DeckModalProps) {
+  const [activeTab, setActiveTab] = useState<'manual' | 'ai'>('manual');
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    is_public: false,
+    tags: '',
+    count: 10,
+  });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        title: initialData.title,
+        description: initialData.description || '',
+        is_public: initialData.is_public,
+        tags: initialData.tags?.join(', ') || '',
+        count: 10,
+      });
+      setActiveTab('manual');
+    } else {
+      setFormData({
+        title: '',
+        description: '',
+        is_public: false,
+        tags: '',
+        count: 10,
+      });
+      setSelectedFile(null);
+    }
+  }, [initialData, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const tagsArray = formData.tags
+      .split(',')
+      .map((t) => t.trim())
+      .filter((t) => t !== '');
+    
+    if (activeTab === 'ai') {
+      // Optimistic: close immediately, fire in background
+      const data = { ...formData, tags: tagsArray, file: selectedFile };
+      onSubmit(data, 'ai'); // no await — fire and forget
+      onClose();
+      return;
+    }
+
+    // Manual: wait for completion
+    setIsLoading(true);
+    try {
+      const data = { ...formData, tags: tagsArray };
+      await onSubmit(data, 'manual');
+      onClose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      
+      <div className="bg-white w-full max-w-md rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-black text-gray-700 uppercase tracking-tight">{title}</h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <X className="w-6 h-6 text-gray-400" />
+          </button>
+        </div>
+
+        {/* Tabs - Only show when creating new deck */}
+        {!initialData && (
+          <div className="flex p-1 bg-gray-100 rounded-2xl mb-8">
+            <button
+              onClick={() => setActiveTab('manual')}
+              className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'manual' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
+              }`}
+            >
+              <Plus className="w-4 h-4" /> MANUAL
+            </button>
+            <button
+              onClick={() => setActiveTab('ai')}
+              className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
+                activeTab === 'ai' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 fill-current" /> AI PDF
+            </button>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {activeTab === 'manual' ? (
+            <>
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                  Deck Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none"
+                  placeholder="e.g. History Final Exam"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none"
+                  rows={3}
+                  placeholder="What's this deck about?"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                  Tags (comma separated)
+                </label>
+                <input
+                  type="text"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none"
+                  placeholder="e.g. biology, exam, chapter1"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="space-y-5 animate-in slide-in-from-right-4 duration-300">
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className={`border-4 border-dashed rounded-[2rem] p-8 text-center cursor-pointer transition-all ${
+                  selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  accept=".pdf"
+                  className="hidden"
+                />
+                <div className="flex flex-col items-center gap-3">
+                  <div className={`p-4 rounded-2xl ${selectedFile ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                    <FileText className="w-8 h-8" />
+                  </div>
+                  {selectedFile ? (
+                    <div>
+                      <p className="font-black text-purple-600 truncate max-w-[200px]">{selectedFile.name}</p>
+                      <p className="text-xs font-bold text-purple-400 uppercase mt-1">Ready to generate</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="font-black text-gray-500">Upload PDF Study Material</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase mt-1">Maximum 50 pages</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 flex justify-between">
+                  <span>Number of Cards</span>
+                  <span className="text-purple-600">{formData.count} cards</span>
+                </label>
+                <input
+                  type="range"
+                  min="5"
+                  max="20"
+                  step="5"
+                  value={formData.count}
+                  onChange={(e) => setFormData({ ...formData, count: parseInt(e.target.value) })}
+                  className="w-full accent-purple-600"
+                />
+                <div className="flex justify-between text-[10px] font-black text-gray-300 mt-1 uppercase tracking-tighter">
+                  <span>5 cards</span>
+                  <span>10 cards</span>
+                  <span>15 cards</span>
+                  <span>20 cards</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+
+
+          <div className="flex items-center gap-3 py-2">
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, is_public: !formData.is_public })}
+              className={`w-12 h-6 rounded-full transition-colors relative border-2 ${
+                formData.is_public ? 'bg-feather-green border-feather-green-dark' : 'bg-gray-200 border-gray-300'
+              }`}
+            >
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${
+                formData.is_public ? 'translate-x-6' : 'translate-x-0'
+              }`} />
+            </button>
+            <span className="font-bold text-sm text-gray-500">Public Deck</span>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading || (activeTab === 'ai' && !selectedFile)}
+            className={`w-full py-5 text-lg mt-4 flex items-center justify-center gap-3 font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all ${
+              activeTab === 'ai' 
+                ? 'bg-purple-600 border-purple-800 text-white hover:bg-purple-500' 
+                : 'btn-primary'
+            }`}
+          >
+            {isLoading ? (
+              <Loader2 className="w-6 h-6 animate-spin" />
+            ) : activeTab === 'ai' ? (
+              <>
+                <Sparkles className="w-6 h-6 fill-current" />
+                GENERATE DECK
+              </>
+            ) : (
+              'CREATE DECK'
+            )}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

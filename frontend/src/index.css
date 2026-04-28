@@ -1,1 +1,52 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-feather-green: #58cc02;
+  --color-feather-green-dark: #46a302;
+  
+  --color-sky-blue: #1cb0f6;
+  --color-sky-blue-dark: #1899d6;
+  
+  --color-danger-red: #ff4b4b;
+  --color-danger-red-dark: #ea2b2b;
+  
+  --color-gold: #ffc800;
+  --color-gold-dark: #e5b400;
+
+  --color-surface: #ffffff;
+  --color-background: #f7f7f7;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-gray-800 font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .btn-chunky {
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none;
+  }
+
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-feather-green text-white border-b-4 border-feather-green-dark hover:bg-[#61e002] active:border-b-0;
+  }
+
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-sky-blue text-white border-b-4 border-sky-blue-dark hover:bg-[#20c3ff] active:border-b-0;
+  }
+
+  .btn-danger {
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-danger-red text-white border-b-4 border-danger-red-dark hover:bg-[#ff5e5e] active:border-b-0;
+  }
+
+  .btn-ghost {
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-0 select-none bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 active:scale-95;
+  }
+
+  .card-duo {
+    @apply bg-surface rounded-2xl border-2 border-gray-200 overflow-hidden;
+  }
+}

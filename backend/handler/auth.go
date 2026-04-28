@@ -109,11 +109,12 @@ func (h *AuthHandler) Me(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.UserResponse{
-		ID:        user.ID,
-		Email:     user.Email,
-		Username:  user.Username,
-		AvatarURL: user.AvatarURL,
-		Tokens:    user.Tokens,
+		ID:          user.ID,
+		Email:       user.Email,
+		Username:    user.Username,
+		AvatarURL:   user.AvatarURL,
+		LoginStreak: user.LoginStreak,
+		Tokens:      user.Tokens,
 	})
 }
 

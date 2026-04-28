@@ -16,11 +16,12 @@ type RefreshRequest struct {
 }
 
 type UserResponse struct {
-	ID        uint   `json:"id"`
-	Email     string `json:"email"`
-	Username  string `json:"username"`
-	AvatarURL string `json:"avatar_url"`
-	Tokens    int    `json:"tokens"`
+	ID          uint   `json:"id"`
+	Email       string `json:"email"`
+	Username    string `json:"username"`
+	AvatarURL   string `json:"avatar_url"`
+	LoginStreak int    `json:"login_streak"`
+	Tokens      int    `json:"tokens"`
 }
 
 type AuthResponse struct {

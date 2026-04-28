@@ -1,88 +1,74 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
-})
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+});
 
 // Request interceptor: attach access token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
-
-// Response interceptor: handle 401 with token refresh
-let isRefreshing = false
-let failedQueue: Array<{
-  resolve: (value: unknown) => void
-  reject: (reason?: unknown) => void
-}> = []
-
-const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error)
-    } else {
-      prom.resolve(token)
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-  })
-  failedQueue = []
-}
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
+// Response interceptor: handle 401s
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Handle offline
+    const originalRequest = error.config;
+
+    // Network offline handling
     if (!navigator.onLine && !error.response) {
-      return Promise.reject(error)
+      // You could trigger a toast here if needed
+      return Promise.reject(error);
     }
 
-    const originalRequest = error.config
+    const isAuthRequest = originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register');
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject })
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`
-            return api(originalRequest)
-          })
-          .catch((err) => Promise.reject(err))
-      }
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem('refresh_token');
 
-      originalRequest._retry = true
-      isRefreshing = true
-
-      try {
-        const refreshToken = localStorage.getItem('refresh_token')
-        if (!refreshToken) throw new Error('No refresh token')
-
-        const { data } = await axios.post('/api/auth/refresh', {
-          refresh_token: refreshToken,
-        })
-
-        const newToken = data.access_token
-        localStorage.setItem('access_token', newToken)
-        processQueue(null, newToken)
-
-        originalRequest.headers.Authorization = `Bearer ${newToken}`
-        return api(originalRequest)
-      } catch (refreshError) {
-        processQueue(refreshError, null)
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
-        window.location.href = '/login'
-        return Promise.reject(refreshError)
-      } finally {
-        isRefreshing = false
+      if (refreshToken) {
+        try {
+          // Attempt to refresh token
+          const res = await axios.post('/api/auth/refresh', { refresh_token: refreshToken });
+          const newAccessToken = res.data.access_token;
+          
+          localStorage.setItem('access_token', newAccessToken);
+          
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          }
+          return api(originalRequest);
+        } catch (refreshError) {
+          // Refresh failed
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          window.location.href = '/login';
+          return Promise.reject(refreshError);
+        }
+      } else {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login';
       }
     }
 
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-export default api
+export const getFullImageUrl = (path: string | undefined) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api').replace('/api', '');
+  return `${baseUrl}${path}`;
+};
+
+export default api;
