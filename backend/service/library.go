@@ -28,6 +28,7 @@ type LibraryDeck struct {
 	Description string   `json:"description"`
 	Tags        []string `json:"tags"`
 	CardCount   int64    `json:"card_count"`
+	CloneCount  int      `json:"clone_count"`
 	Author      struct {
 		ID       uint   `json:"id"`
 		Username string `json:"username"`
@@ -41,7 +42,7 @@ type BrowseResult struct {
 	Limit int           `json:"limit"`
 }
 
-func (s *LibraryService) Browse(search, tags string, page, limit int) (*BrowseResult, error) {
+func (s *LibraryService) Browse(search, tags, sort string, page, limit int) (*BrowseResult, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -57,15 +58,23 @@ func (s *LibraryService) Browse(search, tags string, page, limit int) (*BrowseRe
 		UserID      uint
 		Username    string
 		CardCount   int64
+		CloneCount  int
 	}
 
 	query := s.DB.Table("decks").
-		Select("decks.id, decks.title, decks.description, decks.tags, decks.user_id, users.username, COUNT(cards.id) as card_count").
+		Select("decks.id, decks.title, decks.description, decks.tags, decks.user_id, decks.clone_count, users.username, COUNT(cards.id) as card_count").
 		Joins("JOIN users ON decks.user_id = users.id").
 		Joins("LEFT JOIN cards ON cards.deck_id = decks.id").
 		Where("decks.is_public = ?", true).
-		Group("decks.id").
-		Order("decks.created_at DESC")
+		Group("decks.id")
+
+	// Apply sorting
+	switch sort {
+	case "popular":
+		query = query.Order("decks.clone_count DESC, decks.created_at DESC")
+	default: // newest
+		query = query.Order("decks.created_at DESC")
+	}
 
 	countQuery := s.DB.Table("decks").Where("decks.is_public = ?", true)
 
@@ -102,6 +111,7 @@ func (s *LibraryService) Browse(search, tags string, page, limit int) (*BrowseRe
 			Description: rd.Description,
 			Tags:        StringToTags(rd.Tags),
 			CardCount:   rd.CardCount,
+			CloneCount:  rd.CloneCount,
 		}
 		data[i].Author.ID = rd.UserID
 		data[i].Author.Username = rd.Username
@@ -151,6 +161,9 @@ func (s *LibraryService) Clone(sourceDeckID, userID uint) (*model.Deck, error) {
 		}
 		s.CardRepo.Create(newCard)
 	}
+
+	// Increment clone count on the source deck
+	s.DB.Model(&model.Deck{}).Where("id = ?", sourceDeckID).UpdateColumn("clone_count", gorm.Expr("clone_count + 1"))
 
 	// Set card count
 	newDeck.CardCount = int64(len(source.Cards))

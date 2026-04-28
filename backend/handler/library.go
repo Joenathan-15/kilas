@@ -20,10 +20,11 @@ func NewLibraryHandler(libraryService *service.LibraryService) *LibraryHandler {
 func (h *LibraryHandler) Browse(c *gin.Context) {
 	search := c.Query("search")
 	tags := c.Query("tags")
+	sort := c.Query("sort")
 	page := service.ParseInt(c.Query("page"), 1)
 	limit := service.ParseInt(c.Query("limit"), 12)
 
-	result, err := h.LibraryService.Browse(search, tags, page, limit)
+	result, err := h.LibraryService.Browse(search, tags, sort, page, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

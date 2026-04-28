@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Loader2, Sparkles, FileText, Upload, Plus } from 'lucide-react';
+import { X, Loader2, Sparkles, FileText, Plus } from 'lucide-react';
 import type { Deck } from '../../types';
 
 interface DeckModalProps {
@@ -49,12 +49,12 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const tagsArray = formData.tags
       .split(',')
       .map((t) => t.trim())
       .filter((t) => t !== '');
-    
+
     if (activeTab === 'ai') {
       // Optimistic: close immediately, fire in background
       const data = { ...formData, tags: tagsArray, file: selectedFile };
@@ -79,7 +79,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      
+
       <div className="bg-white w-full max-w-md rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-black text-gray-700 uppercase tracking-tight">{title}</h2>
@@ -93,17 +93,15 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
           <div className="flex p-1 bg-gray-100 rounded-2xl mb-8">
             <button
               onClick={() => setActiveTab('manual')}
-              className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'manual' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
-              }`}
+              className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'manual' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
+                }`}
             >
               <Plus className="w-4 h-4" /> MANUAL
             </button>
             <button
               onClick={() => setActiveTab('ai')}
-              className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
-                activeTab === 'ai' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
-              }`}
+              className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'ai' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
+                }`}
             >
               <Sparkles className="w-4 h-4 fill-current" /> AI PDF
             </button>
@@ -155,11 +153,10 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
             </>
           ) : (
             <div className="space-y-5 animate-in slide-in-from-right-4 duration-300">
-              <div 
+              <div
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-4 border-dashed rounded-[2rem] p-8 text-center cursor-pointer transition-all ${
-                  selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
-                }`}
+                className={`border-4 border-dashed rounded-[2rem] p-8 text-center cursor-pointer transition-all ${selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
+                  }`}
               >
                 <input
                   type="file"
@@ -216,13 +213,11 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
             <button
               type="button"
               onClick={() => setFormData({ ...formData, is_public: !formData.is_public })}
-              className={`w-12 h-6 rounded-full transition-colors relative border-2 ${
-                formData.is_public ? 'bg-feather-green border-feather-green-dark' : 'bg-gray-200 border-gray-300'
-              }`}
+              className={`w-12 h-6 rounded-full transition-colors relative border-2 ${formData.is_public ? 'bg-feather-green border-feather-green-dark' : 'bg-gray-200 border-gray-300'
+                }`}
             >
-              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${
-                formData.is_public ? 'translate-x-6' : 'translate-x-0'
-              }`} />
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${formData.is_public ? 'translate-x-6' : 'translate-x-0'
+                }`} />
             </button>
             <span className="font-bold text-sm text-gray-500">Public Deck</span>
           </div>
@@ -230,11 +225,10 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
           <button
             type="submit"
             disabled={isLoading || (activeTab === 'ai' && !selectedFile)}
-            className={`w-full py-5 text-lg mt-4 flex items-center justify-center gap-3 font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all ${
-              activeTab === 'ai' 
-                ? 'bg-purple-600 border-purple-800 text-white hover:bg-purple-500' 
+            className={`w-full py-5 text-lg mt-4 flex items-center justify-center gap-3 font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all ${activeTab === 'ai'
+                ? 'bg-purple-600 border-purple-800 text-white hover:bg-purple-500'
                 : 'btn-primary'
-            }`}
+              }`}
           >
             {isLoading ? (
               <Loader2 className="w-6 h-6 animate-spin" />

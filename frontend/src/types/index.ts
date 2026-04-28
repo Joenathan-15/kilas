@@ -64,6 +64,7 @@ export interface LibraryDeck {
   description: string; 
   tags: string[]; 
   card_count: number; 
+  clone_count: number;
   author: { 
     id: number; 
     username: string; 
