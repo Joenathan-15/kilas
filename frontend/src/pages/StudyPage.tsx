@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { getFullImageUrl } from '../lib/api';
 import { Loader2, ArrowLeft, CheckCircle2, Image as X } from 'lucide-react';
@@ -15,6 +15,9 @@ export default function StudyPage() {
   const { id: deckId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const isSandbox = searchParams.get('mode') === 'sandbox';
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionId, setSessionId] = useState<number | null>(null);
@@ -24,9 +27,10 @@ export default function StudyPage() {
 
   // Fetch due cards
   const { data: dueData, isLoading, error } = useQuery<StudyDueResponse>({
-    queryKey: ['study-due', deckId],
+    queryKey: ['study-due', deckId, isSandbox],
     queryFn: async () => {
-      const res = await api.get(`/decks/${deckId}/study/due`);
+      const endpoint = isSandbox ? `/decks/${deckId}/cards` : `/decks/${deckId}/study/due`;
+      const res = await api.get(endpoint);
       return res.data;
     },
   });
@@ -59,21 +63,24 @@ export default function StudyPage() {
   });
 
   useEffect(() => {
-    if (dueData && dueData.data.length > 0 && !sessionId && !startSessionMutation.isPending) {
+    if (dueData && dueData.data.length > 0 && !sessionId && !startSessionMutation.isPending && !isSandbox) {
       startSessionMutation.mutate();
     }
-  }, [dueData, sessionId]);
+  }, [dueData, sessionId, isSandbox]);
 
   const cards = dueData?.data || [];
   const currentCard = cards[currentIndex];
 
   const handleRate = useCallback(async (quality: number) => {
-    if (!currentCard || !sessionId) return;
+    if (!currentCard) return;
+    if (!isSandbox && !sessionId) return;
 
     // Optimistic progress
     setStudiedCount(prev => prev + 1);
 
-    reviewMutation.mutate({ cardId: currentCard.id, quality });
+    if (!isSandbox) {
+      reviewMutation.mutate({ cardId: currentCard.id, quality });
+    }
 
     if (currentIndex < cards.length - 1) {
       setIsFlipped(false);
@@ -88,7 +95,7 @@ export default function StudyPage() {
 
   const handleFinish = async () => {
     try {
-      if (sessionId) {
+      if (sessionId && !isSandbox) {
         await endSessionMutation.mutateAsync();
       }
     } catch (err) {
@@ -160,8 +167,12 @@ export default function StudyPage() {
           <div className="w-24 h-24 bg-sky-100 rounded-3xl flex items-center justify-center text-sky-500 mx-auto mb-6 border-b-4 border-sky-200">
             <CheckCircle2 className="w-14 h-14" />
           </div>
-          <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight mb-2">WELL DONE!</h2>
-          <p className="text-gray-400 font-bold mb-8">You've finished your study session.</p>
+          <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight mb-2">
+            {isSandbox ? 'PRACTICE COMPLETE!' : 'WELL DONE!'}
+          </h2>
+          <p className="text-gray-400 font-bold mb-8">
+            {isSandbox ? "You've finished this practice session." : "You've finished your study session."}
+          </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
@@ -203,8 +214,13 @@ export default function StudyPage() {
         >
           <X className="w-6 h-6" />
         </button>
-        <div className="flex-1 mx-8">
-          <div className="h-4 bg-gray-100 rounded-full overflow-hidden border-2 border-gray-200">
+        <div className="flex-1 mx-8 flex flex-col items-center gap-1">
+          {isSandbox && (
+            <div className="flex items-center gap-1 text-[10px] font-black text-sky-500 uppercase tracking-widest bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">
+              Restudy Mode (No Stats)
+            </div>
+          )}
+          <div className="h-4 bg-gray-100 rounded-full overflow-hidden border-2 border-gray-200 w-full">
             <div
               className="h-full bg-sky-blue transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}

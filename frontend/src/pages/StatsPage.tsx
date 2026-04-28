@@ -288,7 +288,7 @@ export default function StatsPage() {
                         </div>
                       </div>
                       <Link
-                        to={`/decks/${session.deck_id}/study`}
+                        to={`/decks/${session.deck_id}/study?mode=sandbox`}
                         className="text-xs font-black text-sky-blue uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         Re-study
