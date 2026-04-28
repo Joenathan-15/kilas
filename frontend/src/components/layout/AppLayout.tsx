@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
+import { getFullImageUrl } from '../../lib/api';
 import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp } from 'lucide-react';
 
 export default function AppLayout() {
@@ -81,7 +82,7 @@ export default function AppLayout() {
             className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
           >
             {user?.avatar_url ? (
-              <img src={user.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" />
+              <img src={getFullImageUrl(user.avatar_url)} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-feather-green text-white flex items-center justify-center font-bold text-lg border-2 border-feather-green-dark">
                 {user?.username?.[0]?.toUpperCase()}
@@ -120,7 +121,7 @@ export default function AppLayout() {
               <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
             </span>
             {user?.avatar_url ? (
-              <img src={user.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" />
+              <img src={getFullImageUrl(user.avatar_url)} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" />
             ) : (
               <div className="w-8 h-8 rounded-full bg-feather-green text-white flex items-center justify-center font-bold border-2 border-feather-green-dark">
                 {user?.username?.[0]?.toUpperCase()}

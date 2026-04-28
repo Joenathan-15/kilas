@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../lib/api';
-import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, Clock, XCircle, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -78,18 +78,16 @@ export default function ShopPage() {
         <div className="flex bg-gray-100 p-1 rounded-2xl w-full md:w-auto">
           <button
             onClick={() => setActiveTab('shop')}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-              activeTab === 'shop' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'shop' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              }`}
           >
             <Coins className="w-5 h-5" />
             Tokens
           </button>
           <button
             onClick={() => setActiveTab('history')}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-              activeTab === 'history' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'history' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              }`}
           >
             <History className="w-5 h-5" />
             History
@@ -105,14 +103,14 @@ export default function ShopPage() {
       ) : activeTab === 'shop' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
-            <div 
+            <div
               key={product.id}
               className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-orange-100 transition-all group flex flex-col"
             >
               <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Coins className="w-8 h-8 text-orange-500" />
               </div>
-              
+
               <div className="flex-1 space-y-2">
                 <h3 className="text-2xl font-black text-gray-800 leading-tight">
                   {product.name}
@@ -163,7 +161,7 @@ export default function ShopPage() {
               Last 50 Purchases
             </div>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
@@ -187,8 +185,8 @@ export default function ShopPage() {
                     </td>
                     <td className="px-6 py-5">
                       <span className="text-sm font-bold text-gray-400">
-                        {new Date(t.created_at).toLocaleDateString('en-US', { 
-                          month: 'short', 
+                        {new Date(t.created_at).toLocaleDateString('en-US', {
+                          month: 'short',
                           day: 'numeric',
                           year: 'numeric'
                         })}
@@ -213,7 +211,7 @@ export default function ShopPage() {
             <div className="py-20 text-center space-y-4">
               <History className="w-16 h-16 text-gray-100 mx-auto" />
               <p className="text-xl font-bold text-gray-400">No purchase history yet.</p>
-              <button 
+              <button
                 onClick={() => setActiveTab('shop')}
                 className="text-orange-500 font-black uppercase text-sm hover:underline flex items-center gap-2 mx-auto"
               >

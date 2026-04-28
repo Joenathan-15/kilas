@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
-import api from '../lib/api';
+import api, { getFullImageUrl } from '../lib/api';
 import { User, Camera, Save, CheckCircle2, AlertCircle, Upload } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -52,11 +52,7 @@ export default function ProfilePage() {
       const res = await api.post('/upload/image', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      // The backend returns a path like "/public/uploads/images/..."
-      // We need to prepend the API base URL if it's not relative
-      const uploadedUrl = res.data.url.startsWith('http') 
-        ? res.data.url 
-        : `${import.meta.env.VITE_API_URL || 'http://localhost:8080'}${res.data.url}`;
+      const uploadedUrl = res.data.url;
       
       setAvatarURL(uploadedUrl);
       setMessage({ type: 'success', text: 'Image uploaded! Don\'t forget to save.' });
@@ -83,7 +79,7 @@ export default function ProfilePage() {
             <div className="relative">
               {avatarURL ? (
                 <img 
-                  src={avatarURL} 
+                  src={getFullImageUrl(avatarURL)} 
                   alt="Avatar Preview" 
                   className={`w-32 h-32 rounded-full border-4 border-gray-100 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''}`} 
                 />

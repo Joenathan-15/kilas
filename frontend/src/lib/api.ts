@@ -67,8 +67,14 @@ api.interceptors.response.use(
 export const getFullImageUrl = (path: string | undefined) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api').replace('/api', '');
-  return `${baseUrl}${path}`;
+  
+  // Get API base URL and strip the trailing /api if it exists
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api').replace(/\/api\/?$/, '');
+  
+  // Ensure path starts with a slash
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  
+  return `${baseUrl}${normalizedPath}`;
 };
 
 export default api;

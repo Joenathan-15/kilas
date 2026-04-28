@@ -244,7 +244,7 @@ export default function StudyPage() {
           <div className="absolute inset-0 backface-hidden rotate-y-180 card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto border-sky-200">
             {currentCard?.back_image_url && (
               <img
-                src={currentCard.back_image_url}
+                src={getFullImageUrl(currentCard.back_image_url)}
                 alt="Back"
                 className="max-h-40 rounded-xl mb-6 shadow-sm object-contain"
               />
