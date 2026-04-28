@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log"
 	"time"
 
 	"gorm.io/gorm"
@@ -70,18 +71,21 @@ type ActivityEntry struct {
 
 func (s *StatsService) GetActivity(userID uint) ([]ActivityEntry, error) {
 	// Query DB for last 30 days
-	type dbResult struct {
-		Date  string
-		Count int
+	var results []struct {
+		Date  string `gorm:"column:date"`
+		Count int    `gorm:"column:count"`
 	}
-	var results []dbResult
+
+	// Refined range: start of the day 29 days ago to include exactly 30 days
+	startDate := time.Now().AddDate(0, 0, -29).Truncate(24 * time.Hour)
 
 	s.DB.Table("card_reviews").
-		Select("DATE(card_reviews.created_at) as date, COUNT(*) as count").
-		Joins("JOIN study_sessions ON card_reviews.session_id = study_sessions.id").
-		Where("study_sessions.user_id = ? AND card_reviews.created_at >= ?", userID, time.Now().AddDate(0, 0, -29)).
-		Group("DATE(card_reviews.created_at)").
+		Select("DATE_FORMAT(created_at, '%Y-%m-%d') as date, COUNT(*) as count").
+		Where("session_id IN (SELECT id FROM study_sessions WHERE user_id = ?) AND created_at >= ?", userID, startDate).
+		Group("date").
 		Find(&results)
+
+	log.Printf("[StatsService] Activity query for user %d found %d records", userID, len(results))
 
 	// Build lookup map
 	countMap := make(map[string]int)

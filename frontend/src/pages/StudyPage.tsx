@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import api from '../lib/api';
-import { Loader2, ArrowLeft, CheckCircle2, RotateCcw, Image as ImageIcon, X, AlertCircle } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api, { getFullImageUrl } from '../lib/api';
+import { Loader2, ArrowLeft, CheckCircle2, Image as X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { Card } from '../types';
 
@@ -14,6 +14,7 @@ interface StudyDueResponse {
 export default function StudyPage() {
   const { id: deckId } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionId, setSessionId] = useState<number | null>(null);
@@ -71,7 +72,7 @@ export default function StudyPage() {
 
     // Optimistic progress
     setStudiedCount(prev => prev + 1);
-    
+
     reviewMutation.mutate({ cardId: currentCard.id, quality });
 
     if (currentIndex < cards.length - 1) {
@@ -86,21 +87,31 @@ export default function StudyPage() {
   }, [currentCard, sessionId, currentIndex, cards]);
 
   const handleFinish = async () => {
-    await endSessionMutation.mutateAsync();
-    setIsFinished(true);
-    toast.success('Session completed! 🎯');
+    try {
+      if (sessionId) {
+        await endSessionMutation.mutateAsync();
+      }
+    } catch (err) {
+      console.error('Failed to end session:', err);
+      toast.error('Session ended with sync error.');
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['stats-overview'] });
+      queryClient.invalidateQueries({ queryKey: ['stats-activity'] });
+      setIsFinished(true);
+      toast.success('Session completed! 🎯');
+    }
   };
 
   // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isFinished) return;
-      
+
       if (e.code === 'Space') {
         e.preventDefault();
         setIsFlipped(prev => !prev);
       }
-      
+
       if (isFlipped) {
         if (e.key === '1') handleRate(3); // Easy
         if (e.key === '2') handleRate(2); // Good
@@ -151,7 +162,7 @@ export default function StudyPage() {
           </div>
           <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight mb-2">WELL DONE!</h2>
           <p className="text-gray-400 font-bold mb-8">You've finished your study session.</p>
-          
+
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
               <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Studied</p>
@@ -169,7 +180,7 @@ export default function StudyPage() {
             onClick={() => navigate('/decks')}
             className="w-full py-4 bg-sky-blue border-b-4 border-sky-700 text-white font-black rounded-2xl hover:bg-sky-500 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
           >
-             GO TO DASHBOARD
+            GO TO DASHBOARD
           </button>
         </div>
       </div>
@@ -182,7 +193,7 @@ export default function StudyPage() {
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header & Progress */}
       <div className="flex items-center justify-between mb-2">
-        <button 
+        <button
           onClick={() => {
             if (window.confirm('Quit session? Progress so far will be saved.')) {
               handleFinish();
@@ -194,8 +205,8 @@ export default function StudyPage() {
         </button>
         <div className="flex-1 mx-8">
           <div className="h-4 bg-gray-100 rounded-full overflow-hidden border-2 border-gray-200">
-            <div 
-              className="h-full bg-sky-blue transition-all duration-500 ease-out" 
+            <div
+              className="h-full bg-sky-blue transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -206,18 +217,18 @@ export default function StudyPage() {
       </div>
 
       {/* Card Viewer */}
-      <div 
+      <div
         className="relative perspective-1000 cursor-pointer h-[400px] group"
         onClick={() => setIsFlipped(prev => !prev)}
       >
         <div className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-          
+
           {/* Front Side */}
           <div className="absolute inset-0 backface-hidden card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto">
             {currentCard?.front_image_url && (
-              <img 
-                src={currentCard.front_image_url} 
-                alt="Front" 
+              <img
+                src={getFullImageUrl(currentCard.front_image_url)}
+                alt="Front"
                 className="max-h-40 rounded-xl mb-6 shadow-sm object-contain"
               />
             )}
@@ -232,9 +243,9 @@ export default function StudyPage() {
           {/* Back Side */}
           <div className="absolute inset-0 backface-hidden rotate-y-180 card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto border-sky-200">
             {currentCard?.back_image_url && (
-              <img 
-                src={currentCard.back_image_url} 
-                alt="Back" 
+              <img
+                src={currentCard.back_image_url}
+                alt="Back"
                 className="max-h-40 rounded-xl mb-6 shadow-sm object-contain"
               />
             )}
@@ -249,7 +260,7 @@ export default function StudyPage() {
       {/* Controls */}
       <div className="h-32 flex items-center justify-center">
         {!isFlipped ? (
-          <button 
+          <button
             onClick={() => setIsFlipped(true)}
             className="w-full max-w-sm py-5 bg-gray-700 border-b-4 border-gray-900 text-white font-black rounded-2xl hover:bg-gray-800 active:border-b-0 active:translate-y-1 transition-all uppercase tracking-widest text-lg"
           >

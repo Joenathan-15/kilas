@@ -48,11 +48,11 @@ export default function DashboardPage() {
     }
   };
 
-  const { data: activity } = useQuery<{ data: ActivityData[] }>({
+  const { data: activityData } = useQuery<ActivityData[]>({
     queryKey: ['stats-activity'],
     queryFn: async () => {
       const res = await api.get('/stats/activity');
-      return res.data;
+      return res.data.data;
     },
   });
 
@@ -169,26 +169,42 @@ export default function DashboardPage() {
             <span className="text-sm font-bold text-gray-400">Last 30 Days</span>
           </div>
           
-          <div className="flex flex-wrap gap-2">
-            {activity?.data ? (
-              activity.data.map((day, i) => (
-                <div 
-                  key={i}
-                  title={`${day.date}: ${day.count} reviews`}
-                  className={`w-8 h-8 rounded-lg border-2 transition-all hover:scale-110 cursor-pointer ${
-                    day.count === 0 
-                      ? 'bg-gray-50 border-gray-100' 
-                      : day.count < 5 
-                        ? 'bg-green-200 border-green-300' 
-                        : 'bg-feather-green border-feather-green-dark'
-                  }`}
-                />
-              ))
+          <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+            {activityData ? (
+              activityData.map((day, i) => {
+                const colors = [
+                  'bg-gray-100 border-gray-200', // 0
+                  'bg-green-200 border-green-300', // 1-2
+                  'bg-green-400 border-green-500', // 3-9
+                  'bg-feather-green border-feather-green-dark', // 10+
+                ];
+                let colorIdx = 0;
+                if (day.count > 0) colorIdx = 1;
+                if (day.count > 2) colorIdx = 2;
+                if (day.count > 9) colorIdx = 3;
+
+                return (
+                  <div 
+                    key={i}
+                    title={`${day.date}: ${day.count} reviews`}
+                    className={`w-7 h-7 md:w-9 md:h-9 rounded-lg border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]}`}
+                  />
+                );
+              })
             ) : (
               Array.from({ length: 30 }).map((_, i) => (
-                <div key={i} className="w-8 h-8 rounded-lg bg-gray-50 border-2 border-gray-100 animate-pulse" />
+                <div key={i} className="w-7 h-7 md:w-9 md:h-9 rounded-lg bg-gray-50 border-2 border-gray-100 animate-pulse" />
               ))
             )}
+          </div>
+
+          <div className="mt-6 flex items-center justify-end gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            <span>Less</span>
+            <div className="w-3 h-3 bg-gray-100 rounded-sm border border-gray-200" />
+            <div className="w-3 h-3 bg-green-100 rounded-sm border border-green-200" />
+            <div className="w-3 h-3 bg-green-300 rounded-sm border border-green-400" />
+            <div className="w-3 h-3 bg-feather-green rounded-sm border border-feather-green-dark" />
+            <span>More</span>
           </div>
         </section>
 
