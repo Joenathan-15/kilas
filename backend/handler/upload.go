@@ -2,8 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"image"
-	"image/jpeg"
 	_ "image/gif"
 	_ "image/png"
 	_ "golang.org/x/image/webp"
@@ -14,6 +12,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/disintegration/imaging"
+	"github.com/rwcarlsen/goexif/exif"
 )
 
 type UploadHandler struct{}
@@ -49,29 +49,47 @@ func (h *UploadHandler) UploadImage(c *gin.Context) {
 	}
 	defer srcFile.Close()
 
+	// Try to get orientation from EXIF
+	orientation := 1
+	x, err := exif.Decode(srcFile)
+	if err == nil {
+		tag, err := x.Get(exif.Orientation)
+		if err == nil {
+			val, err := tag.Int(0)
+			if err == nil {
+				orientation = val
+			}
+		}
+	}
+
+	// Seek back to start of file for imaging.Decode
+	srcFile.Seek(0, 0)
+
 	// Decode the image
-	img, _, err := image.Decode(srcFile)
+	img, err := imaging.Decode(srcFile)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid image file: unable to decode"})
 		return
 	}
 
-	// Generate unique filename (always save as .jpg for compression)
+	// Apply rotation based on EXIF orientation
+	switch orientation {
+	case 3:
+		img = imaging.Rotate180(img)
+	case 6:
+		img = imaging.Rotate270(img)
+	case 8:
+		img = imaging.Rotate90(img)
+	}
+
+	// Generate unique filename
 	newFilename := fmt.Sprintf("%d.jpg", time.Now().UnixNano())
 	dst := filepath.Join("public", "uploads", "images", newFilename)
 
-	// Create destination file
-	out, err := os.Create(dst)
+	// Save the processed image as JPEG with 75% quality
+	err = imaging.Save(img, dst, imaging.JPEGQuality(75))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create destination file"})
-		return
-	}
-	defer out.Close()
-
-	// Encode to JPEG with 75% quality
-	err = jpeg.Encode(out, img, &jpeg.Options{Quality: 75})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to compress image"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save processed image"})
 		return
 	}
 

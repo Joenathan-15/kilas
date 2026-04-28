@@ -157,3 +157,28 @@ func (h *AuthHandler) ClaimDailyReward(c *gin.Context) {
 		TotalTokens: totalTokens,
 	})
 }
+
+func (h *AuthHandler) UpdateProfile(c *gin.Context) {
+	userID, _ := middleware.GetUserID(c)
+
+	var req dto.UpdateProfileRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, utils.FormatValidationError(err))
+		return
+	}
+
+	user, err := h.AuthService.UpdateProfile(userID, req.Username, req.AvatarURL)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.UserResponse{
+		ID:          user.ID,
+		Email:       user.Email,
+		Username:    user.Username,
+		AvatarURL:   user.AvatarURL,
+		LoginStreak: user.LoginStreak,
+		Tokens:      user.Tokens,
+	})
+}

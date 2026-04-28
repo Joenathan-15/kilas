@@ -33,6 +33,7 @@ func ApiRoutes(
 	auth.POST("/refresh", authHandler.Refresh)
 	auth.POST("/logout", authHandler.Logout)
 	auth.GET("/me", middleware.AuthMiddleware(), authHandler.Me)
+	auth.PUT("/profile", middleware.AuthMiddleware(), authHandler.UpdateProfile)
 	auth.GET("/tokens", middleware.AuthMiddleware(), authHandler.GetTokens)
 	auth.POST("/daily-login", middleware.AuthMiddleware(), authHandler.ClaimDailyReward)
 
@@ -72,6 +73,7 @@ func ApiRoutes(
 	stats := api.Group("/stats", middleware.AuthMiddleware())
 	stats.GET("/overview", statsHandler.Overview)
 	stats.GET("/activity", statsHandler.Activity)
+	stats.GET("/sessions", statsHandler.RecentSessions)
 	stats.GET("/deck/:deck_id", statsHandler.DeckStats)
 
 	// Library routes (public browse, protected clone)

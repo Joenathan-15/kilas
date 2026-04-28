@@ -81,3 +81,7 @@ func (r *UserRepository) UpdateDailyLogin(userID uint, newStreak int, newDate ti
 		"tokens":          gorm.Expr("tokens + ?", addedTokens),
 	}).Error
 }
+
+func (r *UserRepository) Update(user *model.User) error {
+	return r.DB.Save(user).Error
+}

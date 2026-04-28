@@ -35,3 +35,8 @@ type DailyLoginResponse struct {
 	Streak      int `json:"streak"`
 	TotalTokens int `json:"total_tokens"`
 }
+
+type UpdateProfileRequest struct {
+	Username  string `json:"username" binding:"omitempty,min=3,max=20"`
+	AvatarURL string `json:"avatar_url" binding:"omitempty,url"`
+}

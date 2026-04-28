@@ -19,6 +19,11 @@ require github.com/midtrans/midtrans-go v1.3.8
 require golang.org/x/image v0.39.0
 
 require (
+	github.com/disintegration/imaging v1.6.2 // indirect
+	github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd // indirect
+)
+
+require (
 	cloud.google.com/go v0.115.0 // indirect
 	cloud.google.com/go/ai v0.8.0 // indirect
 	cloud.google.com/go/auth v0.6.0 // indirect

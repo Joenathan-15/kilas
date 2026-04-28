@@ -57,3 +57,18 @@ func (h *StatsHandler) DeckStats(c *gin.Context) {
 
 	c.JSON(http.StatusOK, stats)
 }
+
+func (h *StatsHandler) RecentSessions(c *gin.Context) {
+	userID, _ := middleware.GetUserID(c)
+
+	limitStr := c.DefaultQuery("limit", "10")
+	limit, _ := strconv.Atoi(limitStr)
+
+	sessions, err := h.StatsService.GetRecentSessions(userID, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": sessions})
+}

@@ -1,10 +1,11 @@
-import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
-import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut } from 'lucide-react';
+import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp } from 'lucide-react';
 
 export default function AppLayout() {
   const { user, logout } = useAuthStore();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
@@ -44,16 +45,49 @@ export default function AppLayout() {
           ))}
         </nav>
 
-        <div className="p-4 border-t-2 border-gray-200">
-          <div className="flex items-center gap-3 px-2 mb-4">
+        <div className="p-4 border-t-2 border-gray-200 relative">
+          {/* Profile Menu Popup */}
+          {isProfileOpen && (
+            <div className="absolute bottom-full left-4 right-4 mb-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-bottom-2 duration-200 z-50">
+              <Link 
+                to="/shop" 
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-orange-50 text-gray-600 hover:text-orange-500 transition-colors font-bold"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                Shop
+              </Link>
+              <Link 
+                to="/profile" 
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sky-50 text-gray-600 hover:text-sky-blue transition-colors font-bold"
+              >
+                <User className="w-5 h-5" />
+                Edit Profile
+              </Link>
+              <div className="h-px bg-gray-100 my-1" />
+              <button
+                onClick={logout}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-danger-red transition-colors font-bold text-left"
+              >
+                <LogOut className="w-5 h-5" />
+                Log Out
+              </button>
+            </div>
+          )}
+
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
+          >
             {user?.avatar_url ? (
-              <img src={user.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-200" />
+              <img src={user.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-feather-green text-white flex items-center justify-center font-bold text-lg border-2 border-feather-green-dark">
                 {user?.username?.[0]?.toUpperCase()}
               </div>
             )}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 text-left">
               <p className="font-bold text-gray-700 truncate">{user?.username}</p>
               <div className="flex items-center gap-2">
                 <p className="text-xs text-gray-400 font-bold flex items-center gap-1">
@@ -64,14 +98,7 @@ export default function AppLayout() {
                 </p>
               </div>
             </div>
-          </div>
-          
-          <button
-            onClick={logout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-gray-400 hover:text-danger-red hover:bg-red-50 transition-colors"
-          >
-            <LogOut className="w-5 h-5" />
-            LOG OUT
+            <ChevronUp className={`w-4 h-4 text-gray-300 transition-transform ${isProfileOpen ? 'rotate-0' : 'rotate-180'}`} />
           </button>
         </div>
       </aside>
@@ -81,18 +108,53 @@ export default function AppLayout() {
         <h1 className="text-2xl font-black text-feather-green tracking-tight flex items-center gap-1">
           <span>Kilas</span>
         </h1>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
-            <span className="text-gold text-lg">🔥</span> {user?.login_streak || 0}
-          </span>
-          <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
-            <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
-          </span>
-          {user?.avatar_url ? (
-            <img src={user.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-gray-200" />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-feather-green text-white flex items-center justify-center font-bold border-2 border-feather-green-dark">
-              {user?.username?.[0]?.toUpperCase()}
+        <div className="relative">
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="flex items-center gap-2"
+          >
+            <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
+              <span className="text-gold text-lg">🔥</span> {user?.login_streak || 0}
+            </span>
+            <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
+              <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
+            </span>
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-feather-green text-white flex items-center justify-center font-bold border-2 border-feather-green-dark">
+                {user?.username?.[0]?.toUpperCase()}
+              </div>
+            )}
+          </button>
+
+          {/* Mobile Profile Menu */}
+          {isProfileOpen && (
+            <div className="absolute top-full right-0 mt-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-top-2 duration-200 z-50 w-48">
+              <Link 
+                to="/shop" 
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-orange-50 text-gray-600 hover:text-orange-500 transition-colors font-bold"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                Shop
+              </Link>
+              <Link 
+                to="/profile" 
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sky-50 text-gray-600 hover:text-sky-blue transition-colors font-bold"
+              >
+                <User className="w-5 h-5" />
+                Profile
+              </Link>
+              <div className="h-px bg-gray-100 my-1" />
+              <button
+                onClick={logout}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-danger-red transition-colors font-bold text-left"
+              >
+                <LogOut className="w-5 h-5" />
+                Log Out
+              </button>
             </div>
           )}
         </div>

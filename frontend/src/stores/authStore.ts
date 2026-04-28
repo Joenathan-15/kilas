@@ -10,6 +10,7 @@ interface AuthState {
   register: (email: string, username: string, password: string) => Promise<void>;
   logout: () => void;
   fetchMe: () => Promise<void>;
+  updateUser: (username: string, avatarURL: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -60,6 +61,15 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch (err) {
       set({ user: null, isAuthenticated: false, isLoading: false });
       // Interceptor will handle the redirect if it's a 401
+    }
+  },
+
+  updateUser: async (username, avatarURL) => {
+    try {
+      const res = await api.put('/auth/profile', { username, avatar_url: avatarURL });
+      set({ user: res.data });
+    } catch (err) {
+      throw err;
     }
   },
 }));

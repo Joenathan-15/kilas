@@ -228,3 +228,23 @@ func (s *AuthService) ClaimDailyReward(userID uint) (reward int, streak int, tot
 	
 	return reward, streak, updatedUser.Tokens, nil
 }
+
+func (s *AuthService) UpdateProfile(userID uint, username, avatarURL string) (*model.User, error) {
+	user, err := s.UserRepo.FindByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	if username != "" {
+		user.Username = username
+	}
+	if avatarURL != "" {
+		user.AvatarURL = avatarURL
+	}
+
+	if err := s.UserRepo.Update(user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
