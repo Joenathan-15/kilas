@@ -9,8 +9,10 @@ type User struct {
 	Password  string    `json:"-"`
 	Provider  string    `gorm:"default:'local'" json:"provider"`
 	AvatarURL string    `json:"avatar_url"`
-	Tokens            int       `gorm:"default:500" json:"tokens"`
+	Tokens            int        `gorm:"default:500" json:"tokens"`
+	LastLoginDate     *time.Time `json:"last_login_date"`
+	LoginStreak       int        `gorm:"default:0" json:"login_streak"`
 	SubscriptionUntil *time.Time `json:"subscription_until"`
-	CreatedAt         time.Time `json:"created_at"`
+	CreatedAt         time.Time  `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }

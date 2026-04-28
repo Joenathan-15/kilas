@@ -132,3 +132,27 @@ func (h *AuthHandler) GetTokens(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"tokens": user.Tokens})
 }
+
+func (h *AuthHandler) ClaimDailyReward(c *gin.Context) {
+	userID, exists := middleware.GetUserID(c)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	reward, streak, totalTokens, err := h.AuthService.ClaimDailyReward(userID)
+	if err != nil {
+		if err.Error() == "daily reward already claimed today" {
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to claim daily reward"})
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.DailyLoginResponse{
+		Reward:      reward,
+		Streak:      streak,
+		TotalTokens: totalTokens,
+	})
+}

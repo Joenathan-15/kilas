@@ -72,3 +72,12 @@ func (r *UserRepository) ExtendSubscription(userID uint, days int) error {
 
 	return r.DB.Model(&model.User{}).Where("id = ?", userID).Update("subscription_until", newExpiration).Error
 }
+
+// UpdateDailyLogin updates the user's login streak, last login date, and adds tokens.
+func (r *UserRepository) UpdateDailyLogin(userID uint, newStreak int, newDate time.Time, addedTokens int) error {
+	return r.DB.Model(&model.User{}).Where("id = ?", userID).Updates(map[string]interface{}{
+		"login_streak":    newStreak,
+		"last_login_date": newDate,
+		"tokens":          gorm.Expr("tokens + ?", addedTokens),
+	}).Error
+}

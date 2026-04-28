@@ -28,3 +28,9 @@ type AuthResponse struct {
 	AccessToken  string       `json:"access_token"`
 	RefreshToken string       `json:"refresh_token"`
 }
+
+type DailyLoginResponse struct {
+	Reward      int `json:"reward"`
+	Streak      int `json:"streak"`
+	TotalTokens int `json:"total_tokens"`
+}

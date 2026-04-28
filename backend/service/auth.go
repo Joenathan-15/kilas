@@ -173,3 +173,58 @@ func (s *AuthService) DeductTokens(userID uint, amount int) error {
 	}
 	return nil
 }
+
+// ClaimDailyReward grants tokens based on a user's daily login streak.
+func (s *AuthService) ClaimDailyReward(userID uint) (reward int, streak int, totalTokens int, err error) {
+	user, err := s.UserRepo.FindByID(userID)
+	if err != nil {
+		return 0, 0, 0, fmt.Errorf("failed to find user: %w", err)
+	}
+
+	now := time.Now()
+	var lastLogin time.Time
+	if user.LastLoginDate != nil {
+		lastLogin = *user.LastLoginDate
+	}
+
+	// Check if already claimed today
+	if user.LastLoginDate != nil {
+		y1, m1, d1 := lastLogin.Date()
+		y2, m2, d2 := now.Date()
+		if y1 == y2 && m1 == m2 && d1 == d2 {
+			return 0, 0, 0, errors.New("daily reward already claimed today")
+		}
+	}
+
+	streak = user.LoginStreak
+	// Check if logged in yesterday
+	yesterday := now.AddDate(0, 0, -1)
+	y1, m1, d1 := lastLogin.Date()
+	y2, m2, d2 := yesterday.Date()
+
+	if user.LastLoginDate != nil && y1 == y2 && m1 == m2 && d1 == d2 {
+		streak++
+	} else {
+		// Streak broken or first login
+		streak = 1
+	}
+
+	// Loop back to day 1 after day 7
+	if streak > 7 {
+		streak = 1
+	}
+
+	// Calculate reward mapping
+	rewards := []int{50, 100, 150, 200, 250, 350, 500}
+	reward = rewards[streak-1] // streak is 1-indexed (1 to 7)
+
+	// Save to DB
+	if err := s.UserRepo.UpdateDailyLogin(userID, streak, now, reward); err != nil {
+		return 0, 0, 0, fmt.Errorf("failed to update daily login: %w", err)
+	}
+
+	// Retrieve updated user to get accurate total tokens
+	updatedUser, _ := s.UserRepo.FindByID(userID)
+	
+	return reward, streak, updatedUser.Tokens, nil
+}

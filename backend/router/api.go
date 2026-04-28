@@ -34,6 +34,7 @@ func ApiRoutes(
 	auth.POST("/logout", authHandler.Logout)
 	auth.GET("/me", middleware.AuthMiddleware(), authHandler.Me)
 	auth.GET("/tokens", middleware.AuthMiddleware(), authHandler.GetTokens)
+	auth.POST("/daily-login", middleware.AuthMiddleware(), authHandler.ClaimDailyReward)
 
 	// Product routes (public list, protected purchase)
 	products := api.Group("/products")
