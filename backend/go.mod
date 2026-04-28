@@ -16,6 +16,8 @@ require (
 
 require github.com/midtrans/midtrans-go v1.3.8
 
+require golang.org/x/image v0.39.0 // indirect
+
 require (
 	cloud.google.com/go v0.115.0 // indirect
 	cloud.google.com/go/ai v0.8.0 // indirect

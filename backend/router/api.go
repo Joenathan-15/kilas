@@ -17,6 +17,7 @@ func ApiRoutes(
 	aiHandler *handler.AIHandler,
 	oauthHandler *handler.OAuthHandler,
 	productHandler *handler.ProductHandler,
+	uploadHandler *handler.UploadHandler,
 ) {
 	api := route.Group("/api")
 
@@ -80,6 +81,10 @@ func ApiRoutes(
 	// AI routes (protected)
 	ai := api.Group("/ai", middleware.AuthMiddleware())
 	ai.POST("/generate-cards", aiHandler.GenerateCards)
+
+	// Upload routes (protected)
+	uploads := api.Group("/upload", middleware.AuthMiddleware())
+	uploads.POST("/image", uploadHandler.UploadImage)
 
 	// Google OAuth routes
 	api.GET("/auth/google", oauthHandler.GoogleLogin)

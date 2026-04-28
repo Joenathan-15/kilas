@@ -54,11 +54,13 @@ func main() {
 	aiHandler := handler.NewAIHandler(aiService, deckService, cardService, authService, aiHistoryRepo)
 	oauthHandler := handler.NewOAuthHandler(userRepo, authService)
 	productHandler := handler.NewProductHandler(productService)
+	uploadHandler := handler.NewUploadHandler()
 
 	// Initialize Router
 	r := gin.Default()
+	r.Static("/public", "./public")
 	r.Use(middleware.CORSMiddleware())
-	router.ApiRoutes(r, authHandler, deckHandler, cardHandler, studyHandler, statsHandler, libraryHandler, aiHandler, oauthHandler, productHandler)
+	router.ApiRoutes(r, authHandler, deckHandler, cardHandler, studyHandler, statsHandler, libraryHandler, aiHandler, oauthHandler, productHandler, uploadHandler)
 
 	// Run the server
 	r.Run(appAddress + ":" + appPort)
