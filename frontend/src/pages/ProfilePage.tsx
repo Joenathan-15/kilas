@@ -77,17 +77,11 @@ export default function ProfilePage() {
             onClick={() => fileInputRef.current?.click()}
           >
             <div className="relative">
-              {avatarURL ? (
-                <img 
-                  src={getFullImageUrl(avatarURL)} 
-                  alt="Avatar Preview" 
-                  className={`w-32 h-32 rounded-full border-4 border-gray-100 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''}`} 
-                />
-              ) : (
-                <div className={`w-32 h-32 rounded-full bg-feather-green text-white flex items-center justify-center font-bold text-5xl border-4 border-feather-green-dark shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''}`}>
-                  {username?.[0]?.toUpperCase()}
-                </div>
-              )}
+              <img 
+                src={getFullImageUrl(avatarURL, username)} 
+                alt="Avatar Preview" 
+                className={`w-32 h-32 rounded-full border-4 border-gray-100 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''}`} 
+              />
               
               {/* Uploading Spinner */}
               {isUploading && (

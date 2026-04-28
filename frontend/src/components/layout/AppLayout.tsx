@@ -81,13 +81,11 @@ export default function AppLayout() {
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
           >
-            {user?.avatar_url ? (
-              <img src={getFullImageUrl(user.avatar_url)} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-feather-green text-white flex items-center justify-center font-bold text-lg border-2 border-feather-green-dark">
-                {user?.username?.[0]?.toUpperCase()}
-              </div>
-            )}
+            <img 
+              src={getFullImageUrl(user?.avatar_url, user?.username)} 
+              alt="Avatar" 
+              className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" 
+            />
             <div className="flex-1 min-w-0 text-left">
               <p className="font-bold text-gray-700 truncate">{user?.username}</p>
               <div className="flex items-center gap-2">
@@ -120,13 +118,11 @@ export default function AppLayout() {
             <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
               <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
             </span>
-            {user?.avatar_url ? (
-              <img src={getFullImageUrl(user.avatar_url)} alt="Avatar" className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-feather-green text-white flex items-center justify-center font-bold border-2 border-feather-green-dark">
-                {user?.username?.[0]?.toUpperCase()}
-              </div>
-            )}
+            <img 
+              src={getFullImageUrl(user?.avatar_url, user?.username)} 
+              alt="Avatar" 
+              className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" 
+            />
           </button>
 
           {/* Mobile Profile Menu */}

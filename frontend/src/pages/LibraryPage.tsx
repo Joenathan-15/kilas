@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../lib/api';
+import api, { getFullImageUrl } from '../lib/api';
 import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { LibraryDeck } from '../types';
@@ -86,21 +86,19 @@ export default function LibraryPage() {
         <div className="flex bg-gray-100 p-1 rounded-2xl w-full md:w-auto">
           <button
             onClick={() => { setSortBy('newest'); setPage(1); }}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-              sortBy === 'newest'
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${sortBy === 'newest'
                 ? 'bg-white text-sky-blue shadow-sm'
                 : 'text-gray-400 hover:text-gray-600'
-            }`}
+              }`}
           >
             Newest
           </button>
           <button
             onClick={() => { setSortBy('popular'); setPage(1); }}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-              sortBy === 'popular'
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${sortBy === 'popular'
                 ? 'bg-white text-sky-blue shadow-sm'
                 : 'text-gray-400 hover:text-gray-600'
-            }`}
+              }`}
           >
             Most Popular
           </button>
@@ -140,9 +138,11 @@ export default function LibraryPage() {
 
                 {/* Author */}
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-full bg-sky-blue text-white flex items-center justify-center text-[10px] font-black">
-                    {deck.author.username?.[0]?.toUpperCase()}
-                  </div>
+                  <img
+                    src={getFullImageUrl(undefined, deck.author.username)}
+                    alt={deck.author.username}
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
                   <span className="text-xs font-bold text-gray-400">{deck.author.username}</span>
                 </div>
 

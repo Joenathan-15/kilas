@@ -64,8 +64,14 @@ api.interceptors.response.use(
   }
 );
 
-export const getFullImageUrl = (path: string | undefined) => {
-  if (!path) return '';
+export const getFullImageUrl = (path: string | undefined, placeholderName?: string) => {
+  if (!path) {
+    if (placeholderName) {
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(placeholderName)}&background=random&color=fff&size=128&bold=true`;
+    }
+    return '';
+  }
+  
   if (path.startsWith('http')) return path;
   
   // Get API base URL and strip the trailing /api if it exists
