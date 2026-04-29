@@ -52,7 +52,6 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black text-feather-green tracking-tight flex items-center justify-center gap-2">
             <span>Kilas</span>
-            <span className="text-3xl">🪶</span>
           </h1>
           <p className="text-gray-500 font-medium mt-2">{t.auth.loginSubtitle}</p>
         </div>
