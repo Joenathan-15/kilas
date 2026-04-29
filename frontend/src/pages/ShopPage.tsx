@@ -118,7 +118,7 @@ export default function ShopPage() {
                 {products.filter(p => p.type === 'subscription').map((product) => (
                   <div
                     key={product.id}
-                    className="bg-gradient-to-br from-white to-purple-50/30 border-4 border-purple-100 rounded-[2.5rem] p-8 shadow-xl shadow-purple-100/20 hover:shadow-2xl hover:border-purple-300 transition-all group flex flex-col relative overflow-hidden"
+                    className="bg-linear-to-br from-white to-purple-50/30 border-4 border-purple-100 rounded-[2.5rem] p-8 shadow-xl shadow-purple-100/20 hover:shadow-2xl hover:border-purple-300 transition-all group flex flex-col relative overflow-hidden"
                   >
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                       <Sparkles className="w-24 h-24 text-purple-600" />

@@ -117,7 +117,7 @@ export default function DashboardPage() {
         {bestDeck ? (
           <Link 
             to={`/decks/${bestDeck.id}/study`}
-            className="card-duo p-5 flex items-center gap-4 group hover:-translate-y-0.5 transition-all bg-gradient-to-r from-feather-green/5 to-transparent border-feather-green/20"
+            className="card-duo p-5 flex items-center gap-4 group hover:-translate-y-0.5 transition-all bg-linear-to-r from-feather-green/5 to-transparent border-feather-green/20"
           >
             <div className="w-14 h-14 bg-feather-green rounded-2xl flex items-center justify-center text-white shrink-0 border-b-4 border-feather-green-dark group-hover:scale-105 transition-transform">
               <BookOpen className="w-7 h-7" />
@@ -254,7 +254,7 @@ export default function DashboardPage() {
         </section>
 
         {/* AI Suggestion */}
-        <section className="card-duo p-6 bg-gradient-to-br from-purple-50 to-white border-purple-100 flex flex-col justify-between">
+        <section className="card-duo p-6 bg-linear-to-br from-purple-50 to-white border-purple-100 flex flex-col justify-between">
           <div>
             <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-500 mb-4 border-b-4 border-purple-200">
               <Sparkles className="w-7 h-7 fill-current" />

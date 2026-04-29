@@ -27,7 +27,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
@@ -94,7 +94,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
                 </div>
                 {selectedFile ? (
                   <div>
-                    <p className="font-black text-purple-600 truncate max-w-[250px]">{selectedFile.name}</p>
+                    <p className="font-black text-purple-600 truncate max-w-62.5">{selectedFile.name}</p>
                     <p className="text-xs font-bold text-purple-400 uppercase mt-1">Ready to generate</p>
                   </div>
                 ) : (
@@ -108,7 +108,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
           )}
 
           <div>
-            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex justify-between">
+            <label className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex justify-between">
               <span>Target Card Count</span>
               <span className="text-purple-600">{count} cards</span>
             </label>

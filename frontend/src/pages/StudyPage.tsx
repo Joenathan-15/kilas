@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { getFullImageUrl } from '../lib/api';
-import { Loader2, ArrowLeft, CheckCircle2, Image as X, Sparkles } from 'lucide-react';
+import { Loader2, ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../hooks/useTranslation';
 import type { Card, Deck } from '../types';
@@ -240,7 +240,7 @@ export default function StudyPage() {
             />
           </div>
         </div>
-        <span className="text-sm font-black text-gray-400 min-w-[3rem] text-right">
+        <span className="text-sm font-black text-gray-400 min-w-12 text-right">
           {currentIndex + 1} / {cards.length}
         </span>
       </div>
@@ -254,7 +254,7 @@ export default function StudyPage() {
 
       {/* Card Viewer */}
       <div
-        className="relative perspective-1000 cursor-pointer h-[400px] group"
+        className="relative perspective-1000 cursor-pointer h-100 group"
         onClick={() => setIsFlipped(prev => !prev)}
       >
         <div className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>

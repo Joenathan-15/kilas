@@ -175,7 +175,7 @@ export default function DeckDetailsPage() {
     const taskId = `ai-gen-${Date.now()}`;
     addGeneration({
       id: taskId,
-      title: `Generating cards for ${deck.title}`,
+      title: `Generating cards for ${deck?.title}`,
       status: 'loading'
     });
 
@@ -332,7 +332,7 @@ export default function DeckDetailsPage() {
 
       {/* General Stats Grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
+        <div className="bg-white border-2 border-gray-100 rounded-4xl p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
           <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
             <Users className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.creator}
           </p>
@@ -340,19 +340,19 @@ export default function DeckDetailsPage() {
             {deck.author?.username || t.common.all.replace('All', 'You')}
           </p>
         </div>
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-purple-400 transition-colors duration-300">
+        <div className="bg-white border-2 border-gray-100 rounded-4xl p-5 md:p-8 text-center shadow-sm hover:border-purple-400 transition-colors duration-300">
           <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
             <Copy className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.copies}
           </p>
           <p className="text-3xl md:text-5xl font-black text-purple-400 leading-none">{deck.clone_count || 0}</p>
         </div>
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-orange-400 transition-colors duration-300">
+        <div className="bg-white border-2 border-gray-100 rounded-4xl p-5 md:p-8 text-center shadow-sm hover:border-orange-400 transition-colors duration-300">
           <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
             <Layers className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.cards}
           </p>
           <p className="text-3xl md:text-5xl font-black text-orange-400 leading-none">{deck.cards?.length || 0}</p>
         </div>
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
+        <div className="bg-white border-2 border-gray-100 rounded-4xl p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
           <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
             <Globe className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.visibility}
           </p>
@@ -393,7 +393,7 @@ export default function DeckDetailsPage() {
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{t.deckDetails.front}</p>
                     <div className="flex items-start gap-3">
                       {card.front_image_url && (
-                        <img src={getFullImageUrl(card.front_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
+                        <img src={getFullImageUrl(card.front_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 shrink-0" />
                       )}
                       <div className="font-bold text-gray-700">
                         <Latex text={card.front} />
@@ -412,7 +412,7 @@ export default function DeckDetailsPage() {
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{t.deckDetails.back}</p>
                     <div className="flex items-start gap-3">
                       {card.back_image_url && (
-                        <img src={getFullImageUrl(card.back_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
+                        <img src={getFullImageUrl(card.back_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 shrink-0" />
                       )}
                       <div className="font-bold text-feather-green">
                         <Latex text={card.back} />

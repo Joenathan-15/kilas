@@ -82,7 +82,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       <div className="bg-white w-full max-w-md rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
@@ -160,7 +160,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
             <div className="space-y-5 animate-in slide-in-from-right-4 duration-300">
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-4 border-dashed rounded-[2rem] p-8 text-center cursor-pointer transition-all ${selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
+                className={`border-4 border-dashed rounded-4xl p-8 text-center cursor-pointer transition-all ${selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
                   }`}
               >
                 <input
@@ -176,7 +176,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                   </div>
                   {selectedFile ? (
                     <div>
-                      <p className="font-black text-purple-600 truncate max-w-[200px]">{selectedFile.name}</p>
+                      <p className="font-black text-purple-600 truncate max-w-50">{selectedFile.name}</p>
                       <p className="text-xs font-bold text-purple-400 uppercase mt-1">Ready to generate</p>
                     </div>
                   ) : (
@@ -194,7 +194,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 flex justify-between">
+                <label className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2 flex justify-between">
                   <span>{t.decks.cardCount}</span>
                   <span className="text-purple-600">{formData.count} {t.decks.cardCount.toLowerCase()}</span>
                 </label>

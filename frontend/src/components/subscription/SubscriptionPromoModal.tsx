@@ -15,12 +15,12 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose} />
 
       <div className="bg-white w-full max-w-xl rounded-[3rem] border-b-8 border-gray-200 overflow-hidden z-10 animate-in zoom-in-95 duration-200 shadow-2xl">
         {/* Header with Gradient */}
-        <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-8 text-white relative overflow-hidden">
+        <div className="bg-linear-to-br from-purple-600 to-indigo-700 p-8 text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <Sparkles className="w-32 h-32" />
           </div>
@@ -48,7 +48,7 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
         <div className="p-10 space-y-8">
           <div className="flex flex-col gap-6">
             <div className="flex gap-5 items-center">
-              <div className="w-12 h-12 bg-purple-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-purple-600 border-2 border-purple-100">
+              <div className="w-12 h-12 bg-purple-50 rounded-2xl shrink-0 flex items-center justify-center text-purple-600 border-2 border-purple-100">
                 <Shield className="w-7 h-7" />
               </div>
               <div>
@@ -58,7 +58,7 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
             </div>
 
             <div className="flex gap-5 items-center">
-              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-600 border-2 border-blue-100">
+              <div className="w-12 h-12 bg-blue-50 rounded-2xl shrink-0 flex items-center justify-center text-blue-600 border-2 border-blue-100">
                 <Zap className="w-7 h-7" />
               </div>
               <div>
@@ -68,7 +68,7 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
             </div>
 
             <div className="flex gap-5 items-center">
-              <div className="w-12 h-12 bg-orange-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-orange-600 border-2 border-orange-100">
+              <div className="w-12 h-12 bg-orange-50 rounded-2xl shrink-0 flex items-center justify-center text-orange-600 border-2 border-orange-100">
                 <Rocket className="w-7 h-7" />
               </div>
               <div>
@@ -84,7 +84,7 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
                 navigate('/shop');
                 onClose();
               }}
-              className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-3xl border-b-8 border-indigo-900 hover:brightness-110 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3 text-xl shadow-xl shadow-purple-200"
+              className="w-full py-5 bg-linear-to-r from-purple-600 to-indigo-600 text-white font-black rounded-3xl border-b-8 border-indigo-900 hover:brightness-110 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3 text-xl shadow-xl shadow-purple-200"
             >
               {t.shop.upgradeNow}
             </button>
