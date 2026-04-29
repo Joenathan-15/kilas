@@ -42,7 +42,7 @@ export default function RegisterPage() {
         setValidationErrors(data.details);
         toast.error(t.auth.checkForm);
       } else {
-        toast.error(data?.error || 'Registration failed');
+        toast.error(data?.error || t.auth.registrationFailed);
       }
     }
   };

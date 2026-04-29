@@ -156,12 +156,12 @@ export default function StudyPage() {
       }
     } catch (err) {
       console.error('Failed to end session:', err);
-      toast.error('Session ended with sync error.');
+      toast.error(t.study.syncError);
     } finally {
       queryClient.invalidateQueries({ queryKey: ['stats-overview'] });
       queryClient.invalidateQueries({ queryKey: ['stats-activity'] });
       setIsFinished(true);
-      toast.success('Session completed! 🎯');
+      toast.success(t.study.sessionCompleted);
     }
   };
 

@@ -189,7 +189,7 @@ export default function DeckDetailsPage() {
       formData.append('count', data.count.toString());
       formData.append('deck_id', id!);
 
-      toast.success('AI generation started in background... 🧠');
+      toast.success(t.decks.aiStarted);
 
       await api.post('/ai/generate-cards', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -198,12 +198,12 @@ export default function DeckDetailsPage() {
       queryClient.invalidateQueries({ queryKey: ['deck', id] });
       queryClient.invalidateQueries({ queryKey: ['deck-stats', id] });
       fetchMe(); // Refresh tokens
-      toast.success('AI cards added! ✨');
+      toast.success(t.decks.aiCardsAdded);
     } catch (err: any) {
       if (err?.response?.status === 429) {
         setIsPromoModalOpen(true);
       } else {
-        toast.error(err?.response?.data?.error || 'AI generation failed');
+        toast.error(err?.response?.data?.error || t.decks.aiFailed);
       }
     } finally {
       removeGeneration(taskId);

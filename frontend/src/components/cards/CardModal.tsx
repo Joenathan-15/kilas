@@ -4,6 +4,7 @@ import api, { getFullImageUrl } from '../../lib/api';
 import toast from 'react-hot-toast';
 import type { Card } from '../../types';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface CardModalProps {
   isOpen: boolean;
@@ -25,7 +26,7 @@ export default function CardModal({ isOpen, onClose, onSubmit, initialData, titl
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadTarget, setUploadTarget] = useState<'front' | 'back' | null>(null);
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -64,7 +65,7 @@ export default function CardModal({ isOpen, onClose, onSubmit, initialData, titl
         ...prev,
         [uploadTarget === 'front' ? 'front_image_url' : 'back_image_url']: imageUrl,
       }));
-      toast.success('Image uploaded!');
+      toast.success(t.decks.imageUploaded);
     } catch (err) {
       toast.error('Failed to upload image');
     } finally {

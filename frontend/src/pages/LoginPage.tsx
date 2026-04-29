@@ -36,7 +36,7 @@ export default function LoginPage() {
         setValidationErrors(data.details);
         toast.error(t.auth.checkForm);
       } else {
-        toast.error(data?.error || 'Login failed');
+        toast.error(data?.error || t.auth.loginFailed);
       }
     }
   };

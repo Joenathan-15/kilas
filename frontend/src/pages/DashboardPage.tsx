@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../lib/api';
 import { useAuthStore } from '../stores/authStore';
-import { 
-  Flame, 
-  Coins, 
-  Calendar, 
-  BookOpen, 
-  Plus, 
+import {
+  Flame,
+  Coins,
+  Calendar,
+  BookOpen,
+  Plus,
   Sparkles,
   ArrowRight,
   Clock,
@@ -36,7 +36,7 @@ export default function DashboardPage() {
     setIsClaiming(true);
     try {
       const res = await api.post('/auth/daily-login');
-      toast.success(`Claimed ${res.data.reward} tokens! 🔥`, {
+      toast.success(t.common.claimedTokens.replace('{amount}', res.data.reward.toString()), {
         icon: '🪙',
         duration: 5000,
       });
@@ -44,8 +44,7 @@ export default function DashboardPage() {
       refetchStats();
     } catch (err: any) {
       console.error('Claim error:', err);
-      const message = err?.response?.data?.error || err?.response?.data?.message || 'Failed to claim reward';
-      toast.error(message);
+      toast.error(t.common.claimError);
     } finally {
       setIsClaiming(false);
     }
@@ -68,14 +67,14 @@ export default function DashboardPage() {
   });
 
   const bestDeck = decks?.data?.find(d => d.card_count > 0);
-  
+
   const isClaimedToday = user?.last_login_date ? (
     new Date(user.last_login_date).toDateString() === new Date().toDateString()
   ) : false;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500" onClick={() => setActiveDayIdx(null)}>
-      
+
       {/* Header: Streak & Goal */}
       <section className="card-duo p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4 z-10">
@@ -84,14 +83,13 @@ export default function DashboardPage() {
           </div>
           <div>
             <h2 className="text-2xl font-black text-gray-700">{user?.login_streak || 0} {t.dashboard.dayStreak}</h2>
-            <button 
+            <button
               onClick={handleClaimReward}
               disabled={isClaiming || isClaimedToday}
-              className={`mt-2 px-4 py-2 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all border-b-4 active:border-b-0 active:translate-y-1 ${
-                isClaimedToday 
-                  ? 'bg-green-50 text-feather-green border-green-200 cursor-default' 
-                  : 'bg-orange-500 text-white border-orange-700 hover:bg-orange-600 animate-pulse'
-              } disabled:opacity-70 disabled:translate-y-0 disabled:border-b-4`}
+              className={`mt-2 px-4 py-2 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all border-b-4 active:border-b-0 active:translate-y-1 ${isClaimedToday
+                ? 'bg-green-50 text-feather-green border-green-200 cursor-default'
+                : 'bg-orange-500 text-white border-orange-700 hover:bg-orange-600 animate-pulse'
+                } disabled:opacity-70 disabled:translate-y-0 disabled:border-b-4`}
             >
               {isClaiming ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -115,7 +113,7 @@ export default function DashboardPage() {
       {/* Primary CTA */}
       <section>
         {bestDeck ? (
-          <Link 
+          <Link
             to={`/decks/${bestDeck.id}/study`}
             className="card-duo p-5 flex items-center gap-4 group hover:-translate-y-0.5 transition-all bg-linear-to-r from-feather-green/5 to-transparent border-feather-green/20"
           >
@@ -129,7 +127,7 @@ export default function DashboardPage() {
             <ArrowRight className="w-6 h-6 text-feather-green shrink-0 group-hover:translate-x-1 transition-transform" />
           </Link>
         ) : (
-          <Link 
+          <Link
             to="/decks"
             className="card-duo p-5 flex items-center gap-4 group hover:-translate-y-0.5 transition-all"
           >
@@ -147,38 +145,38 @@ export default function DashboardPage() {
 
       {/* Stats Grid */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard 
-          icon={<Clock className="text-sky-blue" />} 
-          label={t.dashboard.dueToday} 
-          value={stats?.cards_due_today || 0} 
+        <StatCard
+          icon={<Clock className="text-sky-blue" />}
+          label={t.dashboard.dueToday}
+          value={stats?.cards_due_today || 0}
           color="bg-sky-50"
           borderColor="border-sky-100"
         />
-        <StatCard 
-          icon={<CheckCircle2 className="text-feather-green" />} 
-          label={t.dashboard.mastered} 
-          value={stats?.cards_mastered || 0} 
+        <StatCard
+          icon={<CheckCircle2 className="text-feather-green" />}
+          label={t.dashboard.mastered}
+          value={stats?.cards_mastered || 0}
           color="bg-green-50"
           borderColor="border-green-100"
         />
-        <StatCard 
-          icon={<BookOpen className="text-purple-500" />} 
-          label={t.dashboard.totalCards} 
-          value={stats?.total_cards || 0} 
+        <StatCard
+          icon={<BookOpen className="text-purple-500" />}
+          label={t.dashboard.totalCards}
+          value={stats?.total_cards || 0}
           color="bg-purple-50"
           borderColor="border-purple-100"
         />
-        <StatCard 
-          icon={<Coins className="text-gold" />} 
-          label={t.dashboard.tokensLeft} 
-          value={user?.tokens || 0} 
+        <StatCard
+          icon={<Coins className="text-gold" />}
+          label={t.dashboard.tokensLeft}
+          value={user?.tokens || 0}
           color="bg-yellow-50"
           borderColor="border-yellow-100"
         />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
+
         {/* Activity Heatmap */}
         <section className="lg:col-span-2 card-duo p-6">
           <div className="flex items-center justify-between mb-6">
@@ -188,7 +186,7 @@ export default function DashboardPage() {
             </h3>
             <span className="text-sm font-bold text-gray-400">{t.dashboard.last30Days}</span>
           </div>
-          
+
           <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
             {activityData ? (
               activityData.map((day, i) => {
@@ -207,7 +205,7 @@ export default function DashboardPage() {
                 const isActive = activeDayIdx === i;
 
                 return (
-                  <div 
+                  <div
                     key={i}
                     className="relative"
                     onClick={(e) => {
@@ -229,8 +227,8 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     )}
-                    
-                    <div 
+
+                    <div
                       className={`w-7 h-7 md:w-9 md:h-9 rounded-lg border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]} ${isActive ? 'ring-4 ring-sky-blue/20 scale-110 border-sky-blue' : ''}`}
                     />
                   </div>
