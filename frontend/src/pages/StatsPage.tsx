@@ -6,7 +6,6 @@ import {
   Clock,
   BookOpen,
   Flame,
-  ArrowLeft,
   Trophy,
   Activity,
   History
