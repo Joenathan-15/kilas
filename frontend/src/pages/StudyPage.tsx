@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { getFullImageUrl } from '../lib/api';
 import { Loader2, ArrowLeft, CheckCircle2, Image as X, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../hooks/useTranslation';
 import type { Card, Deck } from '../types';
 
 import { Latex } from '../components/common/Latex';
@@ -17,6 +18,7 @@ export default function StudyPage() {
   const { id: deckId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const isSandbox = searchParams.get('mode') === 'sandbox';
 
@@ -145,7 +147,7 @@ export default function StudyPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <Loader2 className="w-12 h-12 text-sky-blue animate-spin mb-4" />
-        <p className="font-black text-gray-400 uppercase tracking-widest">Preparing your session...</p>
+        <p className="font-black text-gray-400 uppercase tracking-widest">{t.study.preparing}</p>
       </div>
     );
   }
@@ -156,15 +158,15 @@ export default function StudyPage() {
         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-500 mb-6">
           <CheckCircle2 className="w-12 h-12" />
         </div>
-        <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight">All caught up!</h2>
+        <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight">{t.study.allCaughtUp}</h2>
         <p className="text-gray-400 font-bold mt-2 text-center max-w-xs">
-          No cards due for review right now. Great job!
+          {t.study.noCardsDue}
         </p>
         <button
           onClick={() => navigate('/decks')}
           className="mt-8 px-8 py-4 bg-sky-blue border-b-4 border-sky-700 text-white font-black rounded-2xl hover:bg-sky-500 active:border-b-0 active:translate-y-1 transition-all flex items-center gap-2"
         >
-          <ArrowLeft className="w-5 h-5" /> BACK TO DECKS
+          <ArrowLeft className="w-5 h-5" /> {t.study.backToDecks.toUpperCase()}
         </button>
       </div>
     );
@@ -178,19 +180,19 @@ export default function StudyPage() {
             <CheckCircle2 className="w-14 h-14" />
           </div>
           <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight mb-2">
-            {isSandbox ? 'PRACTICE COMPLETE!' : 'WELL DONE!'}
+            {isSandbox ? t.study.practiceComplete : t.study.wellDone}
           </h2>
           <p className="text-gray-400 font-bold mb-8">
-            {isSandbox ? "You've finished this practice session." : "You've finished your study session."}
+            {isSandbox ? t.study.practiceFinished : t.study.studyFinished}
           </p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Studied</p>
-              <p className="text-2xl font-black text-gray-700">{studiedCount} Cards</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{t.study.cardsStudied}</p>
+              <p className="text-2xl font-black text-gray-700">{studiedCount} {t.decks.cardCount}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Time</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{t.study.duration}</p>
               <p className="text-2xl font-black text-gray-700">
                 {Math.floor((Date.now() - startTime) / 60000)}m {Math.round(((Date.now() - startTime) % 60000) / 1000)}s
               </p>
@@ -201,7 +203,7 @@ export default function StudyPage() {
             onClick={() => navigate('/decks')}
             className="w-full py-4 bg-sky-blue border-b-4 border-sky-700 text-white font-black rounded-2xl hover:bg-sky-500 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
           >
-            GO TO DASHBOARD
+            {t.study.goToDashboard}
           </button>
         </div>
       </div>
@@ -216,19 +218,19 @@ export default function StudyPage() {
       <div className="flex items-center justify-between mb-2">
         <button
           onClick={() => {
-            if (window.confirm('Quit session? Progress so far will be saved.')) {
+            if (window.confirm(t.study.quitConfirm)) {
               handleFinish();
             }
           }}
           className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-xl text-gray-400 transition-colors font-black text-xs uppercase tracking-widest"
         >
           <ArrowLeft className="w-4 h-4" />
-          EXIT
+          {t.study.exit}
         </button>
         <div className="flex-1 mx-8 flex flex-col items-center gap-1">
           {isSandbox && (
             <div className="flex items-center gap-1 text-[10px] font-black text-sky-500 uppercase tracking-widest bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">
-              Restudy Mode (No Stats)
+              {t.study.sandboxMode}
             </div>
           )}
           <div className="h-4 bg-gray-100 rounded-full overflow-hidden border-2 border-gray-200 w-full">
@@ -246,7 +248,7 @@ export default function StudyPage() {
       {deck?.is_ai_generated && (
         <div className="flex items-center justify-center gap-2 text-purple-400">
           <Sparkles className="w-3 h-3 fill-current" />
-          <p className="text-[10px] font-black uppercase tracking-widest">AI Generated Content — Review for accuracy</p>
+          <p className="text-[10px] font-black uppercase tracking-widest">{t.study.aiAccuracyAlert}</p>
         </div>
       )}
 
@@ -270,12 +272,12 @@ export default function StudyPage() {
               <Latex text={currentCard?.front || ''} />
             </div>
             <div className="mt-8 text-xs font-black text-gray-300 uppercase tracking-[0.2em] group-hover:text-sky-blue transition-colors">
-              Click or Space to reveal
+              {t.study.clickToReveal}
             </div>
             {currentCard?.is_ai_created && (
               <div className="mt-auto pt-4 flex items-center gap-1.5 text-[9px] font-black text-purple-400 uppercase tracking-widest border-t border-purple-50 w-full justify-center">
                 <Sparkles className="w-2.5 h-2.5 fill-current" />
-                This Card was AI Generated
+                {t.study.aiCardAlert}
               </div>
             )}
           </div>
@@ -295,7 +297,7 @@ export default function StudyPage() {
             {currentCard?.is_ai_created && (
               <div className="mt-auto pt-4 flex items-center gap-1.5 text-[9px] font-black text-purple-400 uppercase tracking-widest border-t border-purple-50 w-full justify-center">
                 <Sparkles className="w-2.5 h-2.5 fill-current" />
-                This Card was AI Generated
+                {t.study.aiCardAlert}
               </div>
             )}
           </div>
@@ -310,15 +312,15 @@ export default function StudyPage() {
             onClick={() => setIsFlipped(true)}
             className="w-full max-w-sm py-5 bg-gray-700 border-b-4 border-gray-900 text-white font-black rounded-2xl hover:bg-gray-800 active:border-b-0 active:translate-y-1 transition-all uppercase tracking-widest text-lg"
           >
-            Show Answer
+            {t.study.showAnswer}
           </button>
         ) : (
           <div className="grid grid-cols-4 gap-3 w-full">
             {[
-              { label: 'Easy', color: 'bg-green-500', border: 'border-green-700', text: 'text-white', val: 3, key: '1' },
-              { label: 'Good', color: 'bg-sky-blue', border: 'border-sky-700', text: 'text-white', val: 2, key: '2' },
-              { label: 'Hard', color: 'bg-orange-500', border: 'border-orange-700', text: 'text-white', val: 1, key: '3' },
-              { label: 'Again', color: 'bg-red-500', border: 'border-red-700', text: 'text-white', val: 0, key: '4' },
+              { label: t.study.easy, color: 'bg-green-500', border: 'border-green-700', text: 'text-white', val: 3, key: '1' },
+              { label: t.study.good, color: 'bg-sky-blue', border: 'border-sky-700', text: 'text-white', val: 2, key: '2' },
+              { label: t.study.hard, color: 'bg-orange-500', border: 'border-orange-700', text: 'text-white', val: 1, key: '3' },
+              { label: t.study.again, color: 'bg-red-500', border: 'border-red-700', text: 'text-white', val: 0, key: '4' },
             ].map((btn) => (
               <button
                 key={btn.val}
@@ -326,7 +328,7 @@ export default function StudyPage() {
                 className={`${btn.color} ${btn.border} ${btn.text} py-4 font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all flex flex-col items-center justify-center group`}
               >
                 <span className="text-sm uppercase tracking-tight">{btn.label}</span>
-                <span className="text-[10px] opacity-50 mt-1">Press {btn.key}</span>
+                <span className="text-[10px] opacity-50 mt-1">{t.study.press} {btn.key}</span>
               </button>
             ))}
           </div>
@@ -335,8 +337,8 @@ export default function StudyPage() {
 
       {/* Tips */}
       <div className="flex items-center justify-center gap-6 text-xs font-black text-gray-400 uppercase tracking-widest opacity-50">
-        <span className="flex items-center gap-2"><div className="px-1.5 py-0.5 bg-gray-200 rounded border-b border-gray-400 text-gray-600">Space</div> Flip</span>
-        <span className="flex items-center gap-2"><div className="px-1.5 py-0.5 bg-gray-200 rounded border-b border-gray-400 text-gray-600">1-4</div> Rate</span>
+        <span className="flex items-center gap-2"><div className="px-1.5 py-0.5 bg-gray-200 rounded border-b border-gray-400 text-gray-600">Space</div> {t.study.flip}</span>
+        <span className="flex items-center gap-2"><div className="px-1.5 py-0.5 bg-gray-200 rounded border-b border-gray-400 text-gray-600">1-4</div> {t.study.rate}</span>
       </div>
     </div>
   );

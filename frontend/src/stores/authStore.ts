@@ -10,7 +10,7 @@ interface AuthState {
   register: (email: string, username: string, password: string) => Promise<void>;
   logout: () => void;
   fetchMe: () => Promise<void>;
-  updateUser: (username: string, avatarURL: string) => Promise<void>;
+  updateUser: (username: string, avatarURL: string, language?: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -64,9 +64,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  updateUser: async (username, avatarURL) => {
+  updateUser: async (username, avatarURL, language) => {
     try {
-      const res = await api.put('/auth/profile', { username, avatar_url: avatarURL });
+      const res = await api.put('/auth/profile', { 
+        username, 
+        avatar_url: avatarURL,
+        language
+      });
       set({ user: res.data });
     } catch (err) {
       throw err;

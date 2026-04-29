@@ -4,6 +4,7 @@ import api, { getFullImageUrl } from '../lib/api';
 import { Link } from 'react-router-dom';
 import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../hooks/useTranslation';
 import type { LibraryDeck } from '../types';
 
 interface BrowseResult {
@@ -15,6 +16,7 @@ interface BrowseResult {
 
 export default function LibraryPage() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const [searchInput, setSearchInput] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'popular'>('newest');
@@ -48,7 +50,7 @@ export default function LibraryPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'] });
       queryClient.invalidateQueries({ queryKey: ['library'] });
-      toast.success('Deck copied to your collection! 📚');
+      toast.success(t.library.copySuccess);
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.error || 'Failed to copy deck');
@@ -56,7 +58,7 @@ export default function LibraryPage() {
   });
 
   const handleClone = (deck: LibraryDeck) => {
-    if (window.confirm(`Copy "${deck.title}" to your decks? All cards will be included.`)) {
+    if (window.confirm(t.library.copyConfirm.replace('{title}', deck.title))) {
       cloneMutation.mutate(deck.id);
     }
   };
@@ -66,8 +68,8 @@ export default function LibraryPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-3xl font-black text-gray-700 tracking-tight">PUBLIC LIBRARY</h1>
-        <p className="text-gray-400 font-bold">Discover and copy decks from other learners</p>
+        <h1 className="text-3xl font-black text-gray-700 tracking-tight">{t.library.title}</h1>
+        <p className="text-gray-400 font-bold">{t.library.subtitle}</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
@@ -80,7 +82,7 @@ export default function LibraryPage() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full pl-11 pr-4 py-4 bg-surface border-2 border-gray-200 rounded-3xl focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 placeholder-gray-400 outline-none shadow-sm"
-            placeholder="Search public decks..."
+            placeholder={t.library.searchPlaceholder}
           />
         </div>
 
@@ -88,20 +90,20 @@ export default function LibraryPage() {
           <button
             onClick={() => { setSortBy('newest'); setPage(1); }}
             className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${sortBy === 'newest'
-                ? 'bg-white text-sky-blue shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
+              ? 'bg-white text-sky-blue shadow-sm'
+              : 'text-gray-400 hover:text-gray-600'
               }`}
           >
-            Newest
+            {t.library.newest}
           </button>
           <button
             onClick={() => { setSortBy('popular'); setPage(1); }}
             className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${sortBy === 'popular'
-                ? 'bg-white text-sky-blue shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
+              ? 'bg-white text-sky-blue shadow-sm'
+              : 'text-gray-400 hover:text-gray-600'
               }`}
           >
-            Most Popular
+            {t.library.popular}
           </button>
         </div>
       </div>
@@ -109,7 +111,7 @@ export default function LibraryPage() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-12 h-12 text-sky-blue animate-spin mb-4" />
-          <p className="font-black text-gray-400 uppercase tracking-widest">Browsing Library...</p>
+          <p className="font-black text-gray-400 uppercase tracking-widest">{t.library.browsing}</p>
         </div>
       ) : result && result.data.length > 0 ? (
         <>
@@ -126,10 +128,10 @@ export default function LibraryPage() {
                       <Layers className="w-3 h-3" /> {deck.card_count}
                     </span>
                     <span className="flex items-center gap-1 bg-purple-50 text-purple-500 px-2 py-1 rounded-lg">
-                      <Copy className="w-3 h-3" /> {deck.clone_count} copies
+                      <Copy className="w-3 h-3" /> {deck.clone_count} {t.library.copies}
                     </span>
                     {deck.tags?.some(t => t.toLowerCase().includes('ai')) && (
-                       <span className="flex items-center gap-1 bg-purple-100 text-purple-600 px-2 py-1 rounded-lg">
+                      <span className="flex items-center gap-1 bg-purple-100 text-purple-600 px-2 py-1 rounded-lg">
                         <Sparkles className="w-3 h-3 fill-current" /> AI
                       </span>
                     )}
@@ -140,7 +142,7 @@ export default function LibraryPage() {
                     {deck.title}
                   </h3>
                   <p className="text-sm font-bold text-gray-400 line-clamp-2 mb-3">
-                    {deck.description || 'No description'}
+                    {deck.description || t.library.noDescription}
                   </p>
 
                   {/* Author */}
@@ -179,7 +181,7 @@ export default function LibraryPage() {
                   className="mt-auto w-full py-3 text-sm font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all bg-sky-blue border-sky-700 text-white hover:bg-sky-500 flex items-center justify-center gap-2"
                 >
                   <Copy className="w-4 h-4" />
-                  COPY TO MY DECKS
+                  {t.library.copyToDecks}
                 </button>
               </div>
             ))}
@@ -196,7 +198,7 @@ export default function LibraryPage() {
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <span className="text-sm font-black text-gray-400 uppercase tracking-widest">
-                Page {page} of {totalPages}
+                {t.library.pageOf.replace('{page}', page.toString()).replace('{total}', totalPages.toString())}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
@@ -211,8 +213,8 @@ export default function LibraryPage() {
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-4 border-dashed border-gray-200">
           <BookOpen className="w-20 h-20 text-gray-200 mb-6" />
-          <h2 className="text-2xl font-black text-gray-400 uppercase">No public decks found</h2>
-          <p className="text-gray-400 font-bold mt-2">Try a different search or check back later!</p>
+          <h2 className="text-2xl font-black text-gray-400 uppercase">{t.library.noLibraryFound}</h2>
+          <p className="text-gray-400 font-bold mt-2">{t.library.trySearch}</p>
         </div>
       )}
     </div>

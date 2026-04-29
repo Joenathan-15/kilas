@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface OverviewStats {
   total_decks: number;
@@ -39,6 +40,7 @@ interface SessionSummary {
 
 export default function StatsPage() {
   const [activeDayIdx, setActiveDayIdx] = useState<number | null>(null);
+  const { t, lang } = useTranslation();
 
   const { data: overview, isLoading: overviewLoading } = useQuery<OverviewStats>({
     queryKey: ['stats-overview'],
@@ -82,7 +84,7 @@ export default function StatsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-64">
         <Activity className="w-12 h-12 text-sky-blue animate-pulse mb-4" />
-        <p className="font-black text-gray-400 uppercase tracking-widest">Calculating metrics...</p>
+        <p className="font-black text-gray-400 uppercase tracking-widest">{t.stats.calculating}</p>
       </div>
     );
   }
@@ -101,9 +103,9 @@ export default function StatsPage() {
         <div>
           <h1 className="text-3xl font-black text-gray-700 flex items-center gap-3">
             <BarChart2 className="w-8 h-8 text-sky-blue" />
-            Performance
+            {t.stats.title}
           </h1>
-          <p className="text-gray-400 font-bold mt-1">Visualize your learning journey and mastery.</p>
+          <p className="text-gray-400 font-bold mt-1">{t.stats.subtitle}</p>
         </div>
       </div>
 
@@ -117,7 +119,7 @@ export default function StatsPage() {
               <Clock className="w-7 h-7" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Study Time</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{t.stats.totalStudyTime}</p>
               <p className="text-3xl font-black text-gray-700">{formatTotalTime(overview?.total_study_time || 0)}</p>
             </div>
           </div>
@@ -133,7 +135,7 @@ export default function StatsPage() {
               <Trophy className="w-7 h-7" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Cards Mastered</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{t.stats.cardsMastered}</p>
               <p className="text-3xl font-black text-gray-700">{overview?.cards_mastered || 0}</p>
             </div>
           </div>
@@ -152,7 +154,7 @@ export default function StatsPage() {
               <Flame className="w-7 h-7" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Sessions</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{t.stats.totalSessions}</p>
               <p className="text-3xl font-black text-gray-700">{overview?.total_sessions || 0}</p>
             </div>
           </div>
@@ -171,10 +173,10 @@ export default function StatsPage() {
             <div className="flex items-center justify-between mb-8">
               <h3 className="text-xl font-black text-gray-700 flex items-center gap-2">
                 <Calendar className="w-6 h-6 text-feather-green" />
-                Learning Activity
+                {t.stats.learningActivity}
               </h3>
               <div className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest">
-                <span>Last 30 Days</span>
+                <span>{t.stats.last30Days}</span>
               </div>
             </div>
 
@@ -208,10 +210,10 @@ export default function StatsPage() {
                       <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 z-50 animate-in zoom-in-95 duration-200">
                         <div className="bg-gray-800 text-white p-3 rounded-2xl shadow-xl border-2 border-gray-700 w-32 text-center pointer-events-none">
                           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                            {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)}
+                            {new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)}
                           </p>
                           <p className="text-sm font-black whitespace-nowrap">
-                            {day.count} reviews
+                            {day.count} {t.stats.reviews}
                           </p>
                           {/* Arrow */}
                           <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-gray-800" />
@@ -223,7 +225,7 @@ export default function StatsPage() {
                       className={`w-full aspect-square max-w-[40px] rounded-xl border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]} ${isActive ? 'ring-4 ring-sky-blue/20 scale-110 border-sky-blue' : ''}`}
                     />
                     <span className={`text-[10px] font-black uppercase whitespace-nowrap w-full text-center h-5 leading-tight transition-colors ${isActive ? 'text-sky-blue' : 'text-gray-300'}`}>
-                      {i % 5 === 0 ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(dateObj) : ''}
+                      {i % 5 === 0 ? new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric' }).format(dateObj) : ''}
                     </span>
                   </div>
                 );
@@ -233,22 +235,22 @@ export default function StatsPage() {
             <div className="mt-10 pt-6 border-t-2 border-gray-50 flex items-center justify-between">
               <div className="flex items-center gap-6">
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Cards</p>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t.stats.totalCards}</p>
                   <p className="text-xl font-black text-gray-700">{overview?.total_cards || 0}</p>
                 </div>
                 <div className="w-px h-8 bg-gray-100" />
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Due Cards</p>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{t.stats.dueCards}</p>
                   <p className="text-xl font-black text-orange-500">{overview?.cards_due_today || 0}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                <span>Less</span>
+                <span>{t.stats.less}</span>
                 <div className="w-3 h-3 bg-gray-100 rounded-sm border border-gray-200" />
                 <div className="w-3 h-3 bg-green-100 rounded-sm border border-green-200" />
                 <div className="w-3 h-3 bg-green-300 rounded-sm border border-green-400" />
                 <div className="w-3 h-3 bg-feather-green rounded-sm border border-feather-green-dark" />
-                <span>More</span>
+                <span>{t.stats.more}</span>
               </div>
             </div>
           </div>
@@ -259,21 +261,21 @@ export default function StatsPage() {
           <div className="card-duo p-6 h-full flex flex-col">
             <h3 className="text-xl font-black text-gray-700 flex items-center gap-2 mb-6">
               <History className="w-6 h-6 text-sky-blue" />
-              Recent History
+              {t.stats.recentHistory}
             </h3>
 
             <div className="space-y-4 flex-1 overflow-auto max-h-[500px] pr-2 custom-scrollbar">
-              {sessions?.length === 0 ? (
+              {(!sessions || sessions.length === 0) ? (
                 <div className="text-center py-10 opacity-50">
-                  <p className="font-bold text-gray-400">No sessions yet.</p>
+                  <p className="font-bold text-gray-400">{t.stats.noSessions}</p>
                 </div>
               ) : (
-                sessions?.map((session) => (
-                  <div key={session.id} className="p-4 bg-gray-50 rounded-2xl border-2 border-gray-100 hover:border-sky-100 transition-colors group">
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="font-black text-gray-700 truncate max-w-[140px]">{session.deck_title}</p>
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider bg-white px-2 py-1 rounded-full border border-gray-100">
-                        {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(new Date(session.started_at))}
+                sessions.map((session) => (
+                  <div key={session.id} className="p-4 bg-gray-50 rounded-2xl border-2 border-gray-100 hover:border-sky-100 transition-colors group flex flex-col gap-3">
+                    <div className="flex justify-between items-center gap-2">
+                      <p className="font-black text-gray-700 truncate flex-1">{session.deck_title}</p>
+                      <span className="shrink-0 text-[10px] font-black text-gray-400 uppercase tracking-wider bg-white px-2.5 py-1.5 rounded-xl border border-gray-100 shadow-sm">
+                        {new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric' }).format(new Date(session.started_at))}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -289,9 +291,9 @@ export default function StatsPage() {
                       </div>
                       <Link
                         to={`/decks/${session.deck_id}/study?mode=sandbox`}
-                        className="text-xs font-black text-sky-blue uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-[10px] font-black text-sky-blue uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white px-3 py-1.5 rounded-lg border border-sky-100 shadow-sm hover:bg-sky-50"
                       >
-                        Re-study
+                        {t.stats.reStudy}
                       </Link>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Loader2, Sparkles, FileText, Plus } from 'lucide-react';
 import type { Deck } from '../../types';
 import { useAuthStore } from '../../stores/authStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface DeckModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface DeckModalProps {
 
 export default function DeckModal({ isOpen, onClose, onSubmit, initialData, title }: DeckModalProps) {
   const { user } = useAuthStore();
+  const { t } = useTranslation();
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
   const [activeTab, setActiveTab] = useState<'manual' | 'ai'>('manual');
   const [formData, setFormData] = useState({
@@ -99,14 +101,14 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
               className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'manual' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
                 }`}
             >
-              <Plus className="w-4 h-4" /> MANUAL
+              <Plus className="w-4 h-4" /> {t.decks.manualTab}
             </button>
             <button
               onClick={() => setActiveTab('ai')}
               className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'ai' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
                 }`}
             >
-              <Sparkles className="w-4 h-4 fill-current" /> AI PDF
+              <Sparkles className="w-4 h-4 fill-current" /> {t.decks.aiTab}
             </button>
           </div>
         )}
@@ -116,7 +118,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
             <>
               <div>
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
-                  Deck Title <span className="text-red-500 ml-1">*</span>
+                  {t.decks.deckTitle} <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
                   type="text"
@@ -124,33 +126,33 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none"
-                  placeholder="e.g. History Final Exam"
+                  placeholder={t.decks.titlePlaceholder}
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
-                  Description
+                  {t.decks.description}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none"
                   rows={3}
-                  placeholder="What's this deck about?"
+                  placeholder={t.decks.descriptionPlaceholder}
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
-                  Tags (comma separated)
+                  {t.decks.tagsHint}
                 </label>
                 <input
                   type="text"
                   value={formData.tags}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                   className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none"
-                  placeholder="e.g. biology, exam, chapter1"
+                  placeholder={t.decks.tagPlaceholder}
                 />
               </div>
             </>
@@ -179,11 +181,11 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                     </div>
                   ) : (
                     <div>
-                      <p className="font-black text-gray-500">Upload PDF Study Material</p>
+                      <p className="font-black text-gray-500">{t.decks.uploadPdf}</p>
                       <div className="flex flex-col gap-0.5 mt-1">
-                        <p className="text-xs font-bold text-gray-400 uppercase">Maximum 50 pages</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase">{t.decks.maxPages}</p>
                         {!isSubscribed && (
-                          <p className="text-[10px] font-black text-purple-400 uppercase">Free users: 3 AI uploads max</p>
+                          <p className="text-[10px] font-black text-purple-400 uppercase">{t.decks.freeUserLimit}</p>
                         )}
                       </div>
                     </div>
@@ -193,8 +195,8 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
 
               <div>
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 flex justify-between">
-                  <span>Number of Cards</span>
-                  <span className="text-purple-600">{formData.count} cards</span>
+                  <span>{t.decks.cardCount}</span>
+                  <span className="text-purple-600">{formData.count} {t.decks.cardCount.toLowerCase()}</span>
                 </label>
                 <input
                   type="range"
@@ -206,10 +208,10 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                   className="w-full accent-purple-600"
                 />
                 <div className="flex justify-between text-[10px] font-black text-gray-300 mt-1 uppercase tracking-tighter">
-                  <span>5 cards</span>
-                  <span>10 cards</span>
-                  <span>15 cards</span>
-                  <span>20 cards</span>
+                  <span>5 {t.decks.cardCount.toLowerCase()}</span>
+                  <span>10 {t.decks.cardCount.toLowerCase()}</span>
+                  <span>15 {t.decks.cardCount.toLowerCase()}</span>
+                  <span>20 {t.decks.cardCount.toLowerCase()}</span>
                 </div>
               </div>
             </div>
@@ -227,15 +229,15 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
               <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${formData.is_public ? 'translate-x-6' : 'translate-x-0'
                 }`} />
             </button>
-            <span className="font-bold text-sm text-gray-500">Public Deck</span>
+            <span className="font-bold text-sm text-gray-500">{t.decks.publicDeck}</span>
           </div>
 
           <button
             type="submit"
             disabled={isLoading || (activeTab === 'ai' && !selectedFile)}
             className={`w-full py-5 text-lg mt-4 flex items-center justify-center gap-3 font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all ${activeTab === 'ai'
-                ? 'bg-purple-600 border-purple-800 text-white hover:bg-purple-500'
-                : 'btn-primary'
+              ? 'bg-purple-600 border-purple-800 text-white hover:bg-purple-500'
+              : 'btn-primary'
               }`}
           >
             {isLoading ? (
@@ -243,10 +245,10 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
             ) : activeTab === 'ai' ? (
               <>
                 <Sparkles className="w-6 h-6 fill-current" />
-                GENERATE DECK
+                {t.decks.generateDeck}
               </>
             ) : (
-              'CREATE DECK'
+              initialData ? t.decks.saveChanges : t.decks.createDeck
             )}
           </button>
         </form>

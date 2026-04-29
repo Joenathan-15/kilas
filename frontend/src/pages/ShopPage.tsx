@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface Product {
   id: number;
@@ -23,6 +24,7 @@ interface Transaction {
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { t, lang } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'shop' | 'history'>('shop');
   const [isPurchasing, setIsPurchasing] = useState<number | null>(null);
@@ -56,7 +58,7 @@ export default function ShopPage() {
         window.open(res.data.payment_url, '_blank');
       }
     } catch (err) {
-      alert('Failed to initiate purchase. Please try again.');
+      alert(t.shop.purchaseFailed);
     } finally {
       setIsPurchasing(null);
     }
@@ -69,10 +71,10 @@ export default function ShopPage() {
         <div>
           <h1 className="text-4xl font-black text-gray-800 tracking-tight flex items-center gap-3">
             <ShoppingBag className="w-10 h-10 text-orange-500" />
-            Kilas Shop
+            {t.shop.title}
           </h1>
           <p className="text-gray-400 font-bold mt-1 uppercase tracking-widest text-xs">
-            Refill your tokens and unlock premium features
+            {t.shop.shopSubtitle}
           </p>
         </div>
 
@@ -83,7 +85,7 @@ export default function ShopPage() {
               }`}
           >
             <ShoppingBag className="w-5 h-5" />
-            Shop
+            {t.shop.shopTab}
           </button>
           <button
             onClick={() => setActiveTab('history')}
@@ -91,7 +93,7 @@ export default function ShopPage() {
               }`}
           >
             <History className="w-5 h-5" />
-            History
+            {t.shop.historyTab}
           </button>
         </div>
       </div>
@@ -99,7 +101,7 @@ export default function ShopPage() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center h-64 border-4 border-dashed border-gray-100 rounded-3xl">
           <div className="w-12 h-12 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin mb-4" />
-          <p className="font-black text-gray-400 uppercase tracking-widest">Loading items...</p>
+          <p className="font-black text-gray-400 uppercase tracking-widest">{t.shop.loadingItems}</p>
         </div>
       ) : activeTab === 'shop' ? (
         <div className="space-y-12">
@@ -110,7 +112,7 @@ export default function ShopPage() {
                 <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
                   <CreditCard className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Kilas Pro Subscription</h2>
+                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">{t.shop.subscriptions}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.filter(p => p.type === 'subscription').map((product) => (
@@ -152,7 +154,7 @@ export default function ShopPage() {
                         ) : (
                           <>
                             <CreditCard className="w-5 h-5" />
-                            UPGRADE TO PRO
+                            {t.shop.upgrade}
                           </>
                         )}
                       </button>
@@ -170,7 +172,7 @@ export default function ShopPage() {
                 <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600">
                   <Coins className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Token Packs</h2>
+                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">{t.shop.tokens}</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.filter(p => p.type !== 'subscription').map((product) => (
@@ -193,7 +195,7 @@ export default function ShopPage() {
 
                     <div className="mt-8 space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-black text-gray-400 uppercase tracking-widest">Price</span>
+                        <span className="text-sm font-black text-gray-400 uppercase tracking-widest">{t.shop.price}</span>
                         <span className="text-2xl font-black text-gray-800">
                           Rp {new Intl.NumberFormat('id-ID').format(product.price)}
                         </span>
@@ -209,7 +211,7 @@ export default function ShopPage() {
                         ) : (
                           <>
                             <CreditCard className="w-5 h-5" />
-                            PURCHASE NOW
+                            {t.shop.purchase}
                           </>
                         )}
                       </button>
@@ -223,16 +225,16 @@ export default function ShopPage() {
           {products?.length === 0 && (
             <div className="py-20 text-center space-y-4">
               <ShoppingBag className="w-16 h-16 text-gray-200 mx-auto" />
-              <p className="text-xl font-bold text-gray-400">No products available at the moment.</p>
+              <p className="text-xl font-bold text-gray-400">{t.shop.noProducts}</p>
             </div>
           )}
         </div>
       ) : (
         <div className="bg-white border-2 border-gray-100 rounded-3xl overflow-hidden shadow-sm">
           <div className="p-6 border-b-2 border-gray-50 flex items-center justify-between">
-            <h2 className="text-xl font-black text-gray-800">Your Transactions</h2>
+            <h2 className="text-xl font-black text-gray-800">{t.shop.yourTransactions}</h2>
             <div className="text-xs font-black text-gray-400 uppercase tracking-widest">
-              Last 50 Purchases
+              {t.shop.last50}
             </div>
           </div>
 
@@ -240,26 +242,26 @@ export default function ShopPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-50/50 border-b-2 border-gray-100">
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Product</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Date</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.product}</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.date}</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.amount}</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.status}</th>
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-gray-50">
-                {transactions?.map((t) => (
-                  <tr key={t.id} className="hover:bg-gray-50/50 transition-colors">
+                {transactions?.map((tx) => (
+                  <tr key={tx.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
                           <Coins className="w-4 h-4 text-orange-500" />
                         </div>
-                        <span className="font-bold text-gray-700">{t.product_name}</span>
+                        <span className="font-bold text-gray-700">{tx.product_name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-5">
                       <span className="text-sm font-bold text-gray-400">
-                        {new Date(t.created_at).toLocaleDateString('en-US', {
+                        {new Date(tx.created_at).toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric'
@@ -267,23 +269,23 @@ export default function ShopPage() {
                       </span>
                     </td>
                     <td className="px-6 py-5">
-                      <span className="font-black text-gray-700">Rp {new Intl.NumberFormat('id-ID').format(t.amount)}</span>
+                      <span className="font-black text-gray-700">Rp {new Intl.NumberFormat('id-ID').format(tx.amount)}</span>
                     </td>
                     <td className="px-6 py-5">
-                      {t.status === 'success' ? (
+                      {tx.status === 'success' ? (
                         <div className="flex items-center gap-2 text-green-500 font-black text-xs uppercase tracking-tight bg-green-50 px-3 py-1 rounded-full w-fit">
                           <CheckCircle2 className="w-3 h-3" />
-                          Success
+                          {t.shop.success}
                         </div>
-                      ) : t.status === 'pending' ? (
+                      ) : tx.status === 'pending' ? (
                         <div className="flex items-center gap-2 text-yellow-600 font-black text-xs uppercase tracking-tight bg-yellow-50 px-3 py-1 rounded-full w-fit">
                           <Clock className="w-3 h-3" />
-                          Pending
+                          {t.shop.pending}
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 text-red-500 font-black text-xs uppercase tracking-tight bg-red-50 px-3 py-1 rounded-full w-fit">
                           <XCircle className="w-3 h-3" />
-                          Failed
+                          {t.shop.failed}
                         </div>
                       )}
                     </td>
@@ -296,12 +298,12 @@ export default function ShopPage() {
           {transactions?.length === 0 && (
             <div className="py-20 text-center space-y-4">
               <History className="w-16 h-16 text-gray-100 mx-auto" />
-              <p className="text-xl font-bold text-gray-400">No purchase history yet.</p>
+              <p className="text-xl font-bold text-gray-400">{t.shop.noHistory}</p>
               <button
                 onClick={() => setActiveTab('shop')}
                 className="text-orange-500 font-black uppercase text-sm hover:underline flex items-center gap-2 mx-auto"
               >
-                Go to shop <ArrowRight className="w-4 h-4" />
+                {t.shop.goToShop} <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           )}

@@ -1,5 +1,6 @@
 import { X, Sparkles, Zap, Shield, Rocket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface SubscriptionPromoModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface SubscriptionPromoModalProps {
 
 export default function SubscriptionPromoModal({ isOpen, onClose, reason }: SubscriptionPromoModalProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -34,11 +36,11 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
               <Zap className="w-7 h-7 fill-current text-yellow-300" />
             </div>
-            <h2 className="text-3xl font-black uppercase tracking-tight">Kilas Pro</h2>
+            <h2 className="text-3xl font-black uppercase tracking-tight">{t.shop.promoTitle}</h2>
           </div>
 
           <p className="text-purple-100 font-bold text-lg leading-tight max-w-md">
-            {reason || "You've reached your daily AI limit. Unlock unlimited potential with Kilas Pro!"}
+            {reason || t.shop.promoReason}
           </p>
         </div>
 
@@ -50,8 +52,8 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
                 <Shield className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-black text-gray-700 text-base uppercase">Unlimited AI Usage</h4>
-                <p className="text-xs font-bold text-gray-400 mt-0.5">Generate unlimited decks and cards without daily caps.</p>
+                <h4 className="font-black text-gray-700 text-base uppercase">{t.shop.unlimitedAI}</h4>
+                <p className="text-xs font-bold text-gray-400 mt-0.5">{t.shop.unlimitedAIDesc}</p>
               </div>
             </div>
 
@@ -60,8 +62,8 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
                 <Zap className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-black text-gray-700 text-base uppercase">10% Token Discount</h4>
-                <p className="text-xs font-bold text-gray-400 mt-0.5">Enjoy a permanent 10% discount on all token-based actions.</p>
+                <h4 className="font-black text-gray-700 text-base uppercase">{t.shop.tokenDiscount}</h4>
+                <p className="text-xs font-bold text-gray-400 mt-0.5">{t.shop.tokenDiscountDesc}</p>
               </div>
             </div>
 
@@ -70,8 +72,8 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
                 <Rocket className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="font-black text-gray-700 text-base uppercase">Early Access</h4>
-                <p className="text-xs font-bold text-gray-400 mt-0.5">Be the first to try our upcoming AI study features.</p>
+                <h4 className="font-black text-gray-700 text-base uppercase">{t.shop.earlyAccess}</h4>
+                <p className="text-xs font-bold text-gray-400 mt-0.5">{t.shop.earlyAccessDesc}</p>
               </div>
             </div>
           </div>
@@ -84,10 +86,10 @@ export default function SubscriptionPromoModal({ isOpen, onClose, reason }: Subs
               }}
               className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-3xl border-b-8 border-indigo-900 hover:brightness-110 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3 text-xl shadow-xl shadow-purple-200"
             >
-              UPGRADE NOW
+              {t.shop.upgradeNow}
             </button>
             <p className="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">
-              Starting from just Rp250.000/month
+              {t.shop.startingPrice}
             </p>
           </div>
         </div>

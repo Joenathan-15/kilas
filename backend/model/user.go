@@ -13,6 +13,7 @@ type User struct {
 	LastLoginDate     *time.Time `json:"last_login_date"`
 	LoginStreak       int        `gorm:"default:0" json:"login_streak"`
 	SubscriptionUntil *time.Time `json:"subscription_until"`
+	Language          string     `gorm:"size:10;default:'id'" json:"language"`
 	CreatedAt         time.Time  `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }

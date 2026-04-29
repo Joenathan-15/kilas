@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
 import { Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  
+  const { t } = useTranslation();
   const { register, isAuthenticated, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
@@ -27,19 +28,19 @@ export default function RegisterPage() {
     setValidationErrors({});
 
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t.auth.passwordsNotMatch);
       return;
     }
     
     try {
       await register(email, username, password);
-      toast.success('Account created!');
+      toast.success(t.auth.accountCreated);
       navigate('/dashboard');
     } catch (err: any) {
       const data = err?.response?.data;
       if (data?.details) {
         setValidationErrors(data.details);
-        toast.error('Please check the form for errors');
+        toast.error(t.auth.checkForm);
       } else {
         toast.error(data?.error || 'Registration failed');
       }
@@ -56,16 +57,16 @@ export default function RegisterPage() {
         
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black text-feather-green tracking-tight flex items-center justify-center gap-2">
-            <span>Create Profile</span>
+            <span>{t.auth.createProfile}</span>
           </h1>
-          <p className="text-gray-500 font-medium mt-2">Join Kilas today.</p>
+          <p className="text-gray-500 font-medium mt-2">{t.auth.joinToday}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           
           <div className="space-y-2">
             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
-              Username <span className="text-red-500">*</span>
+              {t.auth.username} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -79,7 +80,7 @@ export default function RegisterPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-                placeholder="Username (3-20 chars)"
+                placeholder={t.auth.usernameChars}
               />
             </div>
           </div>
@@ -89,7 +90,7 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
-              Email Address <span className="text-red-500">*</span>
+              {t.auth.email} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -101,7 +102,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-                placeholder="Email address"
+                placeholder={t.auth.emailPlaceholder}
               />
             </div>
           </div>
@@ -111,7 +112,7 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
-              Password <span className="text-red-500">*</span>
+              {t.auth.password} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -124,7 +125,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-11 pr-12 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-                placeholder="Password (min 8 chars)"
+                placeholder={t.auth.passwordChars}
               />
               <button
                 type="button"
@@ -141,7 +142,7 @@ export default function RegisterPage() {
 
           <div className="space-y-2">
             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
-              Confirm Password <span className="text-red-500">*</span>
+              {t.auth.confirmPassword} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -153,7 +154,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`w-full pl-11 pr-12 py-3 bg-gray-100 border-2 rounded-2xl focus:bg-white focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none ${confirmPassword && password !== confirmPassword ? 'border-danger-red focus:border-danger-red' : 'border-transparent focus:border-sky-blue'}`}
-                placeholder="Confirm Password"
+                placeholder={t.auth.confirmPlaceholder}
               />
             </div>
           </div>
@@ -163,13 +164,13 @@ export default function RegisterPage() {
             disabled={isLoading || (confirmPassword.length > 0 && password !== confirmPassword)}
             className="btn-primary w-full py-4 text-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : "CREATE ACCOUNT"}
+            {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : t.auth.createAccount}
           </button>
         </form>
 
         <div className="mt-6 flex items-center justify-between">
           <span className="border-b-2 border-gray-200 w-1/5"></span>
-          <span className="text-xs text-gray-400 uppercase font-bold tracking-wider">Or</span>
+          <span className="text-xs text-gray-400 uppercase font-bold tracking-wider">{t.auth.or}</span>
           <span className="border-b-2 border-gray-200 w-1/5"></span>
         </div>
 
@@ -187,13 +188,13 @@ export default function RegisterPage() {
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             <path fill="none" d="M1 1h22v22H1z" />
           </svg>
-          Google
+          {t.auth.googleLogin}
         </button>
 
         <p className="mt-8 text-center text-gray-500 font-semibold">
-          Already have an account?{' '}
+          {t.auth.hasAccount}{' '}
           <Link to="/login" className="text-sky-blue hover:text-sky-blue-dark">
-            Log in
+            {t.auth.login}
           </Link>
         </p>
       </div>

@@ -37,13 +37,14 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, dto.AuthResponse{
 		User: dto.UserResponse{
-			ID:        user.ID,
-			Email:     user.Email,
-			Username:  user.Username,
-			AvatarURL: user.AvatarURL,
+			ID:            user.ID,
+			Email:         user.Email,
+			Username:      user.Username,
+			AvatarURL:     user.AvatarURL,
 			Tokens:        user.Tokens,
 			LoginStreak:   user.LoginStreak,
 			LastLoginDate: user.LastLoginDate,
+			Language:      user.Language,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -65,13 +66,14 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, dto.AuthResponse{
 		User: dto.UserResponse{
-			ID:        user.ID,
-			Email:     user.Email,
-			Username:  user.Username,
-			AvatarURL: user.AvatarURL,
+			ID:            user.ID,
+			Email:         user.Email,
+			Username:      user.Username,
+			AvatarURL:     user.AvatarURL,
 			Tokens:        user.Tokens,
 			LoginStreak:   user.LoginStreak,
 			LastLoginDate: user.LastLoginDate,
+			Language:      user.Language,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -113,13 +115,14 @@ func (h *AuthHandler) Me(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.UserResponse{
-		ID:          user.ID,
-		Email:       user.Email,
-		Username:    user.Username,
-		AvatarURL:   user.AvatarURL,
-		LoginStreak: user.LoginStreak,
-		Tokens:      user.Tokens,
+		ID:            user.ID,
+		Email:         user.Email,
+		Username:      user.Username,
+		AvatarURL:     user.AvatarURL,
+		LoginStreak:   user.LoginStreak,
+		Tokens:        user.Tokens,
 		LastLoginDate: user.LastLoginDate,
+		Language:      user.Language,
 	})
 }
 
@@ -172,19 +175,20 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	user, err := h.AuthService.UpdateProfile(userID, req.Username, req.AvatarURL)
+	user, err := h.AuthService.UpdateProfile(userID, req.Username, req.AvatarURL, req.Language)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, dto.UserResponse{
-		ID:          user.ID,
-		Email:       user.Email,
-		Username:    user.Username,
-		AvatarURL:   user.AvatarURL,
-		LoginStreak: user.LoginStreak,
-		Tokens:      user.Tokens,
+		ID:            user.ID,
+		Email:         user.Email,
+		Username:      user.Username,
+		AvatarURL:     user.AvatarURL,
+		LoginStreak:   user.LoginStreak,
+		Tokens:        user.Tokens,
 		LastLoginDate: user.LastLoginDate,
+		Language:      user.Language,
 	})
 }

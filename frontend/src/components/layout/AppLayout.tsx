@@ -3,24 +3,26 @@ import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { getFullImageUrl } from '../../lib/api';
 import { useUIStore } from '../../stores/uiStore';
+import { useTranslation } from '../../hooks/useTranslation';
 import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles } from 'lucide-react';
 
 export default function AppLayout() {
   const { user, logout } = useAuthStore();
   const { activeGenerations } = useUIStore();
+  const { t } = useTranslation();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navLinks = [
-    { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
-    { to: '/decks', label: 'My Decks', icon: <Layers /> },
-    { to: '/library', label: 'Library', icon: <BookOpen /> },
-    { to: '/shop', label: 'Shop', icon: <ShoppingBag /> },
-    { to: '/stats', label: 'Stats', icon: <BarChart2 /> },
+    { to: '/dashboard', label: t.nav.dashboard, icon: <LayoutDashboard /> },
+    { to: '/decks', label: t.nav.myDecks, icon: <Layers /> },
+    { to: '/library', label: t.nav.library, icon: <BookOpen /> },
+    { to: '/stats', label: t.nav.stats, icon: <BarChart2 /> },
+    { to: '/shop', label: t.nav.shop, icon: <ShoppingBag /> },
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      
+
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 bg-surface border-r-2 border-gray-200 z-50">
         <div className="p-6">
@@ -36,10 +38,9 @@ export default function AppLayout() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${
-                  isActive
-                    ? 'bg-sky-100 text-sky-blue border-sky-200'
-                    : 'text-gray-500 border-transparent hover:bg-gray-100'
+                `flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${isActive
+                  ? 'bg-sky-100 text-sky-blue border-sky-200'
+                  : 'text-gray-500 border-transparent hover:bg-gray-100'
                 }`
               }
             >
@@ -75,13 +76,13 @@ export default function AppLayout() {
           {isProfileOpen && (
             <div className="absolute bottom-full left-4 right-4 mb-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-bottom-2 duration-200 z-50">
 
-              <Link 
-                to="/profile" 
+              <Link
+                to="/profile"
                 onClick={() => setIsProfileOpen(false)}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sky-50 text-gray-600 hover:text-sky-blue transition-colors font-bold"
               >
                 <User className="w-5 h-5" />
-                Edit Profile
+                {t.nav.profile}
               </Link>
               <div className="h-px bg-gray-100 my-1" />
               <button
@@ -94,14 +95,14 @@ export default function AppLayout() {
             </div>
           )}
 
-          <button 
+          <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
           >
-            <img 
-              src={getFullImageUrl(user?.avatar_url, user?.username)} 
-              alt="Avatar" 
-              className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" 
+            <img
+              src={getFullImageUrl(user?.avatar_url, user?.username)}
+              alt="Avatar"
+              className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
             />
             <div className="flex-1 min-w-0 text-left">
               <p className="font-bold text-gray-700 truncate">{user?.username}</p>
@@ -125,7 +126,7 @@ export default function AppLayout() {
           <span>Kilas</span>
         </h1>
         <div className="relative">
-          <button 
+          <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className="flex items-center gap-2"
           >
@@ -135,10 +136,10 @@ export default function AppLayout() {
             <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
               <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
             </span>
-            <img 
-              src={getFullImageUrl(user?.avatar_url, user?.username)} 
-              alt="Avatar" 
-              className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" 
+            <img
+              src={getFullImageUrl(user?.avatar_url, user?.username)}
+              alt="Avatar"
+              className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover"
             />
           </button>
 
@@ -146,13 +147,13 @@ export default function AppLayout() {
           {isProfileOpen && (
             <div className="absolute top-full right-0 mt-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-top-2 duration-200 z-50 w-48">
 
-              <Link 
-                to="/profile" 
+              <Link
+                to="/profile"
                 onClick={() => setIsProfileOpen(false)}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sky-50 text-gray-600 hover:text-sky-blue transition-colors font-bold"
               >
                 <User className="w-5 h-5" />
-                Profile
+                {t.nav.profile}
               </Link>
               <div className="h-px bg-gray-100 my-1" />
               <button
@@ -179,8 +180,7 @@ export default function AppLayout() {
             key={link.to}
             to={link.to}
             className={({ isActive }) =>
-              `flex flex-col items-center p-2 rounded-2xl transition-colors ${
-                isActive ? 'text-sky-blue' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+              `flex flex-col items-center p-2 rounded-2xl transition-colors ${isActive ? 'text-sky-blue' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
               }`
             }
           >
@@ -189,7 +189,7 @@ export default function AppLayout() {
           </NavLink>
         ))}
       </nav>
-      
+
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ export default function LoginPage() {
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
+  const { t } = useTranslation();
   const { login, isAuthenticated, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
@@ -26,13 +28,13 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      toast.success('Welcome back!');
+      toast.success(t.auth.welcomeBack);
       navigate('/dashboard');
     } catch (err: any) {
       const data = err?.response?.data;
       if (data?.details) {
         setValidationErrors(data.details);
-        toast.error('Please check the form for errors');
+        toast.error(t.auth.checkForm);
       } else {
         toast.error(data?.error || 'Login failed');
       }
@@ -52,12 +54,12 @@ export default function LoginPage() {
             <span>Kilas</span>
             <span className="text-3xl">🪶</span>
           </h1>
-          <p className="text-gray-500 font-medium mt-2">Learn anything, forever.</p>
+          <p className="text-gray-500 font-medium mt-2">{t.auth.loginSubtitle}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
-              Email Address <span className="text-red-500">*</span>
+              {t.auth.email} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -69,7 +71,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-                placeholder="Email address"
+                placeholder={t.auth.emailPlaceholder}
               />
             </div>
             {validationErrors.Email && (
@@ -78,7 +80,7 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
-                Password <span className="text-red-500">*</span>
+                {t.auth.password} <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -90,7 +92,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-11 pr-12 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-                  placeholder="Password"
+                  placeholder={t.auth.passwordPlaceholder}
                 />
                 <button
                   type="button"
@@ -109,7 +111,7 @@ export default function LoginPage() {
                 disabled={isLoading}
                 className="btn-primary w-full py-4 text-lg mt-2"
               >
-                {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : "LOG IN"}
+                {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : t.auth.login}
               </button>
             </div>
           </div>
@@ -117,7 +119,7 @@ export default function LoginPage() {
 
         <div className="mt-6 flex items-center justify-between">
           <span className="border-b-2 border-gray-200 w-1/5"></span>
-          <span className="text-xs text-gray-400 uppercase font-bold tracking-wider">Or</span>
+          <span className="text-xs text-gray-400 uppercase font-bold tracking-wider">{t.auth.or}</span>
           <span className="border-b-2 border-gray-200 w-1/5"></span>
         </div>
 
@@ -144,13 +146,13 @@ export default function LoginPage() {
             />
             <path fill="none" d="M1 1h22v22H1z" />
           </svg>
-          Google
+          {t.auth.googleLogin}
         </button>
 
         <p className="mt-8 text-center text-gray-500 font-semibold">
-          Don't have an account?{' '}
+          {t.auth.noAccount}{' '}
           <Link to="/register" className="text-sky-blue hover:text-sky-blue-dark">
-            Register
+            {t.auth.register}
           </Link>
         </p>
       </div>

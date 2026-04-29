@@ -8,11 +8,13 @@ import DeckCard from '../components/decks/DeckCard';
 import DeckModal from '../components/decks/DeckModal';
 import { useAuthStore } from '../stores/authStore';
 import { useUIStore } from '../stores/uiStore';
+import { useTranslation } from '../hooks/useTranslation';
 import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 
 export default function DecksPage() {
   const queryClient = useQueryClient();
   const { fetchMe } = useAuthStore();
+  const { t } = useTranslation();
   const { addGeneration, removeGeneration } = useUIStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,7 +33,7 @@ export default function DecksPage() {
     mutationFn: (newDeck: any) => api.post('/decks', newDeck),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'] });
-      toast.success('Deck created! 🗂️');
+      toast.success(t.decks.deckCreated);
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.error || 'Failed to create deck');
@@ -42,7 +44,7 @@ export default function DecksPage() {
     mutationFn: ({ id, data }: { id: number; data: any }) => api.put(`/decks/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'] });
-      toast.success('Deck updated! ✨');
+      toast.success(t.decks.deckUpdated);
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.error || 'Failed to update deck');
@@ -53,7 +55,7 @@ export default function DecksPage() {
     mutationFn: (id: number) => api.delete(`/decks/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['decks'] });
-      toast.success('Deck deleted');
+      toast.success(t.decks.deckDeleted);
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.error || 'Failed to delete deck');
@@ -89,8 +91,8 @@ export default function DecksPage() {
       });
 
       toast.promise(aiPromise, {
-        loading: '🤖 AI is generating your deck...',
-        success: 'Deck generated! Check your collection ✨',
+        loading: t.decks.aiGenerating,
+        success: t.decks.aiSuccess,
         error: (err) => err?.response?.data?.error || 'AI generation failed. Please try again.',
       });
       // Don't await — let it run in the background
@@ -106,7 +108,7 @@ export default function DecksPage() {
   };
 
   const handleDeleteDeck = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this deck? All cards inside will be lost forever!')) {
+    if (window.confirm(t.decks.deleteConfirm)) {
       deleteMutation.mutate(id);
     }
   };
@@ -130,8 +132,8 @@ export default function DecksPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-700 tracking-tight">MY DECKS</h1>
-          <p className="text-gray-400 font-bold">Manage your flashcard collections</p>
+          <h1 className="text-3xl font-black text-gray-700 tracking-tight">{t.decks.title}</h1>
+          <p className="text-gray-400 font-bold">{t.decks.subtitle}</p>
         </div>
         
         <button 
@@ -139,7 +141,7 @@ export default function DecksPage() {
           className="btn-primary py-3 px-6 flex items-center justify-center gap-2"
         >
           <Plus className="w-6 h-6" />
-          CREATE NEW DECK
+          {t.decks.createNew}
         </button>
       </div>
 
@@ -152,14 +154,14 @@ export default function DecksPage() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-11 pr-4 py-4 bg-surface border-2 border-gray-200 rounded-3xl focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 placeholder-gray-400 outline-none shadow-sm"
-          placeholder="Search by title or tags..."
+          placeholder={t.decks.searchPlaceholder}
         />
       </div>
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-12 h-12 text-sky-blue animate-spin mb-4" />
-          <p className="font-black text-gray-400 uppercase tracking-widest">Loading Decks...</p>
+          <p className="font-black text-gray-400 uppercase tracking-widest">{t.decks.loadingDecks}</p>
         </div>
       ) : filteredDecks && filteredDecks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -175,13 +177,13 @@ export default function DecksPage() {
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-4 border-dashed border-gray-200">
           <Layers className="w-20 h-20 text-gray-200 mb-6" />
-          <h2 className="text-2xl font-black text-gray-400 uppercase">No decks found</h2>
-          <p className="text-gray-400 font-bold mt-2">Try a different search or create your first deck!</p>
+          <h2 className="text-2xl font-black text-gray-400 uppercase">{t.decks.noDecksFound}</h2>
+          <p className="text-gray-400 font-bold mt-2">{t.decks.trySearch}</p>
           <button 
             onClick={openCreateModal}
             className="mt-8 text-sky-blue font-black hover:underline underline-offset-4"
           >
-            + Create New Deck
+            + {t.decks.createNew}
           </button>
         </div>
       )}
@@ -191,7 +193,7 @@ export default function DecksPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={editingDeck ? handleUpdateDeck : handleCreateDeck}
         initialData={editingDeck}
-        title={editingDeck ? 'Edit Deck' : 'Create New Deck'}
+        title={editingDeck ? t.decks.editDeck : t.decks.createDeck}
       />
 
       <SubscriptionPromoModal

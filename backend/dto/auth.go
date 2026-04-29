@@ -25,6 +25,7 @@ type UserResponse struct {
 	LoginStreak   int        `json:"login_streak"`
 	Tokens        int        `json:"tokens"`
 	LastLoginDate *time.Time `json:"last_login_date"`
+	Language      string     `json:"language"`
 }
 
 type AuthResponse struct {
@@ -42,4 +43,5 @@ type DailyLoginResponse struct {
 type UpdateProfileRequest struct {
 	Username  string `json:"username" binding:"omitempty,min=3,max=20"`
 	AvatarURL string `json:"avatar_url" binding:"omitempty"`
+	Language  string `json:"language" binding:"omitempty"`
 }

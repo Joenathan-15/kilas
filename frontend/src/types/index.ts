@@ -8,6 +8,7 @@ export interface User {
   last_login_date: string | null;
   login_streak: number;
   subscription_until: string | null;
+  language: string;
 }
 
 export interface Deck { 

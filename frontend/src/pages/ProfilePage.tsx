@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import api, { getFullImageUrl } from '../lib/api';
-import { User, Camera, Save, CheckCircle2, AlertCircle, Upload } from 'lucide-react';
+import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState(user?.username || '');
   const [avatarURL, setAvatarURL] = useState(user?.avatar_url || '');
+  const [language, setLanguage] = useState(user?.language || 'id');
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -16,6 +19,7 @@ export default function ProfilePage() {
     if (user) {
       setUsername(user.username);
       setAvatarURL(user.avatar_url);
+      setLanguage(user.language || 'id');
     }
   }, [user]);
 
@@ -25,13 +29,13 @@ export default function ProfilePage() {
     setMessage(null);
 
     try {
-      await updateUser(username, avatarURL);
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      await updateUser(username, avatarURL, language);
+      setMessage({ type: 'success', text: t.profile.updateSuccess });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
       setMessage({ 
         type: 'error', 
-        text: err.response?.data?.error || 'Failed to update profile. Please try again.' 
+        text: err.response?.data?.error || t.profile.updateFailed 
       });
     } finally {
       setIsSaving(false);
@@ -55,9 +59,9 @@ export default function ProfilePage() {
       const uploadedUrl = res.data.url;
       
       setAvatarURL(uploadedUrl);
-      setMessage({ type: 'success', text: 'Image uploaded! Don\'t forget to save.' });
+      setMessage({ type: 'success', text: t.profile.uploadSuccess });
     } catch (err: any) {
-      setMessage({ type: 'error', text: 'Failed to upload image. Max size 5MB.' });
+      setMessage({ type: 'error', text: t.profile.uploadFailed });
     } finally {
       setIsUploading(false);
     }
@@ -66,7 +70,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-black text-gray-800 tracking-tight">Edit Profile</h1>
+        <h1 className="text-4xl font-black text-gray-800 tracking-tight">{t.profile.title}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -112,10 +116,10 @@ export default function ProfilePage() {
           
           <div className="space-y-1">
             <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
-              Profile Picture
+              {t.profile.avatar}
             </p>
             <p className="text-xs text-gray-400 font-bold italic">
-              Click your avatar to upload a new photo.
+              {t.profile.uploadHint}
             </p>
           </div>
         </div>
@@ -124,7 +128,7 @@ export default function ProfilePage() {
         <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm space-y-6">
           <div className="space-y-2">
             <label className="block text-sm font-black text-gray-400 uppercase tracking-widest">
-              Username
+              {t.profile.username}
             </label>
             <div className="relative">
               <User className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
@@ -140,7 +144,7 @@ export default function ProfilePage() {
 
           <div className="space-y-2 opacity-50 cursor-not-allowed">
             <label className="block text-sm font-black text-gray-400 uppercase tracking-widest">
-              Email Address
+              {t.profile.email}
             </label>
             <input
               type="email"
@@ -148,7 +152,36 @@ export default function ProfilePage() {
               value={user?.email || ''}
               className="w-full px-6 py-4 rounded-2xl bg-gray-100 border-2 border-gray-200 outline-none font-bold text-gray-500"
             />
-            <p className="text-[10px] font-black text-gray-300 uppercase">Email cannot be changed</p>
+            <p className="text-[10px] font-black text-gray-300 uppercase">{t.profile.emailHint}</p>
+          </div>
+        </div>
+
+        {/* Settings Section */}
+        <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-sky-blue/10 rounded-xl text-sky-blue">
+                <Languages className="w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-black text-gray-800 uppercase tracking-tight">{t.profile.language}</h2>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-black text-gray-400 uppercase tracking-widest">
+                {t.profile.interfaceLanguage}
+              </label>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-sky-blue focus:ring-4 focus:ring-sky-blue/10 outline-none transition-all font-bold text-gray-700 appearance-none cursor-pointer"
+              >
+                <option value="id">Bahasa Indonesia</option>
+                <option value="en">English (US)</option>
+              </select>
+              <p className="text-xs text-gray-400 font-bold">
+                {t.profile.languageHint}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -173,7 +206,7 @@ export default function ProfilePage() {
           ) : (
             <>
               <Save className="w-6 h-6" />
-              SAVE PROFILE
+              {t.profile.saveProfile}
             </>
           )}
         </button>

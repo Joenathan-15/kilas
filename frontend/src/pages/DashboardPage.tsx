@@ -15,10 +15,12 @@ import {
   Clock,
   CheckCircle2,
 } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 import type { OverviewStats, ActivityData, Deck } from '../types';
 
 export default function DashboardPage() {
   const { user, fetchMe } = useAuthStore();
+  const { t, lang } = useTranslation();
   const [isClaiming, setIsClaiming] = React.useState(false);
   const [activeDayIdx, setActiveDayIdx] = React.useState<number | null>(null);
 
@@ -81,7 +83,7 @@ export default function DashboardPage() {
             <Flame className="w-10 h-10 fill-current" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-gray-700">{user?.login_streak || 0} Day Streak!</h2>
+            <h2 className="text-2xl font-black text-gray-700">{user?.login_streak || 0} {t.dashboard.dayStreak}</h2>
             <button 
               onClick={handleClaimReward}
               disabled={isClaiming || isClaimedToday}
@@ -99,7 +101,7 @@ export default function DashboardPage() {
                 <Coins className="w-4 h-4" />
               )}
               <span className="text-[10px]">
-                {isClaiming ? 'Claiming...' : isClaimedToday ? 'Claimed Today ✨' : 'Claim Daily Reward 🪙'}
+                {isClaiming ? t.dashboard.claiming : isClaimedToday ? t.dashboard.claimedToday : t.dashboard.claimReward}
               </span>
             </button>
           </div>
@@ -121,7 +123,7 @@ export default function DashboardPage() {
               <BookOpen className="w-7 h-7" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Continue Studying</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{t.dashboard.continueStudying}</p>
               <p className="text-lg font-black text-gray-700 truncate">{bestDeck.title}</p>
             </div>
             <ArrowRight className="w-6 h-6 text-feather-green shrink-0 group-hover:translate-x-1 transition-transform" />
@@ -135,8 +137,8 @@ export default function DashboardPage() {
               <Plus className="w-7 h-7" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Get Started</p>
-              <p className="text-lg font-black text-gray-700">Create Your First Deck</p>
+              <p className="text-xs font-black text-gray-400 uppercase tracking-widest">{t.dashboard.getStarted}</p>
+              <p className="text-lg font-black text-gray-700">{t.dashboard.createFirstDeck}</p>
             </div>
             <ArrowRight className="w-6 h-6 text-sky-blue shrink-0 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -147,28 +149,28 @@ export default function DashboardPage() {
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
           icon={<Clock className="text-sky-blue" />} 
-          label="Due Today" 
+          label={t.dashboard.dueToday} 
           value={stats?.cards_due_today || 0} 
           color="bg-sky-50"
           borderColor="border-sky-100"
         />
         <StatCard 
           icon={<CheckCircle2 className="text-feather-green" />} 
-          label="Mastered" 
+          label={t.dashboard.mastered} 
           value={stats?.cards_mastered || 0} 
           color="bg-green-50"
           borderColor="border-green-100"
         />
         <StatCard 
           icon={<BookOpen className="text-purple-500" />} 
-          label="Total Cards" 
+          label={t.dashboard.totalCards} 
           value={stats?.total_cards || 0} 
           color="bg-purple-50"
           borderColor="border-purple-100"
         />
         <StatCard 
           icon={<Coins className="text-gold" />} 
-          label="Tokens Left" 
+          label={t.dashboard.tokensLeft} 
           value={user?.tokens || 0} 
           color="bg-yellow-50"
           borderColor="border-yellow-100"
@@ -182,9 +184,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-black text-gray-700 flex items-center gap-2">
               <Calendar className="w-6 h-6 text-feather-green" />
-              Activity
+              {t.dashboard.activity}
             </h3>
-            <span className="text-sm font-bold text-gray-400">Last 30 Days</span>
+            <span className="text-sm font-bold text-gray-400">{t.dashboard.last30Days}</span>
           </div>
           
           <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
@@ -218,10 +220,10 @@ export default function DashboardPage() {
                       <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 z-50 animate-in zoom-in-95 duration-200">
                         <div className="bg-gray-800 text-white p-3 rounded-2xl shadow-xl border-2 border-gray-700 w-32 text-center pointer-events-none">
                           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                            {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)}
+                            {new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(dateObj)}
                           </p>
                           <p className="text-sm font-black whitespace-nowrap">
-                            {day.count} reviews
+                            {day.count} {t.dashboard.reviews}
                           </p>
                           <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-gray-800" />
                         </div>
@@ -257,13 +259,13 @@ export default function DashboardPage() {
             <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-500 mb-4 border-b-4 border-purple-200">
               <Sparkles className="w-7 h-7 fill-current" />
             </div>
-            <h3 className="text-xl font-black text-gray-700 mb-2">AI Magic</h3>
+            <h3 className="text-xl font-black text-gray-700 mb-2">{t.dashboard.aiMagic}</h3>
             <p className="text-gray-500 font-bold text-sm leading-relaxed">
-              Stuck on what to learn next? Paste some text and let our AI generate a perfect flashcard deck for you!
+              {t.dashboard.aiDescription}
             </p>
           </div>
           <Link to="/decks" className="btn-chunky bg-purple-500 text-white border-b-4 border-purple-700 hover:bg-purple-600 py-3 mt-6 text-sm">
-            GENERATE CARDS
+            {t.dashboard.generateCards}
           </Link>
         </section>
 
