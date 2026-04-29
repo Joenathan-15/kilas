@@ -28,7 +28,6 @@ export default function AppLayout() {
         <div className="p-6">
           <h1 className="text-3xl font-black text-feather-green tracking-tight flex items-center gap-2">
             <span>Kilas</span>
-            <span className="text-2xl">🪶</span>
           </h1>
         </div>
 
