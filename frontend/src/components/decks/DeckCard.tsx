@@ -18,7 +18,7 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
           {deck.is_public ? (
-            <span className="flex items-center gap-1 text-sky-blue bg-sky-50 px-2 py-1 rounded-lg shrink-0">
+            <span className="flex items-center gap-1 text-feather-green bg-green-50 px-2 py-1 rounded-lg shrink-0">
               <Globe className="w-3 h-3" /> Public
             </span>
           ) : (
@@ -39,7 +39,7 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
         <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 shrink-0">
           <button 
             onClick={() => onEdit(deck)}
-            className="p-1.5 hover:bg-sky-50 rounded-lg text-gray-300 hover:text-sky-blue transition-colors"
+            className="p-1.5 hover:bg-green-50 rounded-lg text-gray-300 hover:text-feather-green transition-colors"
           >
             <Edit2 className="w-4 h-4" />
           </button>
@@ -54,7 +54,7 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
 
       {/* Title + Description */}
       <Link to={`/decks/${deck.id}`} className="block group/title mb-3">
-        <h3 className="text-lg font-black text-gray-700 line-clamp-2 leading-snug group-hover/title:text-sky-blue transition-colors">
+        <h3 className="text-lg font-black text-gray-700 line-clamp-2 leading-snug group-hover/title:text-feather-green transition-colors">
           {deck.title}
         </h3>
         <p className="text-sm font-bold text-gray-400 line-clamp-1 mt-1">

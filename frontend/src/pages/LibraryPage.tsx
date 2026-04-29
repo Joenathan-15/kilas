@@ -81,7 +81,7 @@ export default function LibraryPage() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full pl-11 pr-4 py-4 bg-surface border-2 border-gray-200 rounded-3xl focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 placeholder-gray-400 outline-none shadow-sm"
+            className="w-full pl-11 pr-4 py-4 bg-surface border-2 border-gray-200 rounded-3xl focus:border-feather-green focus:ring-0 transition-all font-bold text-gray-700 placeholder-gray-400 outline-none shadow-sm"
             placeholder={t.library.searchPlaceholder}
           />
         </div>
@@ -90,7 +90,7 @@ export default function LibraryPage() {
           <button
             onClick={() => { setSortBy('newest'); setPage(1); }}
             className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${sortBy === 'newest'
-              ? 'bg-white text-sky-blue shadow-sm'
+              ? 'bg-white text-feather-green shadow-sm'
               : 'text-gray-400 hover:text-gray-600'
               }`}
           >
@@ -99,7 +99,7 @@ export default function LibraryPage() {
           <button
             onClick={() => { setSortBy('popular'); setPage(1); }}
             className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${sortBy === 'popular'
-              ? 'bg-white text-sky-blue shadow-sm'
+              ? 'bg-white text-feather-green shadow-sm'
               : 'text-gray-400 hover:text-gray-600'
               }`}
           >
@@ -110,7 +110,7 @@ export default function LibraryPage() {
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="w-12 h-12 text-sky-blue animate-spin mb-4" />
+          <Loader2 className="w-12 h-12 text-feather-green animate-spin mb-4" />
           <p className="font-black text-gray-400 uppercase tracking-widest">{t.library.browsing}</p>
         </div>
       ) : result && result.data.length > 0 ? (
@@ -127,7 +127,7 @@ export default function LibraryPage() {
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-lg">
                       <Layers className="w-3 h-3" /> {deck.card_count}
                     </span>
-                    <span className="flex items-center gap-1 bg-purple-50 text-purple-500 px-2 py-1 rounded-lg">
+                    <span className="flex items-center gap-1 bg-sky-50 text-sky-blue px-2 py-1 rounded-lg">
                       <Copy className="w-3 h-3" /> {deck.clone_count} {t.library.copies}
                     </span>
                     {deck.tags?.some(t => t.toLowerCase().includes('ai')) && (
@@ -138,7 +138,7 @@ export default function LibraryPage() {
                   </div>
 
                   {/* Title + Description */}
-                  <h3 className="text-lg font-black text-gray-700 line-clamp-2 leading-snug mb-1 group-hover:text-sky-blue transition-colors">
+                  <h3 className="text-lg font-black text-gray-700 line-clamp-2 leading-snug mb-1 group-hover:text-feather-green transition-colors">
                     {deck.title}
                   </h3>
                   <p className="text-sm font-bold text-gray-400 line-clamp-2 mb-3">
@@ -178,7 +178,7 @@ export default function LibraryPage() {
                     handleClone(deck);
                   }}
                   disabled={cloneMutation.isPending}
-                  className="mt-auto w-full py-3 text-sm font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all bg-sky-blue border-sky-700 text-white hover:bg-sky-500 flex items-center justify-center gap-2"
+                  className="btn-primary mt-auto w-full py-3 text-sm flex items-center justify-center gap-2"
                 >
                   <Copy className="w-4 h-4" />
                   {t.library.copyToDecks}

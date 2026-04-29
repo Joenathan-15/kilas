@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
-import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap } from 'lucide-react';
+import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
 interface Product {
@@ -81,7 +81,7 @@ export default function ShopPage() {
         <div className="flex bg-gray-100 p-1 rounded-2xl w-full md:w-auto">
           <button
             onClick={() => setActiveTab('shop')}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'shop' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'shop' ? 'bg-white text-feather-green shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
           >
             <ShoppingBag className="w-5 h-5" />
@@ -100,7 +100,7 @@ export default function ShopPage() {
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center h-64 border-4 border-dashed border-gray-100 rounded-3xl">
-          <div className="w-12 h-12 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin mb-4" />
+          <Loader2 className="w-12 h-12 text-feather-green animate-spin mb-4" />
           <p className="font-black text-gray-400 uppercase tracking-widest">{t.shop.loadingItems}</p>
         </div>
       ) : activeTab === 'shop' ? (
@@ -204,7 +204,7 @@ export default function ShopPage() {
                       <button
                         onClick={() => handlePurchase(product.id)}
                         disabled={isPurchasing === product.id}
-                        className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-black transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="btn-primary w-full py-4 flex items-center justify-center gap-2"
                       >
                         {isPurchasing === product.id ? (
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

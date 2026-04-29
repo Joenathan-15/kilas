@@ -211,19 +211,17 @@ export default function DeckDetailsPage() {
   };
 
   if (isLoading) {
-    return (
       <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="w-12 h-12 text-sky-blue animate-spin mb-4" />
+        <Loader2 className="w-12 h-12 text-feather-green animate-spin mb-4" />
         <p className="font-black text-gray-400 uppercase tracking-widest">{t.deckDetails.loading}</p>
       </div>
-    );
   }
 
   if (!deck) {
     return (
       <div className="text-center py-20">
         <h2 className="text-2xl font-black text-gray-700">{t.deckDetails.notFound}</h2>
-        <Link to="/decks" className="text-sky-blue font-bold hover:underline mt-4 block">
+        <Link to="/decks" className="text-feather-green font-bold hover:underline mt-4 block">
           {t.deckDetails.backToDecks}
         </Link>
       </div>
@@ -260,7 +258,7 @@ export default function DeckDetailsPage() {
               <div className="flex items-center gap-3 mb-1">
                 <h1 className="text-3xl font-black text-gray-700 tracking-tight uppercase leading-tight">{deck.title}</h1>
                 {deck.is_public ? (
-                  <span className="flex items-center gap-1 text-[10px] font-black text-sky-blue uppercase bg-sky-50 px-2 py-1 rounded-lg">
+                  <span className="flex items-center gap-1 text-[10px] font-black text-feather-green uppercase bg-green-50 px-2 py-1 rounded-lg">
                     <Globe className="w-3 h-3" /> {t.deckDetails.public}
                   </span>
                 ) : (
@@ -271,7 +269,7 @@ export default function DeckDetailsPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {deck.tags?.map(tag => (
-                  <span key={tag} className="text-xs font-black text-sky-blue uppercase tracking-wider">#{tag}</span>
+                  <span key={tag} className="text-xs font-black text-feather-green uppercase tracking-wider">#{tag}</span>
                 ))}
               </div>
             </div>
@@ -280,7 +278,7 @@ export default function DeckDetailsPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsDeckModalOpen(true)}
-                className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-sky-blue transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-feather-green transition-colors"
                 title="Edit Deck"
               >
                 <Edit2 className="w-5 h-5" />
@@ -313,9 +311,9 @@ export default function DeckDetailsPage() {
           {isOwner && (
             <button
               onClick={() => setIsAIGenerateModalOpen(true)}
-              className="btn-secondary py-4 text-lg flex items-center justify-center gap-3 border-purple-200 text-purple-600 hover:bg-purple-50"
+              className="btn-chunky py-4 text-lg flex items-center justify-center gap-3 bg-purple-600 border-purple-800 text-white hover:bg-purple-500 border-b-4 active:border-b-0"
             >
-              <Sparkles className="w-6 h-6" />
+              <Sparkles className="w-6 h-6 fill-current" />
               {t.deckDetails.aiGenerate}
             </button>
           )}
@@ -323,7 +321,7 @@ export default function DeckDetailsPage() {
             <button
               onClick={handleClone}
               disabled={cloneMutation.isPending}
-              className="w-full py-4 bg-purple-600 border-b-4 border-purple-800 text-white font-black rounded-2xl hover:bg-purple-500 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3 text-lg md:col-span-3"
+              className="btn-primary w-full py-4 text-lg md:col-span-3 flex items-center justify-center gap-3"
             >
               {cloneMutation.isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : <Copy className="w-6 h-6" />}
               {t.deckDetails.copyToDecks}
@@ -334,7 +332,7 @@ export default function DeckDetailsPage() {
 
       {/* General Stats Grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-sky-blue transition-colors duration-300">
+        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
           <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
             <Users className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.creator}
           </p>
@@ -416,7 +414,7 @@ export default function DeckDetailsPage() {
                       {card.back_image_url && (
                         <img src={getFullImageUrl(card.back_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                       )}
-                      <div className="font-bold text-sky-blue">
+                      <div className="font-bold text-feather-green">
                         <Latex text={card.back} />
                       </div>
                     </div>
@@ -428,7 +426,7 @@ export default function DeckDetailsPage() {
                     <>
                       <button
                         onClick={() => openEditModal(card)}
-                        className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-sky-blue transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-feather-green transition-colors"
                       >
                         <Edit2 className="w-5 h-5" />
                       </button>
@@ -449,7 +447,7 @@ export default function DeckDetailsPage() {
             <h2 className="text-xl font-black text-gray-400 uppercase">{t.deckDetails.emptyDeck}</h2>
             <button
               onClick={openCreateModal}
-              className="mt-4 text-sky-blue font-black hover:underline underline-offset-4"
+              className="mt-4 text-feather-green font-black hover:underline underline-offset-4"
             >
               {t.deckDetails.addFirstCard}
             </button>

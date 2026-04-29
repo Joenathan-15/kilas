@@ -39,7 +39,7 @@ export default function AppLayout() {
               to={link.to}
               className={({ isActive }) =>
                 `flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${isActive
-                  ? 'bg-sky-100 text-sky-blue border-sky-200'
+                  ? 'bg-emerald-50 text-feather-green border-emerald-100'
                   : 'text-gray-500 border-transparent hover:bg-gray-100'
                 }`
               }
@@ -79,7 +79,7 @@ export default function AppLayout() {
               <Link
                 to="/profile"
                 onClick={() => setIsProfileOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sky-50 text-gray-600 hover:text-sky-blue transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold"
               >
                 <User className="w-5 h-5" />
                 {t.nav.profile}
@@ -150,7 +150,7 @@ export default function AppLayout() {
               <Link
                 to="/profile"
                 onClick={() => setIsProfileOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sky-50 text-gray-600 hover:text-sky-blue transition-colors font-bold"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold"
               >
                 <User className="w-5 h-5" />
                 {t.nav.profile}
@@ -180,7 +180,7 @@ export default function AppLayout() {
             key={link.to}
             to={link.to}
             className={({ isActive }) =>
-              `flex flex-col items-center p-2 rounded-2xl transition-colors ${isActive ? 'text-sky-blue' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+              `flex flex-col items-center p-2 rounded-2xl transition-colors ${isActive ? 'text-feather-green' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
               }`
             }
           >

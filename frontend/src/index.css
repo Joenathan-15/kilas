@@ -3,20 +3,24 @@
 @theme {
   --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
   
-  --color-feather-green: #58cc02;
-  --color-feather-green-dark: #46a302;
+  /* Primary - Emerald */
+  --color-feather-green: #10b981;
+  --color-feather-green-dark: #059669;
   
-  --color-sky-blue: #1cb0f6;
-  --color-sky-blue-dark: #1899d6;
+  /* Secondary - Cyan */
+  --color-sky-blue: #06b6d4;
+  --color-sky-blue-dark: #0891b2;
   
-  --color-danger-red: #ff4b4b;
-  --color-danger-red-dark: #ea2b2b;
+  /* Danger - Rose */
+  --color-danger-red: #f43f5e;
+  --color-danger-red-dark: #e11d48;
   
-  --color-gold: #ffc800;
-  --color-gold-dark: #e5b400;
+  /* Warning/Gold - Amber */
+  --color-gold: #f59e0b;
+  --color-gold-dark: #d97706;
 
   --color-surface: #ffffff;
-  --color-background: #f7f7f7;
+  --color-background: #f8fafc;
 }
 
 @layer base {
@@ -31,11 +35,11 @@
   }
 
   .btn-primary {
-    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-feather-green text-white border-b-4 border-feather-green-dark hover:bg-[#61e002] active:border-b-0;
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-feather-green text-white border-b-4 border-feather-green-dark hover:bg-[#34d399] active:border-b-0;
   }
 
   .btn-secondary {
-    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-sky-blue text-white border-b-4 border-sky-blue-dark hover:bg-[#20c3ff] active:border-b-0;
+    @apply relative inline-flex items-center justify-center font-bold uppercase tracking-widest rounded-2xl transition-all duration-150 active:translate-y-1 select-none bg-sky-blue text-white border-b-4 border-sky-blue-dark hover:bg-[#22d3ee] active:border-b-0;
   }
 
   .btn-danger {
