@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Loader2, 
-  Play, 
-  Sparkles, 
-  Edit2, 
+import {
+  ArrowLeft,
+  Plus,
+  Loader2,
+  Play,
+  Sparkles,
+  Edit2,
   Trash2,
   Globe,
   Lock,
@@ -24,6 +24,7 @@ import DeckModal from '../components/decks/DeckModal';
 import AIGenerateCardsModal from '../components/cards/AIGenerateCardsModal';
 import { useUIStore } from '../stores/uiStore';
 import { useAuthStore } from '../stores/authStore';
+import { Latex } from '../components/common/Latex';
 
 export default function DeckDetailsPage() {
   const { id } = useParams();
@@ -45,7 +46,7 @@ export default function DeckDetailsPage() {
 
   const isOwner = user?.id === deck?.user_id;
 
-  const { data: stats } = useQuery<any>({
+  useQuery<any>({
     queryKey: ['deck-stats', id],
     queryFn: async () => {
       const res = await api.get(`/stats/deck/${id}`);
@@ -185,7 +186,7 @@ export default function DeckDetailsPage() {
       formData.append('deck_id', id!);
 
       toast.success('AI generation started in background... 🧠');
-      
+
       await api.post('/ai/generate-cards', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
@@ -223,7 +224,7 @@ export default function DeckDetailsPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20">
-      
+
       {deck.is_ai_generated && (
         <div className="bg-purple-50 border-2 border-purple-100 rounded-3xl p-4 flex items-center gap-4 text-purple-700 animate-in slide-in-from-top-4 duration-500">
           <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center shrink-0">
@@ -241,7 +242,7 @@ export default function DeckDetailsPage() {
       <section className="flex flex-col gap-6">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4 flex-1">
-            <button 
+            <button
               onClick={() => navigate('/decks')}
               className="p-3 hover:bg-gray-100 rounded-2xl transition-colors text-gray-400"
             >
@@ -293,7 +294,7 @@ export default function DeckDetailsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isOwner && (
-            <Link 
+            <Link
               to={`/decks/${deck.id}/study`}
               className="btn-primary md:col-span-2 py-4 text-lg flex items-center justify-center gap-3"
             >
@@ -302,7 +303,7 @@ export default function DeckDetailsPage() {
             </Link>
           )}
           {isOwner && (
-            <button 
+            <button
               onClick={() => setIsAIGenerateModalOpen(true)}
               className="btn-secondary py-4 text-lg flex items-center justify-center gap-3 border-purple-200 text-purple-600 hover:bg-purple-50"
             >
@@ -311,7 +312,7 @@ export default function DeckDetailsPage() {
             </button>
           )}
           {!isOwner && (
-            <button 
+            <button
               onClick={handleClone}
               disabled={cloneMutation.isPending}
               className="w-full py-4 bg-purple-600 border-b-4 border-purple-800 text-white font-black rounded-2xl hover:bg-purple-500 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3 text-lg md:col-span-3"
@@ -388,7 +389,9 @@ export default function DeckDetailsPage() {
                       {card.front_image_url && (
                         <img src={getFullImageUrl(card.front_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                       )}
-                      <p className="font-bold text-gray-700">{card.front}</p>
+                      <div className="font-bold text-gray-700">
+                        <Latex text={card.front} />
+                      </div>
                       {card.is_ai_created && (
                         <span className="flex items-center gap-0.5 bg-purple-50 text-purple-500 text-[8px] font-black uppercase px-1.5 py-0.5 rounded border border-purple-100 shrink-0">
                           <Sparkles className="w-2 h-2 fill-current" /> AI
@@ -405,7 +408,9 @@ export default function DeckDetailsPage() {
                       {card.back_image_url && (
                         <img src={getFullImageUrl(card.back_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                       )}
-                      <p className="font-bold text-sky-blue">{card.back}</p>
+                      <div className="font-bold text-sky-blue">
+                        <Latex text={card.back} />
+                      </div>
                     </div>
                   </div>
                 </div>

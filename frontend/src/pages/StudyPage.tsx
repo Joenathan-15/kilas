@@ -6,6 +6,8 @@ import { Loader2, ArrowLeft, CheckCircle2, Image as X, Sparkles } from 'lucide-r
 import toast from 'react-hot-toast';
 import type { Card, Deck } from '../types';
 
+import { Latex } from '../components/common/Latex';
+
 interface StudyDueResponse {
   data: Card[];
   total_due: number;
@@ -264,7 +266,7 @@ export default function StudyPage() {
               />
             )}
             <div className="text-2xl font-bold text-gray-700 whitespace-pre-wrap">
-              {currentCard?.front}
+              <Latex text={currentCard?.front || ''} />
             </div>
             <div className="mt-8 text-xs font-black text-gray-300 uppercase tracking-[0.2em] group-hover:text-sky-blue transition-colors">
               Click or Space to reveal
@@ -287,7 +289,7 @@ export default function StudyPage() {
               />
             )}
             <div className="text-2xl font-bold text-gray-700 whitespace-pre-wrap">
-              {currentCard?.back}
+              <Latex text={currentCard?.back || ''} />
             </div>
             {currentCard?.is_ai_created && (
               <div className="mt-auto pt-4 flex items-center gap-1.5 text-[9px] font-black text-purple-400 uppercase tracking-widest border-t border-purple-50 w-full justify-center">
