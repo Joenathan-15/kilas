@@ -46,7 +46,8 @@ func (s *DeckService) Create(userID uint, req dto.DeckRequest) (*model.Deck, err
 		Title:       req.Title,
 		Description: req.Description,
 		IsPublic:    req.IsPublic,
-		Tags:        tagsToString(req.Tags),
+		Tags:          tagsToString(req.Tags),
+		IsAIGenerated: req.IsAIGenerated,
 	}
 	if err := s.DeckRepo.Create(deck); err != nil {
 		return nil, err

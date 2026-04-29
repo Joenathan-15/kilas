@@ -70,7 +70,7 @@ export default function DecksPage() {
 
       const generationId = Math.random().toString(36).substring(7);
       const generationTitle = data.title || 'Untitled Deck';
-      addGeneration(generationId, generationTitle);
+      addGeneration({ id: generationId, title: generationTitle });
 
       const aiPromise = api.post('/ai/generate-cards', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }

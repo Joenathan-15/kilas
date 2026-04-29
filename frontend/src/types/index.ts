@@ -17,6 +17,7 @@ export interface Deck {
   is_public: boolean; 
   tags: string[]; 
   card_count: number; 
+  is_ai_generated: boolean;
   created_at: string; 
   updated_at: string; 
 }
@@ -32,6 +33,7 @@ export interface Card {
   repetitions: number; 
   ease_factor: number; 
   due_date: string; 
+  is_ai_created: boolean;
   created_at: string; 
 }
 

@@ -9,9 +9,10 @@ type Deck struct {
 	Description string    `json:"description"`
 	IsPublic    bool      `gorm:"default:false" json:"is_public"`
 	Tags        string    `json:"tags"` // comma-separated e.g. "math,science"
-	CloneCount  int       `gorm:"default:0" json:"clone_count"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	CloneCount    int       `gorm:"default:0" json:"clone_count"`
+	IsAIGenerated bool      `gorm:"default:false" json:"is_ai_generated"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 	User        User      `gorm:"foreignKey:UserID" json:"-"`
 	Cards       []Card    `gorm:"foreignKey:DeckID" json:"cards,omitempty"`
 	CardCount   int64     `gorm:"->" json:"card_count"`

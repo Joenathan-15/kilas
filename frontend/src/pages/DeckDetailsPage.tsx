@@ -10,13 +10,17 @@ import {
   Edit2, 
   Trash2,
   Globe,
-  Lock
+  Lock,
+  AlertCircle
 } from 'lucide-react';
 import api, { getFullImageUrl } from '../lib/api';
 import toast from 'react-hot-toast';
 import type { Deck, Card } from '../types';
 import CardModal from '../components/cards/CardModal';
 import DeckModal from '../components/decks/DeckModal';
+import AIGenerateCardsModal from '../components/cards/AIGenerateCardsModal';
+import { useUIStore } from '../stores/uiStore';
+import { useAuthStore } from '../stores/authStore';
 
 export default function DeckDetailsPage() {
   const { id } = useParams();
@@ -24,6 +28,9 @@ export default function DeckDetailsPage() {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<Card | undefined>();
+  const [isAIGenerateModalOpen, setIsAIGenerateModalOpen] = useState(false);
+  const { addGeneration, removeGeneration } = useUIStore();
+  const { fetchMe } = useAuthStore();
 
   const { data: deck, isLoading } = useQuery<Deck & { cards: Card[] }>({
     queryKey: ['deck', id],
@@ -137,6 +144,41 @@ export default function DeckDetailsPage() {
     }
   };
 
+  const handleAIGenerate = async (data: { text: string; count: number; file: File | null }) => {
+    const taskId = `ai-gen-${Date.now()}`;
+    addGeneration({
+      id: taskId,
+      title: `Generating cards for ${deck.title}`,
+      status: 'loading'
+    });
+
+    try {
+      const formData = new FormData();
+      if (data.file) {
+        formData.append('file', data.file);
+      } else {
+        formData.append('text', data.text);
+      }
+      formData.append('count', data.count.toString());
+      formData.append('deck_id', id!);
+
+      toast.success('AI generation started in background... 🧠');
+      
+      await api.post('/ai/generate-cards', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['deck', id] });
+      queryClient.invalidateQueries({ queryKey: ['deck-stats', id] });
+      fetchMe(); // Refresh tokens
+      toast.success('AI cards added! ✨');
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error || 'AI generation failed');
+    } finally {
+      removeGeneration(taskId);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
@@ -159,6 +201,19 @@ export default function DeckDetailsPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+      
+      {deck.is_ai_generated && (
+        <div className="bg-purple-50 border-2 border-purple-100 rounded-3xl p-4 flex items-center gap-4 text-purple-700 animate-in slide-in-from-top-4 duration-500">
+          <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center shrink-0">
+            <Sparkles className="w-6 h-6 fill-current" />
+          </div>
+          <div className="flex-1">
+            <p className="font-black text-sm uppercase tracking-tight">AI Generated Content</p>
+            <p className="text-xs font-bold opacity-80 leading-snug">This deck was generated using AI. Please review the cards carefully as AI can sometimes make mistakes or provide inaccurate information.</p>
+          </div>
+          <AlertCircle className="w-5 h-5 text-purple-300 hidden md:block" />
+        </div>
+      )}
 
       {/* Header */}
       <section className="flex flex-col gap-6">
@@ -222,6 +277,7 @@ export default function DeckDetailsPage() {
             START STUDYING
           </Link>
           <button 
+            onClick={() => setIsAIGenerateModalOpen(true)}
             className="btn-secondary py-4 text-lg flex items-center justify-center gap-3 border-purple-200 text-purple-600 hover:bg-purple-50"
           >
             <Sparkles className="w-6 h-6" />
@@ -282,6 +338,11 @@ export default function DeckDetailsPage() {
                         <img src={getFullImageUrl(card.front_image_url)} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                       )}
                       <p className="font-bold text-gray-700">{card.front}</p>
+                      {card.is_ai_created && (
+                        <span className="flex items-center gap-0.5 bg-purple-50 text-purple-500 text-[8px] font-black uppercase px-1.5 py-0.5 rounded border border-purple-100 shrink-0">
+                          <Sparkles className="w-2 h-2 fill-current" /> AI
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -342,6 +403,13 @@ export default function DeckDetailsPage() {
         onSubmit={handleUpdateDeck}
         initialData={deck}
         title="Edit Deck Details"
+      />
+
+      <AIGenerateCardsModal
+        isOpen={isAIGenerateModalOpen}
+        onClose={() => setIsAIGenerateModalOpen(false)}
+        onSubmit={handleAIGenerate}
+        title="AI Generate Cards"
       />
     </div>
   );

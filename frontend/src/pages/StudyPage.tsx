@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { getFullImageUrl } from '../lib/api';
-import { Loader2, ArrowLeft, CheckCircle2, Image as X } from 'lucide-react';
+import { Loader2, ArrowLeft, CheckCircle2, Image as X, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
-import type { Card } from '../types';
+import type { Card, Deck } from '../types';
 
 interface StudyDueResponse {
   data: Card[];
@@ -24,7 +24,6 @@ export default function StudyPage() {
   const [startTime] = useState(Date.now());
   const [studiedCount, setStudiedCount] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-
   // Fetch due cards
   const { data: dueData, isLoading, error } = useQuery<StudyDueResponse>({
     queryKey: ['study-due', deckId, isSandbox],
@@ -33,6 +32,15 @@ export default function StudyPage() {
       const res = await api.get(endpoint);
       return res.data;
     },
+  });
+
+  const { data: deck } = useQuery<Deck>({
+    queryKey: ['deck', deckId],
+    queryFn: async () => {
+      const res = await api.get(`/decks/${deckId}`);
+      return res.data;
+    },
+    enabled: !!deckId,
   });
 
   // Start session mutation
@@ -231,6 +239,13 @@ export default function StudyPage() {
           {currentIndex + 1} / {cards.length}
         </span>
       </div>
+
+      {deck?.is_ai_generated && (
+        <div className="flex items-center justify-center gap-2 text-purple-400">
+          <Sparkles className="w-3 h-3 fill-current" />
+          <p className="text-[10px] font-black uppercase tracking-widest">AI Generated Content — Review for accuracy</p>
+        </div>
+      )}
 
       {/* Card Viewer */}
       <div

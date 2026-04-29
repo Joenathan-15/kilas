@@ -127,32 +127,52 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		return
 	}
 
-	title := req.Title
-	if title == "" {
-		title = generatedData.Title + " (AI Generated)"
+	var finalDeck *model.Deck
+	if req.DeckID != 0 {
+		existingDeck, err := h.DeckService.GetByID(req.DeckID)
+		if err != nil {
+			h.AuthService.TopUp(userID, tokenCost)
+			c.JSON(http.StatusNotFound, gin.H{"error": "deck not found"})
+			return
+		}
+		if existingDeck.UserID != userID {
+			h.AuthService.TopUp(userID, tokenCost)
+			c.JSON(http.StatusForbidden, gin.H{"error": "forbidden"})
+			return
+		}
+		finalDeck = existingDeck
 	} else {
-		title = title + " (AI Generated)"
+		title := req.Title
+		if title == "" {
+			title = generatedData.Title + " (AI Generated)"
+		} else {
+			title = title + " (AI Generated)"
+		}
+
+		// Create a new deck automatically
+		newDeck, err := h.DeckService.Create(userID, dto.DeckRequest{
+			Title:         title,
+			Description:   generatedData.Description,
+			IsPublic:      false,
+			Tags:          generatedData.Tags,
+			IsAIGenerated: true,
+		})
+		if err != nil {
+			// Refund tokens on deck creation failure
+			h.AuthService.TopUp(userID, tokenCost)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create deck"})
+			return
+		}
+		finalDeck = newDeck
 	}
 
-	// Create a new deck automatically
-	newDeck, err := h.DeckService.Create(userID, dto.DeckRequest{
-		Title:       title,
-		Description: generatedData.Description,
-		IsPublic:    false,
-		Tags:        generatedData.Tags,
-	})
-	if err != nil {
-		// Refund tokens on deck creation failure
-		h.AuthService.TopUp(userID, tokenCost)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create deck"})
-		return
-	}
+	deckID := finalDeck.ID
 
 	// Save generated cards to the new deck
 	var savedCards []model.Card
 	for _, gc := range generatedData.Cards {
 		card := &model.Card{
-			DeckID:      newDeck.ID,
+			DeckID:      deckID,
 			Front:       gc.Front,
 			Back:        gc.Back,
 			IsAICreated: true,
@@ -185,7 +205,7 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"deck":             newDeck,
+		"deck":             finalDeck,
 		"cards":            savedCards,
 		"tokens_used":      tokenCost,
 		"tokens_remaining": tokensRemaining,

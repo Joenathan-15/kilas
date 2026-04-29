@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { getFullImageUrl } from '../lib/api';
-import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { LibraryDeck } from '../types';
 
@@ -116,53 +117,64 @@ export default function LibraryPage() {
             {result.data.map((deck) => (
               <div
                 key={deck.id}
-                className="card-duo p-6 flex flex-col h-full hover:-translate-y-1 transition-all duration-200"
+                className="card-duo p-6 flex flex-col h-full hover:-translate-y-1 transition-all duration-200 group relative"
               >
-                {/* Top badges */}
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-lg">
-                    <Layers className="w-3 h-3" /> {deck.card_count}
-                  </span>
-                  <span className="flex items-center gap-1 bg-purple-50 text-purple-500 px-2 py-1 rounded-lg">
-                    <Copy className="w-3 h-3" /> {deck.clone_count} copies
-                  </span>
-                </div>
-
-                {/* Title + Description */}
-                <h3 className="text-lg font-black text-gray-700 line-clamp-2 leading-snug mb-1">
-                  {deck.title}
-                </h3>
-                <p className="text-sm font-bold text-gray-400 line-clamp-2 mb-3">
-                  {deck.description || 'No description'}
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-2 mb-3">
-                  <img
-                    src={getFullImageUrl(undefined, deck.author.username)}
-                    alt={deck.author.username}
-                    className="w-6 h-6 rounded-full object-cover"
-                  />
-                  <span className="text-xs font-bold text-gray-400">{deck.author.username}</span>
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-auto pb-5">
-                  {deck.tags?.slice(0, 3).map((tag) => (
-                    <span key={tag} className="px-2 py-0.5 bg-gray-100 text-[10px] font-black text-gray-500 rounded-md uppercase tracking-wider">
-                      #{tag}
+                <Link to={`/decks/${deck.id}`} className="flex flex-col h-full">
+                  {/* Top badges */}
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-lg">
+                      <Layers className="w-3 h-3" /> {deck.card_count}
                     </span>
-                  ))}
-                  {(deck.tags?.length || 0) > 3 && (
-                    <span className="px-2 py-0.5 text-[10px] font-black text-gray-400">
-                      +{deck.tags.length - 3}
+                    <span className="flex items-center gap-1 bg-purple-50 text-purple-500 px-2 py-1 rounded-lg">
+                      <Copy className="w-3 h-3" /> {deck.clone_count} copies
                     </span>
-                  )}
-                </div>
+                    {deck.tags?.some(t => t.toLowerCase().includes('ai')) && (
+                       <span className="flex items-center gap-1 bg-purple-100 text-purple-600 px-2 py-1 rounded-lg">
+                        <Sparkles className="w-3 h-3 fill-current" /> AI
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Title + Description */}
+                  <h3 className="text-lg font-black text-gray-700 line-clamp-2 leading-snug mb-1 group-hover:text-sky-blue transition-colors">
+                    {deck.title}
+                  </h3>
+                  <p className="text-sm font-bold text-gray-400 line-clamp-2 mb-3">
+                    {deck.description || 'No description'}
+                  </p>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <img
+                      src={getFullImageUrl(undefined, deck.author.username)}
+                      alt={deck.author.username}
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                    <span className="text-xs font-bold text-gray-400">{deck.author.username}</span>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-auto pb-5">
+                    {deck.tags?.slice(0, 3).map((tag) => (
+                      <span key={tag} className="px-2 py-0.5 bg-gray-100 text-[10px] font-black text-gray-500 rounded-md uppercase tracking-wider">
+                        #{tag}
+                      </span>
+                    ))}
+                    {(deck.tags?.length || 0) > 3 && (
+                      <span className="px-2 py-0.5 text-[10px] font-black text-gray-400">
+                        +{deck.tags.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </Link>
 
                 {/* Clone Button */}
                 <button
-                  onClick={() => handleClone(deck)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleClone(deck);
+                  }}
                   disabled={cloneMutation.isPending}
                   className="mt-auto w-full py-3 text-sm font-black rounded-2xl border-b-4 active:border-b-0 active:translate-y-1 transition-all bg-sky-blue border-sky-700 text-white hover:bg-sky-500 flex items-center justify-center gap-2"
                 >
