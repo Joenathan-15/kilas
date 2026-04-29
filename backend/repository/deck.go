@@ -15,7 +15,9 @@ func NewDeckRepository(db *gorm.DB) *DeckRepository {
 
 func (r *DeckRepository) FindByUserID(userID uint) ([]model.Deck, error) {
 	var decks []model.Deck
-	err := r.DB.Select("decks.*, (SELECT COUNT(*) FROM cards WHERE cards.deck_id = decks.id) as card_count").
+	err := r.DB.Select("decks.*, " +
+		"(SELECT COUNT(*) FROM cards WHERE cards.deck_id = decks.id) as card_count, " +
+		"(SELECT COUNT(*) FROM cards WHERE cards.deck_id = decks.id AND cards.due_date <= NOW()) as due_count").
 		Where("decks.user_id = ?", userID).
 		Order("decks.created_at DESC").
 		Find(&decks).Error

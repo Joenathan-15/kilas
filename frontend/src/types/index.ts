@@ -24,6 +24,7 @@ export interface Deck {
   author?: { id: number; username: string };
   created_at: string; 
   updated_at: string; 
+  due_count?: number;
 }
 
 export interface Card { 

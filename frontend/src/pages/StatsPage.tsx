@@ -94,12 +94,6 @@ export default function StatsPage() {
 
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Link
-          to="/dashboard"
-          className="p-3 bg-white border-2 border-gray-100 rounded-2xl text-gray-400 hover:text-sky-blue hover:border-sky-100 transition-all active:scale-95"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </Link>
         <div>
           <h1 className="text-3xl font-black text-gray-700 flex items-center gap-3">
             <BarChart2 className="w-8 h-8 text-sky-blue" />

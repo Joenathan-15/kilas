@@ -260,7 +260,7 @@ export default function StudyPage() {
         <div className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
 
           {/* Front Side */}
-          <div className="absolute inset-0 backface-hidden card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto">
+          <div className="absolute inset-0 backface-hidden card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto select-text">
             {currentCard?.front_image_url && (
               <img
                 src={getFullImageUrl(currentCard.front_image_url)}
@@ -271,7 +271,7 @@ export default function StudyPage() {
             <div className="text-2xl font-bold text-gray-700 whitespace-pre-wrap">
               <Latex text={currentCard?.front || ''} />
             </div>
-            <div className="mt-8 text-xs font-black text-gray-300 uppercase tracking-[0.2em] group-hover:text-sky-blue transition-colors">
+            <div className="mt-8 text-xs font-black text-gray-300 uppercase tracking-[0.2em] group-hover:text-sky-blue transition-colors select-none">
               {t.study.clickToReveal}
             </div>
             {currentCard?.is_ai_created && (
@@ -283,7 +283,7 @@ export default function StudyPage() {
           </div>
 
           {/* Back Side */}
-          <div className="absolute inset-0 backface-hidden rotate-y-180 card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto border-sky-200">
+          <div className="absolute inset-0 backface-hidden rotate-y-180 card-duo p-8 flex flex-col items-center justify-center text-center overflow-auto border-sky-200 select-text">
             {currentCard?.back_image_url && (
               <img
                 src={getFullImageUrl(currentCard.back_image_url)}

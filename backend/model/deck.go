@@ -16,4 +16,5 @@ type Deck struct {
 	User        User      `gorm:"foreignKey:UserID" json:"-"`
 	Cards       []Card    `gorm:"foreignKey:DeckID" json:"cards,omitempty"`
 	CardCount   int64     `gorm:"->" json:"card_count"`
+	DueCount    int64     `gorm:"->" json:"due_count"`
 }

@@ -50,7 +50,7 @@ export default function DeckDetailsPage() {
 
   const isOwner = user?.id === deck?.user_id;
 
-  useQuery<any>({
+  const { data: stats } = useQuery<any>({
     queryKey: ['deck-stats', id],
     queryFn: async () => {
       const res = await api.get(`/stats/deck/${id}`);
@@ -211,10 +211,12 @@ export default function DeckDetailsPage() {
   };
 
   if (isLoading) {
+    return (
       <div className="flex flex-col items-center justify-center py-20">
         <Loader2 className="w-12 h-12 text-feather-green animate-spin mb-4" />
         <p className="font-black text-gray-400 uppercase tracking-widest">{t.deckDetails.loading}</p>
       </div>
+    );
   }
 
   if (!deck) {
@@ -229,7 +231,7 @@ export default function DeckDetailsPage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+    <div className="space-y-4 animate-in fade-in duration-500 pb-20">
 
       {deck.is_ai_generated && (
         <div className="bg-purple-50 border-2 border-purple-100 rounded-3xl p-4 flex items-center gap-4 text-purple-700 animate-in slide-in-from-top-4 duration-500">
@@ -245,53 +247,57 @@ export default function DeckDetailsPage() {
       )}
 
       {/* Header */}
-      <section className="flex flex-col gap-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1">
-            <button
-              onClick={() => navigate('/decks')}
-              className="p-3 hover:bg-gray-100 rounded-2xl transition-colors text-gray-400"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-3xl font-black text-gray-700 tracking-tight uppercase leading-tight">{deck.title}</h1>
-                {deck.is_public ? (
-                  <span className="flex items-center gap-1 text-[10px] font-black text-feather-green uppercase bg-green-50 px-2 py-1 rounded-lg">
-                    <Globe className="w-3 h-3" /> {t.deckDetails.public}
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-[10px] font-black text-gray-400 uppercase bg-gray-100 px-2 py-1 rounded-lg">
-                    <Lock className="w-3 h-3" /> {t.deckDetails.private}
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {deck.tags?.map(tag => (
-                  <span key={tag} className="text-xs font-black text-feather-green uppercase tracking-wider">#{tag}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+      <section className="flex flex-col gap-4 md:gap-6">
+        {/* Row 1: Back Button + Actions */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate('/decks')}
+            className="p-2.5 md:p-3 hover:bg-gray-100 rounded-2xl transition-colors text-gray-400 shrink-0"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+
           {isOwner && (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsDeckModalOpen(true)}
-                className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-feather-green transition-colors"
-                title="Edit Deck"
+                className="p-2.5 md:p-3 bg-white border-2 border-gray-100 rounded-2xl text-gold hover:bg-amber-50 hover:border-gold transition-all shadow-sm"
+                title={t.common.edit}
               >
                 <Edit2 className="w-5 h-5" />
               </button>
               <button
                 onClick={handleDeleteDeck}
-                className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-red-500 transition-colors"
-                title="Delete Deck"
+                className="p-2.5 md:p-3 bg-white border-2 border-gray-100 rounded-2xl text-danger-red hover:bg-red-50 hover:border-danger-red transition-all shadow-sm"
+                title={t.common.delete}
               >
                 <Trash2 className="w-5 h-5" />
               </button>
             </div>
           )}
+        </div>
+
+        {/* Row 2 & 3: Title & Metadata */}
+        <div className="space-y-2">
+          <h1 className="text-3xl md:text-4xl font-black text-gray-700 tracking-tight uppercase leading-tight">
+            {deck.title}
+          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            {deck.tags?.map(tag => (
+              <span key={tag} className="text-[10px] md:text-xs font-black text-feather-green uppercase tracking-wider">#{tag}</span>
+            ))}
+            <div className="flex shrink-0">
+              {deck.is_public ? (
+                <span className="flex items-center gap-1 text-[10px] font-black text-feather-green uppercase bg-green-50 px-2 py-1 rounded-lg border border-green-100">
+                  <Globe className="w-3 h-3" /> {t.deckDetails.public}
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-[10px] font-black text-gray-400 uppercase bg-gray-100 px-2 py-1 rounded-lg border border-gray-200">
+                  <Lock className="w-3 h-3" /> {t.deckDetails.private}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
 
         {deck.description && (
@@ -301,11 +307,11 @@ export default function DeckDetailsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isOwner && (
             <Link
-              to={`/decks/${deck.id}/study`}
+              to={`/decks/${deck.id}/study${stats?.due_today === 0 ? '?mode=sandbox' : ''}`}
               className="btn-primary md:col-span-2 py-4 text-lg flex items-center justify-center gap-3"
             >
               <Play className="w-6 h-6 fill-current" />
-              {t.deckDetails.startStudying}
+              {stats?.due_today === 0 ? t.stats.reStudy : t.deckDetails.startStudying}
             </Link>
           )}
           {isOwner && (
@@ -331,7 +337,7 @@ export default function DeckDetailsPage() {
       </section>
 
       {/* General Stats Grid */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-2 md:mt-4">
         <div className="bg-white border-2 border-gray-100 rounded-4xl p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
           <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
             <Users className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.creator}
@@ -357,17 +363,19 @@ export default function DeckDetailsPage() {
             <Globe className="w-3 h-3 md:w-4 md:h-4" /> {t.deckDetails.visibility}
           </p>
           <p className="text-[10px] md:text-xs font-black text-feather-green leading-none uppercase tracking-widest mt-2 bg-green-50 py-1 rounded-lg border border-green-100 inline-block px-3">
-            {deck.is_public ? 'Public' : 'Private'}
+            {deck.is_public ? t.deckDetails.public : t.deckDetails.private}
           </p>
         </div>
       </section>
 
       {/* Card Controls */}
-      <section className="flex justify-between items-center border-t-2 border-gray-100 pt-8">
-        <div className="hidden md:block">
-          <h2 className="text-xl font-black text-gray-700 tracking-tight uppercase">{t.deckDetails.deckContent}</h2>
-          <p className="text-sm font-bold text-gray-400">{t.deckDetails.cardsInCollection.replace('{count}', (deck.cards?.length || 0).toString())}</p>
-        </div>
+      <section className={`flex justify-between items-center ${isOwner ? 'border-t-2 border-gray-100 pt-6' : 'pt-2'}`}>
+        {(isOwner || (deck.cards && deck.cards.length > 0)) && (
+          <div className="hidden md:block">
+            <h2 className="text-xl font-black text-gray-700 tracking-tight uppercase">{t.deckDetails.deckContent}</h2>
+            <p className="text-sm font-bold text-gray-400">{t.deckDetails.cardsInCollection.replace('{count}', (deck.cards?.length || 0).toString())}</p>
+          </div>
+        )}
         {isOwner && (
           <button
             onClick={openCreateModal}
@@ -389,7 +397,8 @@ export default function DeckDetailsPage() {
                 className="card-duo p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 group"
               >
                 <div className="flex-1 flex flex-col md:flex-row gap-6 md:items-center w-full">
-                  <div className="flex-1">
+                  {/* Front Side */}
+                  <div className="flex-1 select-text">
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{t.deckDetails.front}</p>
                     <div className="flex items-start gap-3">
                       {card.front_image_url && (
@@ -408,7 +417,8 @@ export default function DeckDetailsPage() {
 
                   <div className="hidden md:block w-px h-8 bg-gray-200 mx-2" />
 
-                  <div className="flex-1">
+                  {/* Back Side */}
+                  <div className="flex-1 select-text">
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{t.deckDetails.back}</p>
                     <div className="flex items-start gap-3">
                       {card.back_image_url && (
@@ -421,18 +431,21 @@ export default function DeckDetailsPage() {
                   </div>
                 </div>
 
+                {/* Actions */}
                 <div className="flex items-center gap-2 ml-auto">
                   {isOwner && (
                     <>
                       <button
                         onClick={() => openEditModal(card)}
                         className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-feather-green transition-colors"
+                        title={t.common.edit}
                       >
                         <Edit2 className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleDeleteCard(card.id)}
                         className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-red-500 transition-colors"
+                        title={t.common.delete}
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>

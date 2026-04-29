@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Edit2, Trash2, Globe, Lock, Layers, Play, Sparkles } from 'lucide-react';
+import { Edit2, Trash2, Globe, Lock, Layers, Play, Sparkles, AlertCircle } from 'lucide-react';
 import type { Deck } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface DeckCardProps {
   deck: Deck;
@@ -9,6 +10,7 @@ interface DeckCardProps {
 }
 
 export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
+  const { t } = useTranslation();
   const visibleTags = deck.tags?.slice(0, 3) || [];
   const extraTagCount = (deck.tags?.length || 0) - 3;
 
@@ -19,16 +21,21 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
         <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
           {deck.is_public ? (
             <span className="flex items-center gap-1 text-feather-green bg-green-50 px-2 py-1 rounded-lg shrink-0">
-              <Globe className="w-3 h-3" /> Public
+              <Globe className="w-3 h-3" /> {t.decks.public}
             </span>
           ) : (
             <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-lg shrink-0">
-              <Lock className="w-3 h-3" /> Private
+              <Lock className="w-3 h-3" /> {t.decks.private}
             </span>
           )}
           <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-lg shrink-0">
             <Layers className="w-3 h-3" /> {deck.card_count || 0}
           </span>
+          {deck.due_count !== undefined && deck.due_count > 0 && (
+            <span className="flex items-center gap-1 bg-orange-50 text-orange-600 border border-orange-100 px-2 py-1 rounded-lg shrink-0 font-black">
+              <AlertCircle className="w-3 h-3" /> {deck.due_count}
+            </span>
+          )}
           {deck.is_ai_generated && (
             <span className="flex items-center gap-1 bg-purple-50 text-purple-500 px-2 py-1 rounded-lg shrink-0 border border-purple-100 animate-pulse">
               <Sparkles className="w-3 h-3 fill-current" /> AI
@@ -58,7 +65,7 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
           {deck.title}
         </h3>
         <p className="text-sm font-bold text-gray-400 line-clamp-1 mt-1">
-          {deck.description || 'No description'}
+          {deck.description || t.library.noDescription}
         </p>
       </Link>
 
@@ -79,16 +86,16 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
       {/* Actions */}
       <div className="flex gap-3 mt-auto">
         <Link 
-          to={`/decks/${deck.id}/study`}
+          to={`/decks/${deck.id}/study${deck.due_count === 0 ? '?mode=sandbox' : ''}`}
           className="btn-primary flex-1 py-3 text-sm flex items-center justify-center gap-2"
         >
           <Play className="w-4 h-4 fill-current" />
-          STUDY
+          {deck.due_count === 0 ? t.stats.reStudy.toUpperCase() : t.decks.studyNow.toUpperCase()}
         </Link>
         <Link 
           to={`/decks/${deck.id}`}
           className="btn-secondary px-4 py-3 flex items-center justify-center"
-          title="View Cards"
+          title={t.decks.viewDetails}
         >
           <Layers className="w-5 h-5" />
         </Link>
