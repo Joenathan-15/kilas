@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 type RegisterRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Username string `json:"username" binding:"required,min=3,max=20"`
@@ -20,8 +22,9 @@ type UserResponse struct {
 	Email       string `json:"email"`
 	Username    string `json:"username"`
 	AvatarURL   string `json:"avatar_url"`
-	LoginStreak int    `json:"login_streak"`
-	Tokens      int    `json:"tokens"`
+	LoginStreak   int        `json:"login_streak"`
+	Tokens        int        `json:"tokens"`
+	LastLoginDate *time.Time `json:"last_login_date"`
 }
 
 type AuthResponse struct {

@@ -66,6 +66,10 @@ export default function DashboardPage() {
   });
 
   const bestDeck = decks?.data?.find(d => d.card_count > 0);
+  
+  const isClaimedToday = user?.last_login_date ? (
+    new Date(user.last_login_date).toDateString() === new Date().toDateString()
+  ) : false;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500" onClick={() => setActiveDayIdx(null)}>
@@ -80,10 +84,23 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-black text-gray-700">{user?.login_streak || 0} Day Streak!</h2>
             <button 
               onClick={handleClaimReward}
-              disabled={isClaiming}
-              className="mt-1 text-xs font-black text-orange-500 uppercase tracking-widest hover:text-orange-600 flex items-center gap-1 disabled:opacity-50"
+              disabled={isClaiming || isClaimedToday}
+              className={`mt-2 px-4 py-2 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all border-b-4 active:border-b-0 active:translate-y-1 ${
+                isClaimedToday 
+                  ? 'bg-green-50 text-feather-green border-green-200 cursor-default' 
+                  : 'bg-orange-500 text-white border-orange-700 hover:bg-orange-600 animate-pulse'
+              } disabled:opacity-70 disabled:translate-y-0 disabled:border-b-4`}
             >
-              {isClaiming ? 'Claiming...' : 'Claim Daily Reward 🪙'}
+              {isClaiming ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : isClaimedToday ? (
+                <CheckCircle2 className="w-4 h-4" />
+              ) : (
+                <Coins className="w-4 h-4" />
+              )}
+              <span className="text-[10px]">
+                {isClaiming ? 'Claiming...' : isClaimedToday ? 'Claimed Today ✨' : 'Claim Daily Reward 🪙'}
+              </span>
             </button>
           </div>
         </div>

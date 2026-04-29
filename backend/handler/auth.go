@@ -41,7 +41,9 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			Email:     user.Email,
 			Username:  user.Username,
 			AvatarURL: user.AvatarURL,
-			Tokens:    user.Tokens,
+			Tokens:        user.Tokens,
+			LoginStreak:   user.LoginStreak,
+			LastLoginDate: user.LastLoginDate,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -67,7 +69,9 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			Email:     user.Email,
 			Username:  user.Username,
 			AvatarURL: user.AvatarURL,
-			Tokens:    user.Tokens,
+			Tokens:        user.Tokens,
+			LoginStreak:   user.LoginStreak,
+			LastLoginDate: user.LastLoginDate,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -115,6 +119,7 @@ func (h *AuthHandler) Me(c *gin.Context) {
 		AvatarURL:   user.AvatarURL,
 		LoginStreak: user.LoginStreak,
 		Tokens:      user.Tokens,
+		LastLoginDate: user.LastLoginDate,
 	})
 }
 
@@ -180,5 +185,6 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 		AvatarURL:   user.AvatarURL,
 		LoginStreak: user.LoginStreak,
 		Tokens:      user.Tokens,
+		LastLoginDate: user.LastLoginDate,
 	})
 }
