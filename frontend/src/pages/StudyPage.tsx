@@ -220,9 +220,10 @@ export default function StudyPage() {
               handleFinish();
             }
           }}
-          className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-xl text-gray-400 transition-colors font-black text-xs uppercase tracking-widest"
         >
-          <X className="w-6 h-6" />
+          <ArrowLeft className="w-4 h-4" />
+          EXIT
         </button>
         <div className="flex-1 mx-8 flex flex-col items-center gap-1">
           {isSandbox && (
