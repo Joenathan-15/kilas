@@ -30,7 +30,7 @@ func (s *AuthService) GenerateTokens(userID uint) (accessToken, refreshToken str
 	accessClaims := jwt.MapClaims{
 		"sub":  float64(userID),
 		"type": "access",
-		"exp":  time.Now().Add(15 * time.Minute).Unix(),
+		"exp":  time.Now().Add(24 * time.Hour).Unix(),
 		"iat":  time.Now().Unix(),
 	}
 	accessToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims).SignedString([]byte(accessSecret))
@@ -42,7 +42,7 @@ func (s *AuthService) GenerateTokens(userID uint) (accessToken, refreshToken str
 	refreshClaims := jwt.MapClaims{
 		"sub":  float64(userID),
 		"type": "refresh",
-		"exp":  time.Now().Add(7 * 24 * time.Hour).Unix(),
+		"exp":  time.Now().Add(30 * 24 * time.Hour).Unix(),
 		"iat":  time.Now().Unix(),
 	}
 	refreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(refreshSecret))
@@ -142,7 +142,7 @@ func (s *AuthService) RefreshToken(refreshTokenStr string) (string, error) {
 	accessClaims := jwt.MapClaims{
 		"sub":  float64(userID),
 		"type": "access",
-		"exp":  time.Now().Add(15 * time.Minute).Unix(),
+		"exp":  time.Now().Add(24 * time.Hour).Unix(),
 		"iat":  time.Now().Unix(),
 	}
 	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims).SignedString([]byte(accessSecret))
@@ -225,7 +225,7 @@ func (s *AuthService) ClaimDailyReward(userID uint) (reward int, streak int, tot
 
 	// Retrieve updated user to get accurate total tokens
 	updatedUser, _ := s.UserRepo.FindByID(userID)
-	
+
 	return reward, streak, updatedUser.Tokens, nil
 }
 
