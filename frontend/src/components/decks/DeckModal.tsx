@@ -113,7 +113,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
             <>
               <div>
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
-                  Deck Title
+                  Deck Title <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
                   type="text"

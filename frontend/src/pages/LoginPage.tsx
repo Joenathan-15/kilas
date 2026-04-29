@@ -8,9 +8,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  
+
   const { login, isAuthenticated, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-md bg-surface p-8 rounded-2xl border-2 border-gray-200">
-        
+
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black text-feather-green tracking-tight flex items-center justify-center gap-2">
             <span>Kilas</span>
@@ -54,56 +54,65 @@ export default function LoginPage() {
           </h1>
           <p className="text-gray-500 font-medium mt-2">Learn anything, forever.</p>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Mail className="h-5 w-5 text-gray-400" />
+          <div className="space-y-2">
+            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
+              Email Address <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
+                placeholder="Email address"
+              />
             </div>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-              placeholder="Email address"
-            />
-          </div>
-          {validationErrors.Email && (
-            <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Email}</p>
-          )}
+            {validationErrors.Email && (
+              <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Email}</p>
+            )}
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
+            <div className="space-y-2">
+              <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-11 pr-12 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+              {validationErrors.Password && (
+                <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Password}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-primary w-full py-4 text-lg mt-2"
+              >
+                {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : "LOG IN"}
+              </button>
             </div>
-            <input
-              type={showPassword ? "text" : "password"}
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-11 pr-12 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-              placeholder="Password"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-            </button>
           </div>
-          {validationErrors.Password && (
-            <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Password}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full py-4 text-lg mt-2"
-          >
-            {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : "LOG IN"}
-          </button>
         </form>
 
         <div className="mt-6 flex items-center justify-between">

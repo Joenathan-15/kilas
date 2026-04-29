@@ -63,79 +63,99 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
+          <div className="space-y-2">
+            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
+              Username <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                required
+                minLength={3}
+                maxLength={20}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
+                placeholder="Username (3-20 chars)"
+              />
             </div>
-            <input
-              type="text"
-              required
-              minLength={3}
-              maxLength={20}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-              placeholder="Username (3-20 chars)"
-            />
           </div>
           {validationErrors.Username && (
             <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Username}</p>
           )}
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Mail className="h-5 w-5 text-gray-400" />
+          <div className="space-y-2">
+            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
+              Email Address <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
+                placeholder="Email address"
+              />
             </div>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-              placeholder="Email address"
-            />
           </div>
           {validationErrors.Email && (
             <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Email}</p>
           )}
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
+          <div className="space-y-2">
+            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
+              Password <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-11 pr-12 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
+                placeholder="Password (min 8 chars)"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
             </div>
-            <input
-              type={showPassword ? "text" : "password"}
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-11 pr-12 py-3 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none"
-              placeholder="Password (min 8 chars)"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-            </button>
           </div>
           {validationErrors.Password && (
             <p className="text-danger-red text-xs font-bold px-2">{validationErrors.Password}</p>
           )}
-          
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="h-5 w-5 text-gray-400" />
+
+          <div className="space-y-2">
+            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
+              Confirm Password <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Lock className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={`w-full pl-11 pr-12 py-3 bg-gray-100 border-2 rounded-2xl focus:bg-white focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none ${confirmPassword && password !== confirmPassword ? 'border-danger-red focus:border-danger-red' : 'border-transparent focus:border-sky-blue'}`}
+                placeholder="Confirm Password"
+              />
             </div>
-            <input
-              type={showPassword ? "text" : "password"}
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`w-full pl-11 pr-12 py-3 bg-gray-100 border-2 rounded-2xl focus:bg-white focus:ring-0 transition-colors font-semibold text-gray-700 placeholder-gray-400 outline-none ${confirmPassword && password !== confirmPassword ? 'border-danger-red focus:border-danger-red' : 'border-transparent focus:border-sky-blue'}`}
-              placeholder="Confirm Password"
-            />
           </div>
 
           <button

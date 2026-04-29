@@ -107,7 +107,7 @@ export default function CardModal({ isOpen, onClose, onSubmit, initialData, titl
           {/* Front of Card */}
           <div className="space-y-3">
             <label className="block text-sm font-black text-gray-400 uppercase tracking-wider">
-              Front (Question)
+              Front (Question) <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="relative group">
               <textarea
@@ -156,7 +156,7 @@ export default function CardModal({ isOpen, onClose, onSubmit, initialData, titl
           {/* Back of Card */}
           <div className="space-y-3">
             <label className="block text-sm font-black text-gray-400 uppercase tracking-wider">
-              Back (Answer)
+              Back (Answer) <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="relative group">
               <textarea

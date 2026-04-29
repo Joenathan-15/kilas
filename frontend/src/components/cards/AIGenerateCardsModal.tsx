@@ -63,7 +63,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
           {activeTab === 'text' ? (
             <div className="space-y-2">
               <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">
-                Study Material / Notes
+                Study Material / Notes <span className="text-red-500 ml-1">*</span>
               </label>
               <textarea
                 required
