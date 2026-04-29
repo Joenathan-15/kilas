@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Sparkles, FileText, Type } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 interface AIGenerateCardsModalProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface AIGenerateCardsModalProps {
 }
 
 export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title }: AIGenerateCardsModalProps) {
+  useEscapeKey(onClose, isOpen);
   const { user } = useAuthStore();
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
   const [activeTab, setActiveTab] = useState<'text' | 'pdf'>('text');

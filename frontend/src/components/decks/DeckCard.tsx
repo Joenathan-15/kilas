@@ -84,17 +84,17 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3 mt-auto">
+      <div className="flex gap-2.5 mt-auto pt-2">
         <Link 
           to={`/decks/${deck.id}/study${deck.due_count === 0 ? '?mode=sandbox' : ''}`}
-          className="btn-primary flex-1 py-3 text-sm flex items-center justify-center gap-2"
+          className="btn-primary flex-[3] py-4 text-xs font-black flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
         >
           <Play className="w-4 h-4 fill-current" />
           {deck.due_count === 0 ? t.stats.reStudy.toUpperCase() : t.decks.studyNow.toUpperCase()}
         </Link>
         <Link 
           to={`/decks/${deck.id}`}
-          className="btn-secondary px-4 py-3 flex items-center justify-center"
+          className="btn-secondary flex-1 py-4 flex items-center justify-center shadow-md"
           title={t.decks.viewDetails}
         >
           <Layers className="w-5 h-5" />

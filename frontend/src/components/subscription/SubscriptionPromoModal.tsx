@@ -1,6 +1,7 @@
 import { X, Sparkles, Zap, Shield, Rocket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 interface SubscriptionPromoModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface SubscriptionPromoModalProps {
 }
 
 export default function SubscriptionPromoModal({ isOpen, onClose, reason }: SubscriptionPromoModalProps) {
+  useEscapeKey(onClose, isOpen);
   const navigate = useNavigate();
   const { t } = useTranslation();
 

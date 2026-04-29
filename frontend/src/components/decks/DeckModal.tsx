@@ -3,6 +3,7 @@ import { X, Loader2, Sparkles, FileText, Plus } from 'lucide-react';
 import type { Deck } from '../../types';
 import { useAuthStore } from '../../stores/authStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 interface DeckModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface DeckModalProps {
 }
 
 export default function DeckModal({ isOpen, onClose, onSubmit, initialData, title }: DeckModalProps) {
+  useEscapeKey(onClose, isOpen);
   const { user } = useAuthStore();
   const { t } = useTranslation();
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();

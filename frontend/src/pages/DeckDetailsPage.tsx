@@ -50,7 +50,7 @@ export default function DeckDetailsPage() {
 
   const isOwner = user?.id === deck?.user_id;
 
-  const { data: stats } = useQuery<any>({
+  useQuery<any>({
     queryKey: ['deck-stats', id],
     queryFn: async () => {
       const res = await api.get(`/stats/deck/${id}`);
@@ -307,11 +307,11 @@ export default function DeckDetailsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {isOwner && (
             <Link
-              to={`/decks/${deck.id}/study${stats?.due_today === 0 ? '?mode=sandbox' : ''}`}
+              to={`/decks/${deck.id}/study${deck.due_count === 0 ? '?mode=sandbox' : ''}`}
               className="btn-primary md:col-span-2 py-4 text-lg flex items-center justify-center gap-3"
             >
               <Play className="w-6 h-6 fill-current" />
-              {stats?.due_today === 0 ? t.stats.reStudy : t.deckDetails.startStudying}
+              {deck.due_count === 0 ? t.stats.reStudy : t.deckDetails.startStudying}
             </Link>
           )}
           {isOwner && (

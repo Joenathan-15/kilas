@@ -3,6 +3,7 @@ import { X, Loader2, Image as ImageIcon, Trash2 } from 'lucide-react';
 import api, { getFullImageUrl } from '../../lib/api';
 import toast from 'react-hot-toast';
 import type { Card } from '../../types';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 
 interface CardModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface CardModalProps {
 }
 
 export default function CardModal({ isOpen, onClose, onSubmit, initialData, title }: CardModalProps) {
+  useEscapeKey(onClose, isOpen);
   const [formData, setFormData] = useState({
     front: '',
     back: '',
