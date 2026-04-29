@@ -7,6 +7,7 @@ export interface User {
   tokens: number;
   last_login_date: string | null;
   login_streak: number;
+  subscription_until: string | null;
 }
 
 export interface Deck { 

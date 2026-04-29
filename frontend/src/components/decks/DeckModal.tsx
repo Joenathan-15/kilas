@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Loader2, Sparkles, FileText, Plus } from 'lucide-react';
 import type { Deck } from '../../types';
+import { useAuthStore } from '../../stores/authStore';
 
 interface DeckModalProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ interface DeckModalProps {
 }
 
 export default function DeckModal({ isOpen, onClose, onSubmit, initialData, title }: DeckModalProps) {
+  const { user } = useAuthStore();
+  const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
   const [activeTab, setActiveTab] = useState<'manual' | 'ai'>('manual');
   const [formData, setFormData] = useState({
     title: '',
@@ -177,7 +180,12 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                   ) : (
                     <div>
                       <p className="font-black text-gray-500">Upload PDF Study Material</p>
-                      <p className="text-xs font-bold text-gray-400 uppercase mt-1">Maximum 50 pages</p>
+                      <div className="flex flex-col gap-0.5 mt-1">
+                        <p className="text-xs font-bold text-gray-400 uppercase">Maximum 50 pages</p>
+                        {!isSubscribed && (
+                          <p className="text-[10px] font-black text-purple-400 uppercase">Free users: 3 AI uploads max</p>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

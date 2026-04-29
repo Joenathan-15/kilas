@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, Sparkles, FileText, Type } from 'lucide-react';
+import { useAuthStore } from '../../stores/authStore';
 
 interface AIGenerateCardsModalProps {
   isOpen: boolean;
@@ -9,6 +10,8 @@ interface AIGenerateCardsModalProps {
 }
 
 export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title }: AIGenerateCardsModalProps) {
+  const { user } = useAuthStore();
+  const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
   const [activeTab, setActiveTab] = useState<'text' | 'pdf'>('text');
   const [text, setText] = useState('');
   const [count, setCount] = useState(10);
@@ -135,8 +138,9 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
             GENERATE CARDS
           </button>
 
-          <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            Costs {activeTab === 'pdf' ? '50 tokens / page' : `${count * 10} tokens`}
+          <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-1">
+            <span>Costs {activeTab === 'pdf' ? '50 tokens / page' : `${count * 10} tokens`}</span>
+            {!isSubscribed && <span className="text-purple-400 font-black">Free users: 3 AI generations max</span>}
           </p>
         </form>
       </div>
