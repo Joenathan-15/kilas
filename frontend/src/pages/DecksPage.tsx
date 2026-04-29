@@ -8,6 +8,7 @@ import DeckCard from '../components/decks/DeckCard';
 import DeckModal from '../components/decks/DeckModal';
 import { useAuthStore } from '../stores/authStore';
 import { useUIStore } from '../stores/uiStore';
+import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 
 export default function DecksPage() {
   const queryClient = useQueryClient();
@@ -16,6 +17,7 @@ export default function DecksPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDeck, setEditingDeck] = useState<Deck | undefined>();
+  const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
 
   const { data: decksData, isLoading } = useQuery<{ data: Deck[] }>({
     queryKey: ['decks'],
@@ -77,6 +79,11 @@ export default function DecksPage() {
       }).then(() => {
         queryClient.invalidateQueries({ queryKey: ['decks'] });
         fetchMe(); // Refresh user data to update token count
+      }).catch((err) => {
+        if (err?.response?.status === 429) {
+          setIsPromoModalOpen(true);
+        }
+        throw err;
       }).finally(() => {
         removeGeneration(generationId);
       });
@@ -185,6 +192,12 @@ export default function DecksPage() {
         onSubmit={editingDeck ? handleUpdateDeck : handleCreateDeck}
         initialData={editingDeck}
         title={editingDeck ? 'Edit Deck' : 'Create New Deck'}
+      />
+
+      <SubscriptionPromoModal
+        isOpen={isPromoModalOpen}
+        onClose={() => setIsPromoModalOpen(false)}
+        reason="Daily AI Limit Reached! 🚀"
       />
     </div>
   );

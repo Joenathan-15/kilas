@@ -25,6 +25,7 @@ import AIGenerateCardsModal from '../components/cards/AIGenerateCardsModal';
 import { useUIStore } from '../stores/uiStore';
 import { useAuthStore } from '../stores/authStore';
 import { Latex } from '../components/common/Latex';
+import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 
 export default function DeckDetailsPage() {
   const { id } = useParams();
@@ -32,6 +33,7 @@ export default function DeckDetailsPage() {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<Card | undefined>();
+  const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
   const [isAIGenerateModalOpen, setIsAIGenerateModalOpen] = useState(false);
   const { addGeneration, removeGeneration } = useUIStore();
   const { user, fetchMe } = useAuthStore();
@@ -196,7 +198,11 @@ export default function DeckDetailsPage() {
       fetchMe(); // Refresh tokens
       toast.success('AI cards added! ✨');
     } catch (err: any) {
-      toast.error(err?.response?.data?.error || 'AI generation failed');
+      if (err?.response?.status === 429) {
+        setIsPromoModalOpen(true);
+      } else {
+        toast.error(err?.response?.data?.error || 'AI generation failed');
+      }
     } finally {
       removeGeneration(taskId);
     }
@@ -470,6 +476,12 @@ export default function DeckDetailsPage() {
         onClose={() => setIsAIGenerateModalOpen(false)}
         onSubmit={handleAIGenerate}
         title="AI Generate Cards"
+      />
+
+      <SubscriptionPromoModal
+        isOpen={isPromoModalOpen}
+        onClose={() => setIsPromoModalOpen(false)}
+        reason="Daily AI Limit Reached! 🚀"
       />
     </div>
   );

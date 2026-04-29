@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
-import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle } from 'lucide-react';
+import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -82,8 +82,8 @@ export default function ShopPage() {
             className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'shop' ? 'bg-white text-orange-500 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
           >
-            <Coins className="w-5 h-5" />
-            Tokens
+            <ShoppingBag className="w-5 h-5" />
+            Shop
           </button>
           <button
             onClick={() => setActiveTab('history')}
@@ -102,53 +102,126 @@ export default function ShopPage() {
           <p className="font-black text-gray-400 uppercase tracking-widest">Loading items...</p>
         </div>
       ) : activeTab === 'shop' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products?.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-orange-100 transition-all group flex flex-col"
-            >
-              <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Coins className="w-8 h-8 text-orange-500" />
-              </div>
-
-              <div className="flex-1 space-y-2">
-                <h3 className="text-2xl font-black text-gray-800 leading-tight">
-                  {product.name}
-                </h3>
-                <p className="text-gray-400 font-bold text-sm line-clamp-2">
-                  {product.description}
-                </p>
-              </div>
-
-              <div className="mt-8 space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-black text-gray-400 uppercase tracking-widest">Price</span>
-                  <span className="text-2xl font-black text-gray-800">
-                    Rp {new Intl.NumberFormat('id-ID').format(product.price)}
-                  </span>
+        <div className="space-y-12">
+          {/* Subscription Section */}
+          {products.some(p => p.type === 'subscription') && (
+            <section className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                  <CreditCard className="w-5 h-5" />
                 </div>
-
-                <button
-                  onClick={() => handlePurchase(product.id)}
-                  disabled={isPurchasing === product.id}
-                  className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-black transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isPurchasing === product.id ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <CreditCard className="w-5 h-5" />
-                      PURCHASE NOW
-                    </>
-                  )}
-                </button>
+                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Kilas Pro Subscription</h2>
               </div>
-            </div>
-          ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.filter(p => p.type === 'subscription').map((product) => (
+                  <div
+                    key={product.id}
+                    className="bg-gradient-to-br from-white to-purple-50/30 border-4 border-purple-100 rounded-[2.5rem] p-8 shadow-xl shadow-purple-100/20 hover:shadow-2xl hover:border-purple-300 transition-all group flex flex-col relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                      <Sparkles className="w-24 h-24 text-purple-600" />
+                    </div>
+
+                    <div className="w-16 h-16 bg-purple-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-200">
+                      <Zap className="w-8 h-8 fill-current" />
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <h3 className="text-2xl font-black text-gray-800 leading-tight">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-400 font-bold text-sm leading-relaxed">
+                        {product.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-8 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-black text-gray-800">
+                          Rp {new Intl.NumberFormat('id-ID').format(product.price)}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => handlePurchase(product.id)}
+                        disabled={isPurchasing === product.id}
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white py-5 rounded-2xl font-black transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 border-b-4 border-purple-900"
+                      >
+                        {isPurchasing === product.id ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <CreditCard className="w-5 h-5" />
+                            UPGRADE TO PRO
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Tokens Section */}
+          {products.some(p => p.type !== 'subscription') && (
+            <section className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600">
+                  <Coins className="w-5 h-5" />
+                </div>
+                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">Token Packs</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.filter(p => p.type !== 'subscription').map((product) => (
+                  <div
+                    key={product.id}
+                    className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-orange-100 transition-all group flex flex-col"
+                  >
+                    <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                      <Coins className="w-8 h-8 text-orange-500" />
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <h3 className="text-2xl font-black text-gray-800 leading-tight">
+                        {product.name}
+                      </h3>
+                      <p className="text-gray-400 font-bold text-sm line-clamp-2">
+                        {product.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-8 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-black text-gray-400 uppercase tracking-widest">Price</span>
+                        <span className="text-2xl font-black text-gray-800">
+                          Rp {new Intl.NumberFormat('id-ID').format(product.price)}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => handlePurchase(product.id)}
+                        disabled={isPurchasing === product.id}
+                        className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-black transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {isPurchasing === product.id ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <CreditCard className="w-5 h-5" />
+                            PURCHASE NOW
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {products?.length === 0 && (
-            <div className="col-span-full py-20 text-center space-y-4">
+            <div className="py-20 text-center space-y-4">
               <ShoppingBag className="w-16 h-16 text-gray-200 mx-auto" />
               <p className="text-xl font-bold text-gray-400">No products available at the moment.</p>
             </div>
