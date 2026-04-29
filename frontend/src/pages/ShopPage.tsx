@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
-import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -16,6 +16,7 @@ interface Transaction {
   product_name: string;
   amount: number;
   tokens: number;
+  status: string;
   created_at: string;
 }
 
@@ -196,10 +197,22 @@ export default function ShopPage() {
                       <span className="font-black text-gray-700">Rp {new Intl.NumberFormat('id-ID').format(t.amount)}</span>
                     </td>
                     <td className="px-6 py-5">
-                      <div className="flex items-center gap-2 text-green-500 font-black text-xs uppercase tracking-tight bg-green-50 px-3 py-1 rounded-full w-fit">
-                        <CheckCircle2 className="w-3 h-3" />
-                        Success
-                      </div>
+                      {t.status === 'success' ? (
+                        <div className="flex items-center gap-2 text-green-500 font-black text-xs uppercase tracking-tight bg-green-50 px-3 py-1 rounded-full w-fit">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Success
+                        </div>
+                      ) : t.status === 'pending' ? (
+                        <div className="flex items-center gap-2 text-yellow-600 font-black text-xs uppercase tracking-tight bg-yellow-50 px-3 py-1 rounded-full w-fit">
+                          <Clock className="w-3 h-3" />
+                          Pending
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-red-500 font-black text-xs uppercase tracking-tight bg-red-50 px-3 py-1 rounded-full w-fit">
+                          <XCircle className="w-3 h-3" />
+                          Failed
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
