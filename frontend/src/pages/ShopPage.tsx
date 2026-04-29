@@ -35,10 +35,10 @@ export default function ShopPage() {
     try {
       if (activeTab === 'shop') {
         const res = await api.get('/products');
-        setProducts(res.data.data);
+        setProducts(res.data.data || []);
       } else {
         const res = await api.get('/products/transactions');
-        setTransactions(res.data.data);
+        setTransactions(res.data.data || []);
       }
     } catch (err) {
       console.error('Failed to fetch data', err);
@@ -102,7 +102,7 @@ export default function ShopPage() {
         </div>
       ) : activeTab === 'shop' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
+          {products?.map((product) => (
             <div
               key={product.id}
               className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-orange-100 transition-all group flex flex-col"
@@ -146,7 +146,7 @@ export default function ShopPage() {
             </div>
           ))}
 
-          {products.length === 0 && (
+          {products?.length === 0 && (
             <div className="col-span-full py-20 text-center space-y-4">
               <ShoppingBag className="w-16 h-16 text-gray-200 mx-auto" />
               <p className="text-xl font-bold text-gray-400">No products available at the moment.</p>
@@ -173,7 +173,7 @@ export default function ShopPage() {
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-gray-50">
-                {transactions.map((t) => (
+                {transactions?.map((t) => (
                   <tr key={t.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-3">
@@ -207,7 +207,7 @@ export default function ShopPage() {
             </table>
           </div>
 
-          {transactions.length === 0 && (
+          {transactions?.length === 0 && (
             <div className="py-20 text-center space-y-4">
               <History className="w-16 h-16 text-gray-100 mx-auto" />
               <p className="text-xl font-bold text-gray-400">No purchase history yet.</p>

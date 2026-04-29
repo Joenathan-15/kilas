@@ -26,7 +26,7 @@ func (h *ProductHandler) List(c *gin.Context) {
 		return
 	}
 
-	var response []dto.ProductResponse
+	response := []dto.ProductResponse{}
 	for _, p := range products {
 		response = append(response, dto.ProductResponse{
 			ID:          p.ID,
@@ -95,7 +95,7 @@ func (h *ProductHandler) Transactions(c *gin.Context) {
 		return
 	}
 
-	var response []dto.TransactionInfo
+	response := []dto.TransactionInfo{}
 	for _, t := range transactions {
 		response = append(response, dto.TransactionInfo{
 			ID:          t.ID,

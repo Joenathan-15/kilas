@@ -14,6 +14,7 @@ export default function AppLayout() {
     { to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
     { to: '/decks', label: 'My Decks', icon: <Layers /> },
     { to: '/library', label: 'Library', icon: <BookOpen /> },
+    { to: '/shop', label: 'Shop', icon: <ShoppingBag /> },
     { to: '/stats', label: 'Stats', icon: <BarChart2 /> },
   ];
 
@@ -73,14 +74,7 @@ export default function AppLayout() {
           {/* Profile Menu Popup */}
           {isProfileOpen && (
             <div className="absolute bottom-full left-4 right-4 mb-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-bottom-2 duration-200 z-50">
-              <Link 
-                to="/shop" 
-                onClick={() => setIsProfileOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-orange-50 text-gray-600 hover:text-orange-500 transition-colors font-bold"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                Shop
-              </Link>
+
               <Link 
                 to="/profile" 
                 onClick={() => setIsProfileOpen(false)}
@@ -151,14 +145,7 @@ export default function AppLayout() {
           {/* Mobile Profile Menu */}
           {isProfileOpen && (
             <div className="absolute top-full right-0 mt-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-top-2 duration-200 z-50 w-48">
-              <Link 
-                to="/shop" 
-                onClick={() => setIsProfileOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-orange-50 text-gray-600 hover:text-orange-500 transition-colors font-bold"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                Shop
-              </Link>
+
               <Link 
                 to="/profile" 
                 onClick={() => setIsProfileOpen(false)}

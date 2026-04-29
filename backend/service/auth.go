@@ -26,7 +26,7 @@ func (s *AuthService) GenerateTokens(userID uint) (accessToken, refreshToken str
 	accessSecret := os.Getenv("ACCESS_TOKEN_SECRET")
 	refreshSecret := os.Getenv("REFRESH_TOKEN_SECRET")
 
-	// Access token: 15 minutes
+	// Access token: 24 hours
 	accessClaims := jwt.MapClaims{
 		"sub":  float64(userID),
 		"type": "access",
@@ -38,7 +38,7 @@ func (s *AuthService) GenerateTokens(userID uint) (accessToken, refreshToken str
 		return "", "", fmt.Errorf("failed to generate access token: %w", err)
 	}
 
-	// Refresh token: 7 days
+	// Refresh token: 30 days
 	refreshClaims := jwt.MapClaims{
 		"sub":  float64(userID),
 		"type": "refresh",
