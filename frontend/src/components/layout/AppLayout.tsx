@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { getFullImageUrl } from '../../lib/api';
-import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp } from 'lucide-react';
+import { useUIStore } from '../../stores/uiStore';
+import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles } from 'lucide-react';
 
 export default function AppLayout() {
   const { user, logout } = useAuthStore();
+  const { activeGenerations } = useUIStore();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navLinks = [
@@ -45,6 +47,27 @@ export default function AppLayout() {
             </NavLink>
           ))}
         </nav>
+
+        {/* AI Generation Queue */}
+        {activeGenerations.length > 0 && (
+          <div className="px-6 py-4 mt-4 space-y-3">
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">AI Queue</h3>
+            {activeGenerations.map((gen) => (
+              <div key={gen.id} className="bg-purple-50 border-2 border-purple-100 rounded-2xl p-3 flex items-center gap-3 animate-pulse">
+                <div className="bg-purple-100 p-2 rounded-xl text-purple-500">
+                  <Sparkles className="w-4 h-4 fill-current" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-black text-gray-700 truncate">{gen.title}</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Loader2 className="w-2.5 h-2.5 text-purple-400 animate-spin" />
+                    <span className="text-[9px] font-bold text-purple-400 uppercase tracking-wider">Generating...</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="p-4 border-t-2 border-gray-200 relative">
           {/* Profile Menu Popup */}

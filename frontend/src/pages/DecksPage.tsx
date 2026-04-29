@@ -7,10 +7,12 @@ import type { Deck } from '../types';
 import DeckCard from '../components/decks/DeckCard';
 import DeckModal from '../components/decks/DeckModal';
 import { useAuthStore } from '../stores/authStore';
+import { useUIStore } from '../stores/uiStore';
 
 export default function DecksPage() {
   const queryClient = useQueryClient();
   const { fetchMe } = useAuthStore();
+  const { addGeneration, removeGeneration } = useUIStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDeck, setEditingDeck] = useState<Deck | undefined>();
@@ -66,11 +68,17 @@ export default function DecksPage() {
         formData.append('file', data.file);
       }
 
+      const generationId = Math.random().toString(36).substring(7);
+      const generationTitle = data.title || 'Untitled Deck';
+      addGeneration(generationId, generationTitle);
+
       const aiPromise = api.post('/ai/generate-cards', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then(() => {
         queryClient.invalidateQueries({ queryKey: ['decks'] });
         fetchMe(); // Refresh user data to update token count
+      }).finally(() => {
+        removeGeneration(generationId);
       });
 
       toast.promise(aiPromise, {
