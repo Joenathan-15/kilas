@@ -59,7 +59,11 @@ func main() {
 	// Initialize Router
 	r := gin.Default()
 	r.Static("/public", "./public")
+	
+	// Apply global middlewares
+	r.Use(middleware.RateLimitMiddleware(20, 40)) // 20 requests per second, burst of 40
 	r.Use(middleware.CORSMiddleware())
+	
 	router.ApiRoutes(r, authHandler, deckHandler, cardHandler, studyHandler, statsHandler, libraryHandler, aiHandler, oauthHandler, productHandler, uploadHandler)
 
 	// Run the server
