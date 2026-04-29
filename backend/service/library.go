@@ -141,6 +141,7 @@ func (s *LibraryService) Clone(sourceDeckID, userID uint) (*model.Deck, error) {
 		Description: source.Description,
 		IsPublic:    false,
 		Tags:        source.Tags,
+		IsAIGenerated: source.IsAIGenerated,
 	}
 	if err := s.DeckRepo.Create(newDeck); err != nil {
 		return nil, err
@@ -158,6 +159,7 @@ func (s *LibraryService) Clone(sourceDeckID, userID uint) (*model.Deck, error) {
 			Repetitions:   0,
 			EaseFactor:    2.5,
 			DueDate:       time.Now(),
+			IsAICreated:   card.IsAICreated,
 		}
 		s.CardRepo.Create(newCard)
 	}

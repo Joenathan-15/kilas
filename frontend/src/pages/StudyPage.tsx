@@ -269,6 +269,12 @@ export default function StudyPage() {
             <div className="mt-8 text-xs font-black text-gray-300 uppercase tracking-[0.2em] group-hover:text-sky-blue transition-colors">
               Click or Space to reveal
             </div>
+            {currentCard?.is_ai_created && (
+              <div className="mt-auto pt-4 flex items-center gap-1.5 text-[9px] font-black text-purple-400 uppercase tracking-widest border-t border-purple-50 w-full justify-center">
+                <Sparkles className="w-2.5 h-2.5 fill-current" />
+                This Card was AI Generated
+              </div>
+            )}
           </div>
 
           {/* Back Side */}
@@ -283,6 +289,12 @@ export default function StudyPage() {
             <div className="text-2xl font-bold text-gray-700 whitespace-pre-wrap">
               {currentCard?.back}
             </div>
+            {currentCard?.is_ai_created && (
+              <div className="mt-auto pt-4 flex items-center gap-1.5 text-[9px] font-black text-purple-400 uppercase tracking-widest border-t border-purple-50 w-full justify-center">
+                <Sparkles className="w-2.5 h-2.5 fill-current" />
+                This Card was AI Generated
+              </div>
+            )}
           </div>
 
         </div>
