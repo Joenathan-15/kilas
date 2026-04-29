@@ -80,7 +80,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="bg-white w-full max-w-md rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200">
+      <div className="bg-white w-full max-w-md rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-black text-gray-700 uppercase tracking-tight">{title}</h2>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">

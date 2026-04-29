@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, Sparkles, FileText, Type, Loader2 } from 'lucide-react';
+import { X, Sparkles, FileText, Type } from 'lucide-react';
 
 interface AIGenerateCardsModalProps {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200">
+      <div className="bg-white w-full max-w-lg rounded-[2.5rem] border-b-8 border-gray-200 p-8 z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
@@ -43,17 +43,15 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
         <div className="flex p-1 bg-gray-100 rounded-2xl mb-6">
           <button
             onClick={() => setActiveTab('text')}
-            className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'text' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
-            }`}
+            className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'text' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
+              }`}
           >
             <Type className="w-4 h-4" /> TEXT INPUT
           </button>
           <button
             onClick={() => setActiveTab('pdf')}
-            className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'pdf' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
-            }`}
+            className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'pdf' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
+              }`}
           >
             <FileText className="w-4 h-4" /> PDF UPLOAD
           </button>
@@ -77,9 +75,8 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
           ) : (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className={`border-4 border-dashed rounded-[2.5rem] p-10 text-center cursor-pointer transition-all ${
-                selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
-              }`}
+              className={`border-4 border-dashed rounded-[2.5rem] p-10 text-center cursor-pointer transition-all ${selectedFile ? 'border-purple-200 bg-purple-50' : 'border-gray-100 hover:border-purple-200 hover:bg-gray-50'
+                }`}
             >
               <input
                 type="file"
@@ -137,7 +134,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
             <Sparkles className="w-6 h-6 fill-current" />
             GENERATE CARDS
           </button>
-          
+
           <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
             Costs {activeTab === 'pdf' ? '50 tokens / page' : `${count * 10} tokens`}
           </p>
