@@ -24,7 +24,7 @@ func (r *DeckRepository) FindByUserID(userID uint) ([]model.Deck, error) {
 
 func (r *DeckRepository) FindByID(id uint) (*model.Deck, error) {
 	var deck model.Deck
-	err := r.DB.Preload("Cards").First(&deck, id).Error
+	err := r.DB.Preload("Cards").Preload("User").First(&deck, id).Error
 	return &deck, err
 }
 

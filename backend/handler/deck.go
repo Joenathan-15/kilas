@@ -115,6 +115,8 @@ func (h *DeckHandler) Get(c *gin.Context) {
 		"is_public":   deck.IsPublic,
 		"tags":        service.StringToTags(deck.Tags),
 		"card_count":  len(deck.Cards),
+		"clone_count": deck.CloneCount,
+		"author":      gin.H{"id": deck.User.ID, "username": deck.User.Username},
 		"cards":       deck.Cards,
 		"created_at":  deck.CreatedAt.Format("2006-01-02T15:04:05Z"),
 		"updated_at":  deck.UpdatedAt.Format("2006-01-02T15:04:05Z"),

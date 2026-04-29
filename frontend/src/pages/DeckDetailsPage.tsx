@@ -11,7 +11,10 @@ import {
   Trash2,
   Globe,
   Lock,
-  AlertCircle
+  AlertCircle,
+  Copy,
+  Users,
+  Layers
 } from 'lucide-react';
 import api, { getFullImageUrl } from '../lib/api';
 import toast from 'react-hot-toast';
@@ -30,8 +33,7 @@ export default function DeckDetailsPage() {
   const [editingCard, setEditingCard] = useState<Card | undefined>();
   const [isAIGenerateModalOpen, setIsAIGenerateModalOpen] = useState(false);
   const { addGeneration, removeGeneration } = useUIStore();
-  const { fetchMe } = useAuthStore();
-
+  const { user, fetchMe } = useAuthStore();
   const { data: deck, isLoading } = useQuery<Deck & { cards: Card[] }>({
     queryKey: ['deck', id],
     queryFn: async () => {
@@ -40,6 +42,8 @@ export default function DeckDetailsPage() {
     },
     enabled: !!id,
   });
+
+  const isOwner = user?.id === deck?.user_id;
 
   const { data: stats } = useQuery<any>({
     queryKey: ['deck-stats', id],
@@ -144,6 +148,24 @@ export default function DeckDetailsPage() {
     }
   };
 
+  const cloneMutation = useMutation({
+    mutationFn: (deckId: number) => api.post(`/library/${deckId}/clone`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['decks'] });
+      toast.success('Deck copied to your collection! 📚');
+      navigate('/decks');
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.error || 'Failed to copy deck');
+    },
+  });
+
+  const handleClone = () => {
+    if (window.confirm(`Copy "${deck?.title}" to your decks? All cards will be included.`)) {
+      cloneMutation.mutate(deck!.id);
+    }
+  };
+
   const handleAIGenerate = async (data: { text: string; count: number; file: File | null }) => {
     const taskId = `ai-gen-${Date.now()}`;
     addGeneration({
@@ -245,23 +267,24 @@ export default function DeckDetailsPage() {
               </div>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setIsDeckModalOpen(true)}
-              className="p-3 hover:bg-sky-50 rounded-2xl text-gray-400 hover:text-sky-blue transition-all border-2 border-transparent hover:border-sky-100"
-              title="Edit Deck"
-            >
-              <Edit2 className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={handleDeleteDeck}
-              className="p-3 hover:bg-red-50 rounded-2xl text-gray-400 hover:text-danger-red transition-all border-2 border-transparent hover:border-red-100"
-              title="Delete Deck"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
-          </div>
+          {isOwner && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsDeckModalOpen(true)}
+                className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-sky-blue transition-colors"
+                title="Edit Deck"
+              >
+                <Edit2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleDeleteDeck}
+                className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-red-500 transition-colors"
+                title="Delete Deck"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </div>
 
         {deck.description && (
@@ -269,40 +292,66 @@ export default function DeckDetailsPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link 
-            to={`/decks/${deck.id}/study`}
-            className="btn-primary md:col-span-2 py-4 text-lg flex items-center justify-center gap-3"
-          >
-            <Play className="w-6 h-6 fill-current" />
-            START STUDYING
-          </Link>
-          <button 
-            onClick={() => setIsAIGenerateModalOpen(true)}
-            className="btn-secondary py-4 text-lg flex items-center justify-center gap-3 border-purple-200 text-purple-600 hover:bg-purple-50"
-          >
-            <Sparkles className="w-6 h-6" />
-            AI GENERATE
-          </button>
+          {isOwner && (
+            <Link 
+              to={`/decks/${deck.id}/study`}
+              className="btn-primary md:col-span-2 py-4 text-lg flex items-center justify-center gap-3"
+            >
+              <Play className="w-6 h-6 fill-current" />
+              START STUDYING
+            </Link>
+          )}
+          {isOwner && (
+            <button 
+              onClick={() => setIsAIGenerateModalOpen(true)}
+              className="btn-secondary py-4 text-lg flex items-center justify-center gap-3 border-purple-200 text-purple-600 hover:bg-purple-50"
+            >
+              <Sparkles className="w-6 h-6" />
+              AI GENERATE
+            </button>
+          )}
+          {!isOwner && (
+            <button 
+              onClick={handleClone}
+              disabled={cloneMutation.isPending}
+              className="w-full py-4 bg-purple-600 border-b-4 border-purple-800 text-white font-black rounded-2xl hover:bg-purple-500 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-3 text-lg md:col-span-3"
+            >
+              {cloneMutation.isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : <Copy className="w-6 h-6" />}
+              COPY TO MY DECKS
+            </button>
+          )}
         </div>
       </section>
 
-      {/* Quick Stats Grid */}
+      {/* General Stats Grid */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
         <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-sky-blue transition-colors duration-300">
-          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Due Today</p>
-          <p className="text-3xl md:text-5xl font-black text-sky-blue leading-none">{stats?.due_today || 0}</p>
+          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
+            <Users className="w-3 h-3 md:w-4 md:h-4" /> Creator
+          </p>
+          <p className="text-xl md:text-2xl font-black text-gray-700 leading-none truncate px-2">
+            {deck.author?.username || 'You'}
+          </p>
         </div>
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
-          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">New Cards</p>
-          <p className="text-3xl md:text-5xl font-black text-feather-green leading-none">{stats?.new_cards || 0}</p>
+        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-purple-400 transition-colors duration-300">
+          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
+            <Copy className="w-3 h-3 md:w-4 md:h-4" /> Copies
+          </p>
+          <p className="text-3xl md:text-5xl font-black text-purple-400 leading-none">{deck.clone_count || 0}</p>
         </div>
         <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-orange-400 transition-colors duration-300">
-          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Learning</p>
-          <p className="text-3xl md:text-5xl font-black text-orange-400 leading-none">{stats?.learning || 0}</p>
+          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
+            <Layers className="w-3 h-3 md:w-4 md:h-4" /> Cards
+          </p>
+          <p className="text-3xl md:text-5xl font-black text-orange-400 leading-none">{deck.cards?.length || 0}</p>
         </div>
-        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-yellow-500 transition-colors duration-300">
-          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2">Mastered</p>
-          <p className="text-3xl md:text-5xl font-black text-yellow-500 leading-none">{stats?.mastered || 0}</p>
+        <div className="bg-white border-2 border-gray-100 rounded-[2rem] p-5 md:p-8 text-center shadow-sm hover:border-feather-green transition-colors duration-300">
+          <p className="text-[11px] md:text-sm font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
+            <Globe className="w-3 h-3 md:w-4 md:h-4" /> Visibility
+          </p>
+          <p className="text-[10px] md:text-xs font-black text-feather-green leading-none uppercase tracking-widest mt-2 bg-green-50 py-1 rounded-lg border border-green-100 inline-block px-3">
+            {deck.is_public ? 'Public' : 'Private'}
+          </p>
         </div>
       </section>
 
@@ -312,13 +361,15 @@ export default function DeckDetailsPage() {
           <h2 className="text-xl font-black text-gray-700 tracking-tight uppercase">Deck Content</h2>
           <p className="text-sm font-bold text-gray-400">{deck.cards?.length || 0} cards in this collection</p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="btn-primary w-full md:w-auto px-8 py-3 flex items-center justify-center gap-2 text-base"
-        >
-          <Plus className="w-6 h-6" />
-          ADD NEW CARD
-        </button>
+        {isOwner && (
+          <button
+            onClick={openCreateModal}
+            className="btn-primary w-full md:w-auto px-8 py-3 flex items-center justify-center gap-2 text-base"
+          >
+            <Plus className="w-6 h-6" />
+            ADD NEW CARD
+          </button>
+        )}
       </section>
 
       {/* Card List */}
@@ -360,18 +411,22 @@ export default function DeckDetailsPage() {
                 </div>
 
                 <div className="flex items-center gap-2 ml-auto">
-                  <button
-                    onClick={() => openEditModal(card)}
-                    className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-sky-blue transition-colors"
-                  >
-                    <Edit2 className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteCard(card.id)}
-                    className="p-2 hover:bg-red-50 rounded-xl text-gray-400 hover:text-danger-red transition-colors"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
+                  {isOwner && (
+                    <>
+                      <button
+                        onClick={() => openEditModal(card)}
+                        className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-sky-blue transition-colors"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCard(card.id)}
+                        className="p-2 hover:bg-gray-100 rounded-xl text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ))}

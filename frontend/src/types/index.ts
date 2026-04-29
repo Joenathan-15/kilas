@@ -17,7 +17,9 @@ export interface Deck {
   is_public: boolean; 
   tags: string[]; 
   card_count: number; 
+  clone_count: number;
   is_ai_generated: boolean;
+  author?: { id: number; username: string };
   created_at: string; 
   updated_at: string; 
 }
