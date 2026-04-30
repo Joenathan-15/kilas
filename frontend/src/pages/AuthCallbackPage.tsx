@@ -15,10 +15,20 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     if (processed.current) return;
     
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
+    // Try to get tokens from query string first, then from hash
+    let accessToken = searchParams.get('access_token');
+    let refreshToken = searchParams.get('refresh_token');
+
+    // Fallback: check hash (some OAuth implementations use fragments)
+    if (!accessToken || !refreshToken) {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      accessToken = accessToken || params.get('access_token');
+      refreshToken = refreshToken || params.get('refresh_token');
+    }
 
     if (!accessToken || !refreshToken) {
+      console.warn('Missing tokens in OAuth callback URL');
       toast.error(t.auth.loginFailed);
       navigate('/login');
       return;
@@ -27,13 +37,14 @@ export default function AuthCallbackPage() {
     const completeLogin = async () => {
       processed.current = true;
       try {
-        await setTokens(accessToken, refreshToken);
+        await setTokens(accessToken!, refreshToken!);
         toast.success(t.auth.welcomeBack);
-        navigate('/dashboard');
+        // Use replace to prevent back navigation to the callback page
+        navigate('/dashboard', { replace: true });
       } catch (err) {
         console.error('OAuth callback error:', err);
         toast.error(t.auth.loginFailed);
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
     };
 

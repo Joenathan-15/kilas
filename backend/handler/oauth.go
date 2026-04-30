@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"regexp"
 	"strings"
@@ -52,8 +53,9 @@ func (h *OAuthHandler) GoogleLogin(c *gin.Context) {
 	}
 	state := base64.URLEncoding.EncodeToString(stateBytes)
 
-	// Set httpOnly cookie
-	c.SetCookie("oauth_state", state, 300, "/", "", false, true)
+	// Set httpOnly cookie (Secure if in release mode for HTTPS)
+	isRelease := os.Getenv("GIN_MODE") == "release"
+	c.SetCookie("oauth_state", state, 300, "/", "", isRelease, true)
 
 	url := config.AuthCodeURL(state, oauth2.AccessTypeOnline)
 	c.Redirect(http.StatusFound, url)
@@ -139,7 +141,7 @@ func (h *OAuthHandler) GoogleCallback(c *gin.Context) {
 	c.SetCookie("oauth_state", "", -1, "/", "", false, true)
 
 	// Redirect to frontend
-	redirectURL := fmt.Sprintf("%s/auth/callback?access_token=%s&refresh_token=%s", frontendURL, accessToken, refreshToken)
+	redirectURL := fmt.Sprintf("%s/auth/callback?access_token=%s&refresh_token=%s", frontendURL, url.QueryEscape(accessToken), url.QueryEscape(refreshToken))
 	c.Redirect(http.StatusFound, redirectURL)
 }
 

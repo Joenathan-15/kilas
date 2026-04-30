@@ -84,8 +84,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.setItem('access_token', accessToken);
       localStorage.setItem('refresh_token', refreshToken);
       
-      // Fetch user profile
-      const res = await api.get('/auth/me');
+      // Fetch user profile - pass token directly to avoid any interceptor delay/issues
+      const res = await api.get('/auth/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
       set({ user: res.data, isAuthenticated: true, isLoading: false });
     } catch (err) {
       localStorage.removeItem('access_token');
