@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { X, Sparkles, FileText, Type } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface AIGenerateCardsModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface AIGenerateCardsModalProps {
 export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title }: AIGenerateCardsModalProps) {
   useEscapeKey(onClose, isOpen);
   const { user } = useAuthStore();
+  const { t } = useTranslation();
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
   const [activeTab, setActiveTab] = useState<'text' | 'pdf'>('text');
   const [text, setText] = useState('');
@@ -51,14 +53,14 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
             className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'text' ? 'bg-white text-gray-700 shadow-sm' : 'text-gray-400 hover:text-gray-500'
               }`}
           >
-            <Type className="w-4 h-4" /> TEXT INPUT
+            <Type className="w-4 h-4" /> {t.decks.textTab}
           </button>
           <button
             onClick={() => setActiveTab('pdf')}
             className={`flex-1 py-3 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 ${activeTab === 'pdf' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-400 hover:text-gray-500'
               }`}
           >
-            <FileText className="w-4 h-4" /> PDF UPLOAD
+            <FileText className="w-4 h-4" /> {t.decks.pdfTab}
           </button>
         </div>
 
@@ -66,7 +68,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
           {activeTab === 'text' ? (
             <div className="space-y-2">
               <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">
-                Study Material / Notes <span className="text-red-500 ml-1">*</span>
+                {t.decks.studyMaterial} <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="relative">
                 <textarea
@@ -76,7 +78,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
                   onChange={(e) => setText(e.target.value)}
                   className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-purple-300 focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none"
                   rows={6}
-                  placeholder="Paste your study notes, article, or any text here..."
+                  placeholder={t.decks.textPlaceholder}
                 />
                 <div className="absolute bottom-4 right-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   {text.length} / 255
@@ -103,12 +105,12 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
                 {selectedFile ? (
                   <div>
                     <p className="font-black text-purple-600 truncate max-w-62.5">{selectedFile.name}</p>
-                    <p className="text-xs font-bold text-purple-400 uppercase mt-1">Ready to generate</p>
+                    <p className="text-xs font-bold text-purple-400 uppercase mt-1">{t.decks.readyToGenerate}</p>
                   </div>
                 ) : (
                   <div>
-                    <p className="font-black text-gray-500">Upload PDF File</p>
-                    <p className="text-xs font-bold text-gray-400 uppercase mt-1 tracking-wider">Max 50 pages</p>
+                    <p className="font-black text-gray-500">{t.decks.uploadPdf}</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase mt-1 tracking-wider">{t.decks.maxPages}</p>
                   </div>
                 )}
               </div>
@@ -117,8 +119,8 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
 
           <div>
             <label className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex justify-between">
-              <span>Target Card Count</span>
-              <span className="text-purple-600">{count} cards</span>
+              <span>{t.decks.targetCards}</span>
+              <span className="text-purple-600">{count} {t.decks.cardsUnit}</span>
             </label>
             <input
               type="range"
@@ -143,12 +145,12 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
             className="w-full py-5 text-lg flex items-center justify-center gap-3 font-black rounded-2xl border-b-4 bg-purple-600 border-purple-800 text-white hover:bg-purple-500 active:border-b-0 active:translate-y-1 transition-all disabled:opacity-50 disabled:translate-y-0 disabled:border-b-4"
           >
             <Sparkles className="w-6 h-6 fill-current" />
-            GENERATE CARDS
+            {t.decks.generateCardsBtn}
           </button>
 
           <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-1">
-            <span>Costs {activeTab === 'pdf' ? '50 tokens / page' : `${count * 10} tokens`}</span>
-            {!isSubscribed && <span className="text-purple-400 font-black">Free users: 3 AI generations max</span>}
+            <span>{activeTab === 'pdf' ? t.decks.costsPerPage : t.decks.costsTokens.replace('{amount}', (count * 10).toString())}</span>
+            {!isSubscribed && <span className="text-purple-400 font-black">{t.decks.freeUserLimit}</span>}
           </p>
         </form>
       </div>
