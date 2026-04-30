@@ -5,6 +5,7 @@ type GenerateCardsRequest struct {
 	Count int    `form:"count" binding:"omitempty,min=1,max=20"`
 	Title  string `form:"title"`
 	DeckID uint   `form:"deck_id"`
+	Language string `form:"language"`
 }
 
 type GeneratedCard struct {

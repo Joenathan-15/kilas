@@ -119,7 +119,7 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		return
 	}
 
-	generatedData, err := h.AIService.GenerateCards(text, count)
+	generatedData, err := h.AIService.GenerateCards(text, count, req.Language)
 	if err != nil {
 		// Refund tokens on AI failure
 		h.AuthService.TopUp(userID, tokenCost)

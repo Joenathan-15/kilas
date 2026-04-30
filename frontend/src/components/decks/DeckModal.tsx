@@ -139,7 +139,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-5 py-4 bg-gray-100 border-2 border-transparent rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none"
+                  className="w-full px-5 py-4 bg-gray-100 border-2 border-gray-200 rounded-2xl focus:bg-white focus:border-sky-blue focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none shadow-inner"
                   rows={3}
                   placeholder={t.decks.descriptionPlaceholder}
                 />

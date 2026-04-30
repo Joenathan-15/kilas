@@ -18,7 +18,7 @@ func NewAIService() *AIService {
 	return &AIService{}
 }
 
-func (s *AIService) GenerateCards(text string, count int) (*dto.GeneratedDeckData, error) {
+func (s *AIService) GenerateCards(text string, count int, language string) (*dto.GeneratedDeckData, error) {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	if apiKey == "" {
 		return nil, errors.New("AI not configured")
@@ -33,8 +33,14 @@ func (s *AIService) GenerateCards(text string, count int) (*dto.GeneratedDeckDat
 
 	model := client.GenerativeModel("gemini-flash-latest")
 
+	targetLang := "Indonesian"
+	if language == "en" {
+		targetLang = "English"
+	}
+
 	systemPrompt := fmt.Sprintf(
-		"You are an expert educator creating flashcards for Indonesian students. Generate a title, a short description, 3-5 relevant tags, and exactly %d high-quality flashcard pairs from the study material. Return ONLY a valid JSON object matching this schema: {\"title\": \"string\", \"description\": \"string\", \"tags\": [\"string\"], \"cards\": [{\"front\": \"question\", \"back\": \"answer\"}]}. Keep answers concise. Use $LaTeX$ for math formulas.",
+		"You are an expert educator creating flashcards for students. Generate the content in %s. Generate a title, a short description, 3-5 relevant tags, and exactly %d high-quality flashcard pairs from the study material. Return ONLY a valid JSON object matching this schema: {\"title\": \"string\", \"description\": \"string\", \"tags\": [\"string\"], \"cards\": [{\"front\": \"question\", \"back\": \"answer\"}]}. Keep answers concise. Use $LaTeX$ for math formulas.",
+		targetLang,
 		count,
 	)
 

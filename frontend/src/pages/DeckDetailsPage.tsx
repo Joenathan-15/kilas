@@ -171,7 +171,7 @@ export default function DeckDetailsPage() {
     }
   };
 
-  const handleAIGenerate = async (data: { text: string; count: number; file: File | null }) => {
+  const handleAIGenerate = async (data: { text: string; count: number; file: File | null; language: string }) => {
     const taskId = `ai-gen-${Date.now()}`;
     addGeneration({
       id: taskId,
@@ -188,6 +188,7 @@ export default function DeckDetailsPage() {
       }
       formData.append('count', data.count.toString());
       formData.append('deck_id', id!);
+      formData.append('language', data.language);
 
       toast.success(t.decks.aiStarted);
 
