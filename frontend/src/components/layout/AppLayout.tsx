@@ -11,7 +11,7 @@ export default function AppLayout() {
   const { activeGenerations } = useUIStore();
   const { t } = useTranslation();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
+  const isSuper = user?.subscription_until && new Date(user.subscription_until) > new Date();
   const navLinks = [
     { to: '/dashboard', label: t.nav.dashboard, icon: <LayoutDashboard /> },
     { to: '/decks', label: t.nav.myDecks, icon: <Layers /> },
@@ -98,11 +98,18 @@ export default function AppLayout() {
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
           >
-            <img
-              src={getFullImageUrl(user?.avatar_url, user?.username)}
-              alt="Avatar"
-              className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
-            />
+            <div className="relative">
+              <img
+                src={getFullImageUrl(user?.avatar_url, user?.username)}
+                alt="Avatar"
+                className={`w-10 h-10 rounded-full border-2 object-cover transition-all ${isSuper ? 'border-yellow-400 ring-2 ring-yellow-100' : 'border-gray-200'}`}
+              />
+              {isSuper && (
+                <div className="absolute -top-1 -right-1 bg-yellow-400 text-white p-1 rounded-full border border-white shadow-sm flex items-center justify-center z-10">
+                  <Sparkles className="w-2.5 h-2.5 fill-current" />
+                </div>
+              )}
+            </div>
             <div className="flex-1 min-w-0 text-left">
               <p className="font-bold text-gray-700 truncate">{user?.username}</p>
               <div className="flex items-center gap-2">
@@ -135,11 +142,18 @@ export default function AppLayout() {
             <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
               <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
             </span>
-            <img
-              src={getFullImageUrl(user?.avatar_url, user?.username)}
-              alt="Avatar"
-              className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover"
-            />
+            <div className="relative">
+              <img
+                src={getFullImageUrl(user?.avatar_url, user?.username)}
+                alt="Avatar"
+                className={`w-8 h-8 rounded-full border-2 object-cover transition-all ${isSuper ? 'border-yellow-400 ring-2 ring-yellow-100' : 'border-gray-200'}`}
+              />
+              {isSuper && (
+                <div className="absolute -top-1 -right-1 bg-yellow-400 text-white p-0.5 rounded-full border border-white shadow-sm flex items-center justify-center z-10">
+                  <Sparkles className="w-2 h-2 fill-current" />
+                </div>
+              )}
+            </div>
           </button>
 
           {/* Mobile Profile Menu */}
