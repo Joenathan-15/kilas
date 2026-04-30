@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+export const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  baseURL: API_URL,
 });
 
 // Request interceptor: attach access token
@@ -41,8 +43,8 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const isAuthRequest = 
-      originalRequest.url?.includes('/auth/login') || 
+    const isAuthRequest =
+      originalRequest.url?.includes('/auth/login') ||
       originalRequest.url?.includes('/auth/register') ||
       originalRequest.url?.includes('/auth/refresh');
 
@@ -71,16 +73,15 @@ api.interceptors.response.use(
         try {
           // Attempt to refresh token
           // Use a clean axios instance to avoid interceptor loop
-          const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
-          const res = await axios.post(`${baseUrl}/auth/refresh`, { refresh_token: refreshToken });
+          const res = await axios.post(`${API_URL}/auth/refresh`, { refresh_token: refreshToken });
           const newAccessToken = res.data.access_token;
-          
+
           localStorage.setItem('access_token', newAccessToken);
-          
+
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           }
-          
+
           processQueue(null, newAccessToken);
           return api(originalRequest);
         } catch (refreshError) {
@@ -110,15 +111,15 @@ export const getFullImageUrl = (path: string | undefined, placeholderName?: stri
     }
     return '';
   }
-  
+
   if (path.startsWith('http')) return path;
-  
+
   // Get API base URL and strip the trailing /api if it exists
-  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api').replace(/\/api\/?$/, '');
-  
+  const baseUrl = API_URL.replace(/\/api\/?$/, '');
+
   // Ensure path starts with a slash
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  
+
   return `${baseUrl}${normalizedPath}`;
 };
 
