@@ -11,6 +11,7 @@ interface AuthState {
   logout: () => void;
   fetchMe: () => Promise<void>;
   updateUser: (username: string, avatarURL: string, language?: string) => Promise<void>;
+  setTokens: (accessToken: string, refreshToken: string) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -73,6 +74,23 @@ export const useAuthStore = create<AuthState>((set) => ({
       });
       set({ user: res.data });
     } catch (err) {
+      throw err;
+    }
+  },
+
+  setTokens: async (accessToken, refreshToken) => {
+    set({ isLoading: true });
+    try {
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+      
+      // Fetch user profile
+      const res = await api.get('/auth/me');
+      set({ user: res.data, isAuthenticated: true, isLoading: false });
+    } catch (err) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      set({ user: null, isAuthenticated: false, isLoading: false });
       throw err;
     }
   },
