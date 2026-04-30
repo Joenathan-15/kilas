@@ -68,14 +68,20 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
               <label className="block text-xs font-black text-gray-400 uppercase tracking-widest">
                 Study Material / Notes <span className="text-red-500 ml-1">*</span>
               </label>
-              <textarea
-                required
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-purple-300 focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none"
-                rows={6}
-                placeholder="Paste your study notes, article, or any text here..."
-              />
+              <div className="relative">
+                <textarea
+                  required
+                  value={text}
+                  maxLength={255}
+                  onChange={(e) => setText(e.target.value)}
+                  className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-purple-300 focus:ring-0 transition-all font-bold text-gray-700 outline-none resize-none"
+                  rows={6}
+                  placeholder="Paste your study notes, article, or any text here..."
+                />
+                <div className="absolute bottom-4 right-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  {text.length} / 255
+                </div>
+              </div>
             </div>
           ) : (
             <div

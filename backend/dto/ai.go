@@ -1,7 +1,7 @@
 package dto
 
 type GenerateCardsRequest struct {
-	Text  string `form:"text"`
+	Text  string `form:"text" binding:"omitempty,max=255"`
 	Count int    `form:"count" binding:"omitempty,min=1,max=20"`
 	Title  string `form:"title"`
 	DeckID uint   `form:"deck_id"`
