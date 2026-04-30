@@ -8,11 +8,13 @@ import {
   Flame,
   Trophy,
   Activity,
-  History
+  History,
+  Sparkles
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import { useTranslation } from '../hooks/useTranslation';
+import type { AIGenerationHistory } from '../types';
 
 interface OverviewStats {
   total_decks: number;
@@ -39,6 +41,7 @@ interface SessionSummary {
 
 export default function StatsPage() {
   const [activeDayIdx, setActiveDayIdx] = useState<number | null>(null);
+  const [historyTab, setHistoryTab] = useState<'study' | 'ai'>('study');
   const { t, lang } = useTranslation();
 
   const { data: overview, isLoading: overviewLoading } = useQuery<OverviewStats>({
@@ -65,6 +68,14 @@ export default function StatsPage() {
     },
   });
 
+  const { data: aiHistory, isLoading: aiHistoryLoading } = useQuery<AIGenerationHistory[]>({
+    queryKey: ['ai-history'],
+    queryFn: async () => {
+      const res = await api.get('/ai/history');
+      return res.data.data;
+    },
+  });
+
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -79,7 +90,7 @@ export default function StatsPage() {
     return `${hours}h ${mins}m`;
   };
 
-  if (overviewLoading || activityLoading || sessionsLoading) {
+  if (overviewLoading || activityLoading || sessionsLoading || aiHistoryLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64">
         <Activity className="w-12 h-12 text-sky-blue animate-pulse mb-4" />
@@ -252,45 +263,101 @@ export default function StatsPage() {
         {/* Recent History */}
         <section className="space-y-6">
           <div className="card-duo p-6 h-full flex flex-col">
-            <h3 className="text-xl font-black text-gray-700 flex items-center gap-2 mb-6">
-              <History className="w-6 h-6 text-sky-blue" />
-              {t.stats.recentHistory}
-            </h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-black text-gray-700 flex items-center gap-2">
+                <History className="w-6 h-6 text-sky-blue" />
+                {t.stats.recentHistory}
+              </h3>
+            </div>
+
+            {/* Tab Switcher */}
+            <div className="flex p-1 bg-gray-100 rounded-2xl mb-6">
+              <button
+                onClick={() => setHistoryTab('study')}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${historyTab === 'study' ? 'bg-white text-sky-blue shadow-sm' : 'text-gray-400 hover:text-gray-500'}`}
+              >
+                {t.stats.studySessions}
+              </button>
+              <button
+                onClick={() => setHistoryTab('ai')}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${historyTab === 'ai' ? 'bg-white text-purple-500 shadow-sm' : 'text-gray-400 hover:text-gray-500'}`}
+              >
+                {t.stats.aiHistory}
+              </button>
+            </div>
 
             <div className="space-y-4 flex-1 overflow-auto max-h-[500px] pr-2 custom-scrollbar">
-              {(!sessions || sessions.length === 0) ? (
-                <div className="text-center py-10 opacity-50">
-                  <p className="font-bold text-gray-400">{t.stats.noSessions}</p>
-                </div>
-              ) : (
-                sessions.map((session) => (
-                  <div key={session.id} className="p-4 bg-gray-50 rounded-2xl border-2 border-gray-100 hover:border-sky-100 transition-colors group flex flex-col gap-3">
-                    <div className="flex justify-between items-center gap-2">
-                      <p className="font-black text-gray-700 truncate flex-1">{session.deck_title}</p>
-                      <span className="shrink-0 text-[10px] font-black text-gray-400 uppercase tracking-wider bg-white px-2.5 py-1.5 rounded-xl border border-gray-100 shadow-sm">
-                        {new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric' }).format(new Date(session.started_at))}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
-                          <BookOpen className="w-3 h-3" />
-                          {session.cards_studied}
-                        </div>
-                        <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
-                          <Clock className="w-3 h-3" />
-                          {formatDuration(session.duration)}
-                        </div>
-                      </div>
-                      <Link
-                        to={`/decks/${session.deck_id}/study?mode=sandbox`}
-                        className="text-[10px] font-black text-sky-blue uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white px-3 py-1.5 rounded-lg border border-sky-100 shadow-sm hover:bg-sky-50"
-                      >
-                        {t.stats.reStudy}
-                      </Link>
-                    </div>
+              {historyTab === 'study' ? (
+                (!sessions || sessions.length === 0) ? (
+                  <div className="text-center py-10 opacity-50">
+                    <p className="font-bold text-gray-400">{t.stats.noSessions}</p>
                   </div>
-                ))
+                ) : (
+                  sessions.map((session) => (
+                    <div key={session.id} className="p-4 bg-gray-50 rounded-2xl border-2 border-gray-100 hover:border-sky-100 transition-colors group flex flex-col gap-3">
+                      <div className="flex justify-between items-center gap-2">
+                        <p className="font-black text-gray-700 truncate flex-1">{session.deck_title}</p>
+                        <span className="shrink-0 text-[10px] font-black text-gray-400 uppercase tracking-wider bg-white px-2.5 py-1.5 rounded-xl border border-gray-100 shadow-sm">
+                          {new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric' }).format(new Date(session.started_at))}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
+                            <BookOpen className="w-3 h-3" />
+                            {session.cards_studied}
+                          </div>
+                          <div className="flex items-center gap-1 text-xs font-bold text-gray-500">
+                            <Clock className="w-3 h-3" />
+                            {formatDuration(session.duration)}
+                          </div>
+                        </div>
+                        <Link
+                          to={`/decks/${session.deck_id}/study?mode=sandbox`}
+                          className="text-[10px] font-black text-sky-blue uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white px-3 py-1.5 rounded-lg border border-sky-100 shadow-sm hover:bg-sky-50"
+                        >
+                          {t.stats.reStudy}
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+                )
+              ) : (
+                (!aiHistory || aiHistory.length === 0) ? (
+                  <div className="text-center py-10 opacity-50">
+                    <p className="font-bold text-gray-400">{t.stats.noAiHistory}</p>
+                  </div>
+                ) : (
+                  aiHistory.map((item) => (
+                    <Link
+                      key={item.id}
+                      to={`/decks/${item.deck_id}`}
+                      className="p-4 bg-purple-50/30 rounded-2xl border-2 border-purple-100 hover:border-purple-300 transition-colors group block"
+                    >
+                      <div className="flex justify-between items-start gap-4 mb-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Sparkles className="w-3 h-3 text-purple-500" />
+                            <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest">{t.stats.aiHistory}</span>
+                          </div>
+                          <p className="font-black text-gray-700 truncate">{item.deck_title || t.stats.aiDeckTitle}</p>
+                        </div>
+                        <span className="shrink-0 text-[10px] font-black text-gray-400 uppercase tracking-wider bg-white px-2.5 py-1.5 rounded-xl border border-gray-100 shadow-sm">
+                          {new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric' }).format(new Date(item.created_at))}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500">
+                          <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+                          <span>{item.card_count} {t.stats.aiCardCount}</span>
+                        </div>
+                        <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                          {t.stats.viewDetails}
+                        </span>
+                      </div>
+                    </Link>
+                  ))
+                )
               )}
             </div>
           </div>

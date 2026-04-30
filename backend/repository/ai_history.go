@@ -29,3 +29,10 @@ func (r *AIHistoryRepository) CountGenerationsToday(userID uint) (int64, error) 
 func (r *AIHistoryRepository) Create(history *model.AIGenerationHistory) error {
 	return r.DB.Create(history).Error
 }
+
+// FindByUserID returns all AI generation history for a user.
+func (r *AIHistoryRepository) FindByUserID(userID uint) ([]model.AIGenerationHistory, error) {
+	var history []model.AIGenerationHistory
+	err := r.DB.Where("user_id = ?", userID).Order("created_at desc").Find(&history).Error
+	return history, err
+}

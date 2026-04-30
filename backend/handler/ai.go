@@ -192,6 +192,8 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 	history := &model.AIGenerationHistory{
 		UserID:    userID,
 		Text:      text,
+		DeckTitle: finalDeck.Title,
+		DeckID:    finalDeck.ID,
 		CardCount: len(savedCards),
 		CreatedAt: time.Now(),
 	}
@@ -210,4 +212,16 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 		"tokens_used":      tokenCost,
 		"tokens_remaining": tokensRemaining,
 	})
+}
+
+func (h *AIHandler) GetHistory(c *gin.Context) {
+	userID, _ := middleware.GetUserID(c)
+
+	history, err := h.AIHistoryRepo.FindByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch AI generation history"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": history})
 }

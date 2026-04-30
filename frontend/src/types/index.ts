@@ -77,3 +77,14 @@ export interface LibraryDeck {
     username: string; 
   }; 
 }
+
+export interface AIGenerationHistory {
+  id: number;
+  user_id: number;
+  text: string;
+  deck_title: string;
+  deck_id: number;
+  card_count: number;
+  created_at: string;
+}
+

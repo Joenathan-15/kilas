@@ -84,6 +84,7 @@ func ApiRoutes(
 	// AI routes (protected)
 	ai := api.Group("/ai", middleware.AuthMiddleware())
 	ai.POST("/generate-cards", aiHandler.GenerateCards)
+	ai.GET("/history", aiHandler.GetHistory)
 
 	// Upload routes (protected)
 	uploads := api.Group("/upload", middleware.AuthMiddleware())
