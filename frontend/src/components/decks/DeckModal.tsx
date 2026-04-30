@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Loader2, Sparkles, FileText, Plus } from 'lucide-react';
+import { X, Loader2, Sparkles, FileText, Plus, AlertCircle } from 'lucide-react';
 import type { Deck } from '../../types';
 import { useAuthStore } from '../../stores/authStore';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -187,7 +187,10 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
                       <div className="flex flex-col gap-0.5 mt-1">
                         <p className="text-xs font-bold text-gray-400 uppercase">{t.decks.maxPages}</p>
                         {!isSubscribed && (
-                          <p className="text-[10px] font-black text-purple-400 uppercase">{t.decks.freeUserLimit}</p>
+                          <p className="text-[10px] font-black text-purple-600 uppercase flex items-center justify-center gap-1">
+                            <AlertCircle className="w-3 h-3" />
+                            {t.deckDetails.aiLimitCaution}
+                          </p>
                         )}
                       </div>
                     </div>

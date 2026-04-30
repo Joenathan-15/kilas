@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { X, Sparkles, FileText, Type } from 'lucide-react';
+import { X, Sparkles, FileText, Type, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -169,7 +169,12 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
 
           <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-1">
             <span>{activeTab === 'pdf' ? t.decks.costsPerPage : t.decks.costsTokens.replace('{amount}', (count * 10).toString())}</span>
-            {!isSubscribed && <span className="text-purple-400 font-black">{t.decks.freeUserLimit}</span>}
+            {!isSubscribed && (
+              <span className="text-purple-500 font-black flex items-center justify-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {t.deckDetails.aiLimitCaution}
+              </span>
+            )}
           </p>
         </form>
       </div>

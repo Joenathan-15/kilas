@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import api, { getFullImageUrl } from '../lib/api';
-import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages } from 'lucide-react';
+import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages, Sparkles } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
 export default function ProfilePage() {
@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const isSuper = user?.subscription_until && new Date(user.subscription_until) > new Date();
 
   useEffect(() => {
     if (user) {
@@ -33,9 +34,9 @@ export default function ProfilePage() {
       setMessage({ type: 'success', text: t.profile.updateSuccess });
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
-      setMessage({ 
-        type: 'error', 
-        text: err.response?.data?.error || t.profile.updateFailed 
+      setMessage({
+        type: 'error',
+        text: err.response?.data?.error || t.profile.updateFailed
       });
     } finally {
       setIsSaving(false);
@@ -57,7 +58,7 @@ export default function ProfilePage() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const uploadedUrl = res.data.url;
-      
+
       setAvatarURL(uploadedUrl);
       setMessage({ type: 'success', text: t.profile.uploadSuccess });
     } catch (err: any) {
@@ -76,17 +77,23 @@ export default function ProfilePage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Avatar Section */}
         <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm text-center space-y-6">
-          <div 
+          <div
             className="relative inline-block group cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
           >
             <div className="relative">
-              <img 
-                src={getFullImageUrl(avatarURL, username)} 
-                alt="Avatar Preview" 
-                className={`w-32 h-32 rounded-full border-4 border-gray-100 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''}`} 
+              <img
+                src={getFullImageUrl(avatarURL, username)}
+                alt="Avatar Preview"
+                className={`w-32 h-32 rounded-full border-4 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''} ${isSuper ? 'border-yellow-400 ring-4 ring-yellow-100' : 'border-gray-100'}`}
               />
-              
+              {isSuper && (
+                <div className="absolute top-0 right-0 bg-yellow-400 text-white text-[10px] font-black px-3 py-1 rounded-full border-2 border-white shadow-lg flex items-center gap-1 animate-bounce">
+                  <Sparkles className="w-3 h-3 fill-current" />
+                  SUPER
+                </div>
+              )}
+
               {/* Uploading Spinner */}
               {isUploading && (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -106,14 +113,14 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <input 
-            type="file" 
+          <input
+            type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
             accept="image/*"
             className="hidden"
           />
-          
+
           <div className="space-y-1">
             <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
               {t.profile.avatar}
@@ -165,7 +172,7 @@ export default function ProfilePage() {
               </div>
               <h2 className="text-xl font-black text-gray-800 uppercase tracking-tight">{t.profile.language}</h2>
             </div>
-            
+
             <div className="space-y-2">
               <label className="block text-sm font-black text-gray-400 uppercase tracking-widest">
                 {t.profile.interfaceLanguage}
@@ -187,9 +194,8 @@ export default function ProfilePage() {
 
         {/* Feedback Message */}
         {message && (
-          <div className={`p-4 rounded-2xl border-2 flex items-center gap-3 animate-in fade-in zoom-in-95 duration-200 ${
-            message.type === 'success' ? 'bg-green-50 border-green-100 text-green-600' : 'bg-red-50 border-red-100 text-red-600'
-          }`}>
+          <div className={`p-4 rounded-2xl border-2 flex items-center gap-3 animate-in fade-in zoom-in-95 duration-200 ${message.type === 'success' ? 'bg-green-50 border-green-100 text-green-600' : 'bg-red-50 border-red-100 text-red-600'
+            }`}>
             {message.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
             <p className="font-bold">{message.text}</p>
           </div>

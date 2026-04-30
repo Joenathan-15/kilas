@@ -44,7 +44,8 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			Tokens:        user.Tokens,
 			LoginStreak:   user.LoginStreak,
 			LastLoginDate: user.LastLoginDate,
-			Language:      user.Language,
+			Language:          user.Language,
+			SubscriptionUntil: user.SubscriptionUntil,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -73,7 +74,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			Tokens:        user.Tokens,
 			LoginStreak:   user.LoginStreak,
 			LastLoginDate: user.LastLoginDate,
-			Language:      user.Language,
+			Language:          user.Language,
+			SubscriptionUntil: user.SubscriptionUntil,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -122,7 +124,8 @@ func (h *AuthHandler) Me(c *gin.Context) {
 		LoginStreak:   user.LoginStreak,
 		Tokens:        user.Tokens,
 		LastLoginDate: user.LastLoginDate,
-		Language:      user.Language,
+		Language:          user.Language,
+		SubscriptionUntil: user.SubscriptionUntil,
 	})
 }
 
@@ -189,6 +192,7 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 		LoginStreak:   user.LoginStreak,
 		Tokens:        user.Tokens,
 		LastLoginDate: user.LastLoginDate,
-		Language:      user.Language,
+		Language:          user.Language,
+		SubscriptionUntil: user.SubscriptionUntil,
 	})
 }

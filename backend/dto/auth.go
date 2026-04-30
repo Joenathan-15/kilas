@@ -18,14 +18,15 @@ type RefreshRequest struct {
 }
 
 type UserResponse struct {
-	ID          uint   `json:"id"`
-	Email       string `json:"email"`
-	Username    string `json:"username"`
-	AvatarURL   string `json:"avatar_url"`
-	LoginStreak   int        `json:"login_streak"`
-	Tokens        int        `json:"tokens"`
-	LastLoginDate *time.Time `json:"last_login_date"`
-	Language      string     `json:"language"`
+	ID                uint       `json:"id"`
+	Email             string     `json:"email"`
+	Username          string     `json:"username"`
+	AvatarURL         string     `json:"avatar_url"`
+	LoginStreak       int        `json:"login_streak"`
+	Tokens            int        `json:"tokens"`
+	LastLoginDate     *time.Time `json:"last_login_date"`
+	Language          string     `json:"language"`
+	SubscriptionUntil *time.Time `json:"subscription_until"`
 }
 
 type AuthResponse struct {
