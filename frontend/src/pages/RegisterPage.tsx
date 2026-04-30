@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
 import { Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { API_URL } from '../lib/api';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { t } = useTranslation();
   const { register, isAuthenticated, isLoading } = useAuthStore();
@@ -31,7 +32,7 @@ export default function RegisterPage() {
       toast.error(t.auth.passwordsNotMatch);
       return;
     }
-    
+
     try {
       await register(email, username, password);
       toast.success(t.auth.accountCreated);
@@ -48,13 +49,13 @@ export default function RegisterPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4 py-12">
       <div className="w-full max-w-md bg-surface p-8 rounded-2xl border-2 border-gray-200">
-        
+
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black text-feather-green tracking-tight flex items-center justify-center gap-2">
             <span>{t.auth.createProfile}</span>
@@ -63,7 +64,7 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          
+
           <div className="space-y-2">
             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest ml-2">
               {t.auth.username} <span className="text-red-500">*</span>
