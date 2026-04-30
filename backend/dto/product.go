@@ -4,13 +4,17 @@ import "time"
 
 type ProductResponse struct {
 	ID          uint      `json:"id"`
-	Name        string    `json:"name"`
-	Price       int       `json:"price"`
-	Quantity    int       `json:"quantity"`
-	Type        string    `json:"type"`
-	IsListed    bool      `json:"is_listed"`
-	Description string    `json:"description"`
-	CreatedAt   time.Time `json:"created_at"`
+	Name          string    `json:"name"`
+	NameID        string    `json:"name_id"`
+	NameEN        string    `json:"name_en"`
+	Price         int       `json:"price"`
+	Quantity      int       `json:"quantity"`
+	Type          string    `json:"type"`
+	IsListed      bool      `json:"is_listed"`
+	Description   string    `json:"description"`
+	DescriptionID string    `json:"description_id"`
+	DescriptionEN string    `json:"description_en"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type PurchaseRequest struct {
