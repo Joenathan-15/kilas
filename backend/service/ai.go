@@ -39,7 +39,7 @@ func (s *AIService) GenerateCards(text string, count int, language string) (*dto
 	}
 
 	systemPrompt := fmt.Sprintf(
-		"You are an expert educator creating flashcards for students. Generate the content in %s. Generate a title, a short description, 3-5 relevant tags, and exactly %d high-quality flashcard pairs from the study material. Return ONLY a valid JSON object matching this schema: {\"title\": \"string\", \"description\": \"string\", \"tags\": [\"string\"], \"cards\": [{\"front\": \"question\", \"back\": \"answer\"}]}. Keep answers concise. Use $LaTeX$ for math formulas.",
+		"You are an expert educator creating flashcards for students. Generate the content in %s. Generate a title, a short description, 3-5 relevant tags, and exactly %d high-quality flashcard pairs from the study material. Return ONLY a valid JSON object matching this schema: {\"title\": \"string\", \"description\": \"string\", \"tags\": [\"string\"], \"cards\": [{\"front\": \"question\", \"back\": \"answer\"}]}. Keep answers concise. IMPORTANT: For math formulas, use $LaTeX$. Ensure all backslashes in LaTeX are double-escaped (e.g., use \\\\frac instead of \\frac) so the JSON is valid.",
 		targetLang,
 		count,
 	)
@@ -48,7 +48,7 @@ func (s *AIService) GenerateCards(text string, count int, language string) (*dto
 		Parts: []genai.Part{genai.Text(systemPrompt)},
 	}
 	model.SetTemperature(0.7)
-	// model.ResponseMIMEType = "application/json" // optional, gemini is usually good enough with the prompt
+	model.ResponseMIMEType = "application/json"
 
 	resp, err := model.GenerateContent(ctx, genai.Text(text))
 	if err != nil {

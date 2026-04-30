@@ -211,10 +211,10 @@ export default function LibraryPage() {
           )}
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-4 border-dashed border-gray-200">
+        <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-4 border-dashed border-gray-200 text-center">
           <BookOpen className="w-20 h-20 text-gray-200 mb-6" />
-          <h2 className="text-2xl font-black text-gray-400 uppercase">{t.library.noLibraryFound}</h2>
-          <p className="text-gray-400 font-bold mt-2">{t.library.trySearch}</p>
+          <h2 className="text-2xl font-black text-gray-400 uppercase px-4">{t.library.noLibraryFound}</h2>
+          <p className="text-gray-400 font-bold mt-2 px-4">{t.library.trySearch}</p>
         </div>
       )}
     </div>

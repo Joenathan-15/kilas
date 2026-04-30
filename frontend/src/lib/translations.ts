@@ -298,6 +298,7 @@ export const translations = {
       cardAdded: 'Kartu ditambahkan!',
       cardUpdated: 'Kartu diperbarui! ✨',
       cardRemoved: 'Kartu dihapus',
+      aiLimitCaution: 'Pengguna gratis bisa membuat konten AI 3x sehari.',
     }
   },
   en: {
@@ -599,6 +600,7 @@ export const translations = {
       cardAdded: 'Card added! 🗴',
       cardUpdated: 'Card updated! ✨',
       cardRemoved: 'Card removed',
+      aiLimitCaution: 'Free Users get 3 AI generations daily..',
     }
   }
 };
