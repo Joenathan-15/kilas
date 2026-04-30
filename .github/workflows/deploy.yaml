@@ -19,4 +19,5 @@ jobs:
           script: |
             cd /home/sekilas/kilas
             git pull origin main
+            chmod +x auto_deploy.sh
             ./auto_deploy.sh
