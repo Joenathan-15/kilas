@@ -135,24 +135,24 @@ func (s *StatsService) GetDeckStats(deckID, userID uint) (*DeckStatsResult, erro
 }
 
 type SessionSummary struct {
-	ID           uint      `json:"id"`
-	DeckID       uint      `json:"deck_id"`
-	DeckTitle    string    `json:"deck_title"`
-	CardsStudied int       `json:"cards_studied"`
-	Duration     int       `json:"duration"`
-	StartedAt    time.Time `json:"started_at"`
+	ID           uint      `json:"id" gorm:"column:id"`
+	DeckID       uint      `json:"deck_id" gorm:"column:deck_id"`
+	DeckTitle    string    `json:"deck_title" gorm:"column:deck_title"`
+	CardsStudied int       `json:"cards_studied" gorm:"column:cards_studied"`
+	Duration     int       `json:"duration" gorm:"column:duration"`
+	StartedAt    time.Time `json:"started_at" gorm:"column:started_at"`
 }
 
 func (s *StatsService) GetRecentSessions(userID uint, limit int) ([]SessionSummary, error) {
-	var sessions []SessionSummary
+	sessions := []SessionSummary{}
 
 	err := s.DB.Table("study_sessions").
-		Select("study_sessions.id, study_sessions.deck_id, decks.title as deck_title, study_sessions.cards_studied, study_sessions.duration, study_sessions.started_at").
-		Joins("JOIN decks ON study_sessions.deck_id = decks.id").
+		Select("study_sessions.id, study_sessions.deck_id, COALESCE(decks.title, 'Deleted Deck') as deck_title, study_sessions.cards_studied, study_sessions.duration, study_sessions.started_at").
+		Joins("LEFT JOIN decks ON study_sessions.deck_id = decks.id").
 		Where("study_sessions.user_id = ? AND study_sessions.ended_at IS NOT NULL", userID).
 		Order("study_sessions.started_at DESC").
 		Limit(limit).
-		Find(&sessions).Error
+		Scan(&sessions).Error
 
 	return sessions, err
 }
