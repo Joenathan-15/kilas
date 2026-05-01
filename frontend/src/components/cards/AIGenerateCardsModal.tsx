@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, Sparkles, FileText, Type } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
@@ -21,6 +21,7 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
   const [count, setCount] = useState(10);
   const [targetLang, setTargetLang] = useState<string>(lang);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [pageCount, setPageCount] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -30,6 +31,22 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
     onSubmit({ text, count, file: activeTab === 'pdf' ? selectedFile : null, language: targetLang });
     onClose();
   };
+
+  useEffect(() => {
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const buffer = reader.result as ArrayBuffer;
+        const content = new TextDecoder('ascii').decode(buffer);
+        // Basic PDF page counting logic
+        const matches = content.match(/\/Type\s*\/Page\b/g);
+        setPageCount(matches ? matches.length : 1);
+      };
+      reader.readAsArrayBuffer(selectedFile);
+    } else {
+      setPageCount(null);
+    }
+  }, [selectedFile]);
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
@@ -168,7 +185,28 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
           </button>
 
           <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-1">
-            <span>{activeTab === 'pdf' ? t.decks.costsPerPage : t.decks.costsTokens.replace('{amount}', (count * 10).toString())}</span>
+            <span>
+              {activeTab === 'pdf' 
+                ? (
+                  <>
+                    {t.decks.costsPerPage.replace('{amount}', (isSubscribed ? Math.round(50 * 0.7) : 50).toString())}
+                    {pageCount && (
+                      <span className="block mt-1 text-purple-600 font-black">
+                        Total: {pageCount} {pageCount > 1 ? 'pages' : 'page'} x {(isSubscribed ? Math.round(50 * 0.7) : 50)} = {pageCount * (isSubscribed ? Math.round(50 * 0.7) : 50)} tokens
+                      </span>
+                    )}
+                  </>
+                )
+                : (
+                  <>
+                    {t.decks.costsTokens.replace('{amount}', (isSubscribed ? Math.round(count * 10 * 0.7) : count * 10).toString())}
+                    <span className="block mt-1 text-purple-600 font-black">
+                      Total: {count} cards x {(isSubscribed ? Math.round(10 * 0.7) : 10)} = {count * (isSubscribed ? Math.round(10 * 0.7) : 10)} tokens
+                    </span>
+                  </>
+                )
+              }
+            </span>
             {!isSubscribed && <span className="text-purple-400 font-black">{t.decks.freeUserLimit}</span>}
           </p>
         </form>

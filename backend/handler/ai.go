@@ -95,8 +95,8 @@ func (h *AIHandler) GenerateCards(c *gin.Context) {
 	isPowerUser := user.SubscriptionUntil != nil && user.SubscriptionUntil.After(time.Now())
 
 	if isPowerUser {
-		// Apply 10% discount
-		tokenCost = int(float64(tokenCost) * 0.9)
+		// Apply 30% discount
+		tokenCost = int(float64(tokenCost) * 0.7)
 	} else {
 		// Check daily generation limit (3x per day)
 		countToday, err := h.AIHistoryRepo.CountGenerationsToday(userID)

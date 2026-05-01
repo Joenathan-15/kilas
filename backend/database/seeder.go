@@ -84,13 +84,13 @@ func SeedProducts() {
 			Name:          "Super Plan",
 			NameID:        "Paket Super",
 			NameEN:        "Super Plan",
-			Price:         250000,
+			Price:         79000,
 			Quantity:      0,
 			Type:          "subscription",
 			IsListed:      true,
-			Description:   "Advanced features for power users. Unlimited daily generations and a 10% discount on token usage. (Monthly)",
-			DescriptionID: "Fitur lanjutan untuk pengguna aktif. Pembuatan harian tanpa batas dan diskon 10% untuk penggunaan token. (Bulanan)",
-			DescriptionEN: "Advanced features for power users. Unlimited daily generations and a 10% discount on token usage. (Monthly)",
+			Description:   "Advanced features for power users. Unlimited daily generations and a 30% discount on token usage. (Monthly)",
+			DescriptionID: "Fitur lanjutan untuk pengguna aktif. Pembuatan harian tanpa batas dan diskon 30% untuk penggunaan token. (Bulanan)",
+			DescriptionEN: "Advanced features for power users. Unlimited daily generations and a 30% discount on token usage. (Monthly)",
 		},
 	}
 

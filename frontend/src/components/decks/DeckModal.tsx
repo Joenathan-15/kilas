@@ -27,6 +27,7 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
     count: 10,
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [pageCount, setPageCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,6 +52,21 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
       setSelectedFile(null);
     }
   }, [initialData, isOpen]);
+
+  useEffect(() => {
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const buffer = reader.result as ArrayBuffer;
+        const content = new TextDecoder('ascii').decode(buffer);
+        const matches = content.match(/\/Type\s*\/Page\b/g);
+        setPageCount(matches ? matches.length : 1);
+      };
+      reader.readAsArrayBuffer(selectedFile);
+    } else {
+      setPageCount(null);
+    }
+  }, [selectedFile]);
 
   if (!isOpen) return null;
 
@@ -253,6 +269,19 @@ export default function DeckModal({ isOpen, onClose, onSubmit, initialData, titl
               initialData ? t.decks.saveChanges : t.decks.createDeck
             )}
           </button>
+          {activeTab === 'ai' && (
+            <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-4 flex flex-col gap-1">
+              <span>
+                {t.decks.costsPerPage.replace('{amount}', (isSubscribed ? Math.round(50 * 0.7) : 50).toString())}
+                {pageCount && (
+                  <span className="block mt-1 text-purple-600 font-black">
+                    Total: {pageCount} {pageCount > 1 ? 'pages' : 'page'} x {(isSubscribed ? Math.round(50 * 0.7) : 50)} = {pageCount * (isSubscribed ? Math.round(50 * 0.7) : 50)} tokens
+                  </span>
+                )}
+              </span>
+              {!isSubscribed && <span className="text-purple-400 font-black">{t.decks.freeUserLimit}</span>}
+            </p>
+          )}
         </form>
       </div>
     </div>
