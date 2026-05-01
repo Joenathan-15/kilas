@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/google/generative-ai-go/genai"
 	"github.com/joenathan-15/kilas/dto"
@@ -48,7 +49,7 @@ func (s *AIService) GenerateCards(text string, count int, language string) (*dto
 		Parts: []genai.Part{genai.Text(systemPrompt)},
 	}
 	model.SetTemperature(0.7)
-	// model.ResponseMIMEType = "application/json" // optional, gemini is usually good enough with the prompt
+	model.ResponseMIMEType = "application/json"
 
 	resp, err := model.GenerateContent(ctx, genai.Text(text))
 	if err != nil {
@@ -65,19 +66,14 @@ func (s *AIService) GenerateCards(text string, count int, language string) (*dto
 		return nil, errors.New("AI returned non-text response")
 	}
 
-	content := string(textResponse)
+	content := strings.TrimSpace(string(textResponse))
 
 	// Strip potential markdown code blocks (e.g. ```json ... ```)
-	if len(content) > 7 && content[:7] == "```json" {
-		content = content[7:]
-		if len(content) > 3 && content[len(content)-3:] == "```" {
-			content = content[:len(content)-3]
-		}
-	} else if len(content) > 3 && content[:3] == "```" {
-		content = content[3:]
-		if len(content) > 3 && content[len(content)-3:] == "```" {
-			content = content[:len(content)-3]
-		}
+	if strings.HasPrefix(content, "```") {
+		content = strings.TrimPrefix(content, "```json")
+		content = strings.TrimPrefix(content, "```")
+		content = strings.TrimSuffix(content, "```")
+		content = strings.TrimSpace(content)
 	}
 
 	var data dto.GeneratedDeckData
