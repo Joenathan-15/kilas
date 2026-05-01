@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import api, { getFullImageUrl } from '../lib/api';
-import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages, Sparkles } from 'lucide-react';
+import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages, Sparkles, MessageSquare } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import ReportIssueModal from '../components/common/ReportIssueModal';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
@@ -14,6 +15,7 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const isSuper = user?.subscription_until && new Date(user.subscription_until) > new Date();
 
   useEffect(() => {
@@ -72,7 +74,19 @@ export default function ProfilePage() {
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       <div className="flex items-center justify-between">
         <h1 className="text-4xl font-black text-gray-800 tracking-tight">{t.profile.title}</h1>
+        <button
+          onClick={() => setIsReportModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl font-bold transition-all active:scale-95"
+        >
+          <MessageSquare className="w-4 h-4" />
+          <span className="hidden sm:inline">Report Issue</span>
+        </button>
       </div>
+
+      <ReportIssueModal 
+        isOpen={isReportModalOpen} 
+        onClose={() => setIsReportModalOpen(false)} 
+      />
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Avatar Section */}
