@@ -14,7 +14,7 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     if (processed.current) return;
-    
+
     // Try to get tokens from query string first, then from hash
     let accessToken = searchParams.get('access_token');
     let refreshToken = searchParams.get('refresh_token');
