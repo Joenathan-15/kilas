@@ -13,6 +13,7 @@ export default function AppLayout() {
   const { t } = useTranslation();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
 
   const navLinks = [
     { to: '/dashboard', label: t.nav.dashboard, icon: <LayoutDashboard /> },
@@ -113,10 +114,15 @@ export default function AppLayout() {
             <img
               src={getFullImageUrl(user?.avatar_url, user?.username)}
               alt="Avatar"
-              className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover"
+              className={`w-10 h-10 rounded-full border-2 object-cover ${isSubscribed ? 'border-yellow-400' : 'border-gray-200'}`}
             />
             <div className="flex-1 min-w-0 text-left">
-              <p className="font-bold text-gray-700 truncate">{user?.username}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-bold text-gray-700 truncate">{user?.username}</p>
+                {isSubscribed && (
+                  <span className="bg-yellow-400 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full leading-none tracking-tighter">SUPER</span>
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <p className="text-xs text-gray-400 font-bold flex items-center gap-1">
                   <span className="text-gold">🔥</span> {user?.login_streak || 0}
@@ -147,11 +153,16 @@ export default function AppLayout() {
             <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
               <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
             </span>
-            <img
-              src={getFullImageUrl(user?.avatar_url, user?.username)}
-              alt="Avatar"
-              className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover"
-            />
+            <div className="relative">
+              <img
+                src={getFullImageUrl(user?.avatar_url, user?.username)}
+                alt="Avatar"
+                className={`w-8 h-8 rounded-full border-2 object-cover ${isSubscribed ? 'border-yellow-400' : 'border-gray-200'}`}
+              />
+              {isSubscribed && (
+                <div className="absolute -top-1 -right-1 bg-yellow-400 text-white text-[6px] font-black px-1 rounded-full border border-white">S</div>
+              )}
+            </div>
           </button>
 
           {/* Mobile Profile Menu */}

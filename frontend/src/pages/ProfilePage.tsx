@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
 
   useEffect(() => {
     if (user) {
@@ -76,16 +77,22 @@ export default function ProfilePage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Avatar Section */}
         <div className="bg-white border-2 border-gray-100 rounded-3xl p-8 shadow-sm text-center space-y-6">
-          <div 
+        <div 
             className="relative inline-block group cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
-          >
+        >
             <div className="relative">
-              <img 
-                src={getFullImageUrl(avatarURL, username)} 
-                alt="Avatar Preview" 
-                className={`w-32 h-32 rounded-full border-4 border-gray-100 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''}`} 
-              />
+                <img 
+                    src={getFullImageUrl(avatarURL, username)} 
+                    alt="Avatar Preview" 
+                    className={`w-32 h-32 rounded-full border-4 object-cover shadow-lg group-hover:opacity-75 transition-all ${isUploading ? 'blur-sm grayscale' : ''} ${isSubscribed ? 'border-yellow-400' : 'border-gray-100'}`} 
+                />
+                
+                {isSubscribed && (
+                    <div className="absolute -top-2 -right-2 bg-yellow-400 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg border-4 border-white animate-in zoom-in-50 duration-300">
+                        SUPER
+                    </div>
+                )}
               
               {/* Uploading Spinner */}
               {isUploading && (
