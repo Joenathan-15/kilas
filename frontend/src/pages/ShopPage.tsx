@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
-import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2 } from 'lucide-react';
+import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2, MessageSquare } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import ReportIssueModal from '../components/common/ReportIssueModal';
 
 interface Product {
   id: number;
@@ -32,6 +33,7 @@ export default function ShopPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'shop' | 'history'>('shop');
   const [isPurchasing, setIsPurchasing] = useState<number | null>(null);
+  const [reportModal, setReportModal] = useState<{ isOpen: boolean; transactionId?: string }>({ isOpen: false });
 
   useEffect(() => {
     fetchData();
@@ -259,6 +261,7 @@ export default function ShopPage() {
                   <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.date}</th>
                   <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.amount}</th>
                   <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.status}</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-gray-50">
@@ -302,6 +305,15 @@ export default function ShopPage() {
                         </div>
                       )}
                     </td>
+                    <td className="px-6 py-5 text-right">
+                      <button
+                        onClick={() => setReportModal({ isOpen: true, transactionId: tx.id.toString() })}
+                        className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-all active:scale-90 group"
+                        title="Report Issue"
+                      >
+                        <MessageSquare className="w-5 h-5" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -322,6 +334,13 @@ export default function ShopPage() {
           )}
         </div>
       )}
+
+      <ReportIssueModal 
+        isOpen={reportModal.isOpen} 
+        onClose={() => setReportModal({ isOpen: false })} 
+        transactionId={reportModal.transactionId}
+        defaultCategory={reportModal.transactionId ? 'transaction' : 'bug'}
+      />
     </div>
   );
 }
