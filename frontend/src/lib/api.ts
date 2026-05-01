@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  baseURL: BASE_URL,
 });
 
 // Request interceptor: attach access token
@@ -114,7 +116,7 @@ export const getFullImageUrl = (path: string | undefined, placeholderName?: stri
   if (path.startsWith('http')) return path;
   
   // Get API base URL and strip the trailing /api if it exists
-  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api').replace(/\/api\/?$/, '');
+  const baseUrl = BASE_URL.replace(/\/api\/?$/, '');
   
   // Ensure path starts with a slash
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
