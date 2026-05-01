@@ -29,14 +29,18 @@ func (h *ProductHandler) List(c *gin.Context) {
 	response := []dto.ProductResponse{}
 	for _, p := range products {
 		response = append(response, dto.ProductResponse{
-			ID:          p.ID,
-			Name:        p.Name,
-			Price:       p.Price,
-			Quantity:    p.Quantity,
-			Type:        p.Type,
-			IsListed:    p.IsListed,
-			Description: p.Description,
-			CreatedAt:   p.CreatedAt,
+			ID:            p.ID,
+			Name:          p.Name,
+			NameID:        p.NameID,
+			NameEN:        p.NameEN,
+			Price:         p.Price,
+			Quantity:      p.Quantity,
+			Type:          p.Type,
+			IsListed:      p.IsListed,
+			Description:   p.Description,
+			DescriptionID: p.DescriptionID,
+			DescriptionEN: p.DescriptionEN,
+			CreatedAt:     p.CreatedAt,
 		})
 	}
 
