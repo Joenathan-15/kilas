@@ -6,10 +6,14 @@ import { useTranslation } from '../hooks/useTranslation';
 interface Product {
   id: number;
   name: string;
+  name_id?: string;
+  name_en?: string;
   price: number;
   quantity: number;
   type: string;
   description: string;
+  description_id?: string;
+  description_en?: string;
 }
 
 interface Transaction {
@@ -130,10 +134,10 @@ export default function ShopPage() {
 
                     <div className="flex-1 space-y-2">
                       <h3 className="text-2xl font-black text-gray-800 leading-tight">
-                        {product.name}
+                        {product[`name_${lang}` as keyof Product] || product.name}
                       </h3>
                       <p className="text-gray-400 font-bold text-sm leading-relaxed">
-                        {product.description}
+                        {product[`description_${lang}` as keyof Product] || product.description}
                       </p>
                     </div>
 
@@ -186,10 +190,10 @@ export default function ShopPage() {
 
                     <div className="flex-1 space-y-2">
                       <h3 className="text-2xl font-black text-gray-800 leading-tight">
-                        {product.name}
+                        {product[`name_${lang}` as keyof Product] || product.name}
                       </h3>
                       <p className="text-gray-400 font-bold text-sm line-clamp-2">
-                        {product.description}
+                        {product[`description_${lang}` as keyof Product] || product.description}
                       </p>
                     </div>
 
