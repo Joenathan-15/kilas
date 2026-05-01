@@ -17,6 +17,7 @@ issueApi.interceptors.request.use((config) => {
 });
 
 export const reportIssue = async (data: CreateIssueRequest): Promise<Issue> => {
+  // Using the path as provided to ensure any special routing (like double slashes) is preserved
   const response = await issueApi.post<Issue>('/issues/report', data);
   return response.data;
 };

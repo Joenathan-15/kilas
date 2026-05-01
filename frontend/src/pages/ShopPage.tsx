@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import ReportIssueModal from '../components/common/ReportIssueModal';
 
 interface Product {
   id: number;
@@ -32,6 +33,8 @@ export default function ShopPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'shop' | 'history'>('shop');
   const [isPurchasing, setIsPurchasing] = useState<number | null>(null);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedTxId, setSelectedTxId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     fetchData();
@@ -250,6 +253,7 @@ export default function ShopPage() {
                   <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.date}</th>
                   <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.amount}</th>
                   <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">{t.shop.status}</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-gray-50">
@@ -293,6 +297,17 @@ export default function ShopPage() {
                         </div>
                       )}
                     </td>
+                    <td className="px-6 py-5 text-right">
+                      <button
+                        onClick={() => {
+                          setSelectedTxId(tx.id.toString());
+                          setIsReportModalOpen(true);
+                        }}
+                        className="text-gray-400 hover:text-red-500 font-bold text-xs uppercase tracking-wider transition-colors"
+                      >
+                        {t.common.reportIssue}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -313,6 +328,13 @@ export default function ShopPage() {
           )}
         </div>
       )}
+
+      <ReportIssueModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        transactionId={selectedTxId}
+        defaultCategory={selectedTxId ? 'transaction' : 'bug'}
+      />
     </div>
   );
 }

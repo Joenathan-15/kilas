@@ -4,13 +4,15 @@ import { useAuthStore } from '../../stores/authStore';
 import { getFullImageUrl } from '../../lib/api';
 import { useUIStore } from '../../stores/uiStore';
 import { useTranslation } from '../../hooks/useTranslation';
-import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles, MessageSquare } from 'lucide-react';
+import ReportIssueModal from '../common/ReportIssueModal';
 
 export default function AppLayout() {
   const { user, logout } = useAuthStore();
   const { activeGenerations } = useUIStore();
   const { t } = useTranslation();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   const navLinks = [
     { to: '/dashboard', label: t.nav.dashboard, icon: <LayoutDashboard /> },
@@ -83,6 +85,16 @@ export default function AppLayout() {
                 <User className="w-5 h-5" />
                 {t.nav.profile}
               </Link>
+              <button
+                onClick={() => {
+                  setIsReportModalOpen(true);
+                  setIsProfileOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold text-left"
+              >
+                <MessageSquare className="w-5 h-5" />
+                {t.common.reportIssue}
+              </button>
               <div className="h-px bg-gray-100 my-1" />
               <button
                 onClick={logout}
@@ -154,6 +166,16 @@ export default function AppLayout() {
                 <User className="w-5 h-5" />
                 {t.nav.profile}
               </Link>
+              <button
+                onClick={() => {
+                  setIsReportModalOpen(true);
+                  setIsProfileOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold text-left"
+              >
+                <MessageSquare className="w-5 h-5" />
+                Report Issue
+              </button>
               <div className="h-px bg-gray-100 my-1" />
               <button
                 onClick={logout}
@@ -189,6 +211,10 @@ export default function AppLayout() {
         ))}
       </nav>
 
+      <ReportIssueModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </div>
   );
 }

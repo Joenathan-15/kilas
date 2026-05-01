@@ -13,6 +13,7 @@ export const translations = {
       create: 'Buat Baru',
       claimedTokens: 'Berhasil klaim {amount} token! 🔥',
       claimError: 'Gagal klaim hadiah harian',
+      reportIssue: 'Laporkan Masalah',
     },
     nav: {
       dashboard: 'Beranda',
@@ -180,6 +181,7 @@ export const translations = {
       noHistory: 'Belum ada riwayat pembelian.',
       goToShop: 'Ke toko',
       purchaseFailed: 'Gagal memulai pembelian. Silakan coba lagi.',
+      reportPaymentIssue: 'Laporkan Masalah Pembayaran',
       promoTitle: 'Kilas Super',
       promoReason: 'Anda telah mencapai batas AI harian. Buka potensi tanpa batas dengan Kilas Super!',
       unlimitedAI: 'Penggunaan AI Tanpa Batas',
@@ -313,6 +315,7 @@ export const translations = {
       create: 'Create New',
       claimedTokens: 'Successfully claimed {amount} tokens! 🔥',
       claimError: 'Failed to claim daily reward',
+      reportIssue: 'Report Issue',
     },
     nav: {
       dashboard: 'Dashboard',
@@ -480,6 +483,7 @@ export const translations = {
       noHistory: 'No purchase history yet.',
       goToShop: 'Go to shop',
       purchaseFailed: 'Failed to initiate purchase. Please try again.',
+      reportPaymentIssue: 'Report Payment Issue',
       promoTitle: 'Kilas Super',
       promoReason: "You've reached your daily AI limit. Unlock unlimited potential with Kilas Super!",
       unlimitedAI: 'Unlimited AI Usage',
