@@ -23,9 +23,10 @@ type UserResponse struct {
 	Username    string `json:"username"`
 	AvatarURL   string `json:"avatar_url"`
 	LoginStreak   int        `json:"login_streak"`
-	Tokens        int        `json:"tokens"`
-	LastLoginDate *time.Time `json:"last_login_date"`
-	Language      string     `json:"language"`
+	Tokens            int        `json:"tokens"`
+	LastLoginDate     *time.Time `json:"last_login_date"`
+	SubscriptionUntil *time.Time `json:"subscription_until"`
+	Language          string     `json:"language"`
 }
 
 type AuthResponse struct {
