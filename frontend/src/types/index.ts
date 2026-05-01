@@ -88,3 +88,19 @@ export interface AIGenerationHistory {
   created_at: string;
 }
 
+export interface CreateIssueRequest {
+  reporter_name: string;
+  reporter_email: string;
+  transaction_id?: string;
+  category: string;
+  title: string;
+  description: string;
+  priority?: string;
+}
+
+export interface Issue extends CreateIssueRequest {
+  id: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}

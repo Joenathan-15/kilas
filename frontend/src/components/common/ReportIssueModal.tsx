@@ -60,11 +60,11 @@ export default function ReportIssueModal({ isOpen, onClose, transactionId, defau
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" 
-        onClick={onClose} 
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        onClick={onClose}
       />
-      
+
       <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-300">
         {/* Header */}
         <div className="p-8 pb-4 flex items-center justify-between">
@@ -77,7 +77,7 @@ export default function ReportIssueModal({ isOpen, onClose, transactionId, defau
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Help us improve Kilas</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-400"
           >
