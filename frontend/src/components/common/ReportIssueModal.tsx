@@ -27,6 +27,20 @@ export default function ReportIssueModal({ isOpen, onClose, transactionId, defau
     priority: 'medium'
   });
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        reporter_name: user?.username || '',
+        reporter_email: user?.email || '',
+        transaction_id: transactionId || '',
+        category: defaultCategory,
+        title: '',
+        description: '',
+        priority: 'medium'
+      });
+    }
+  }, [isOpen, transactionId, defaultCategory, user]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,16 +54,6 @@ export default function ReportIssueModal({ isOpen, onClose, transactionId, defau
       setTimeout(() => {
         setSuccess(false);
         onClose();
-        // Reset form
-        setFormData({
-          reporter_name: user?.username || '',
-          reporter_email: user?.email || '',
-          transaction_id: transactionId || '',
-          category: defaultCategory,
-          title: '',
-          description: '',
-          priority: 'medium'
-        });
       }, 2000);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to submit report. Please try again.');
@@ -111,7 +115,7 @@ export default function ReportIssueModal({ isOpen, onClose, transactionId, defau
                   className="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-red-400 outline-none font-bold text-gray-700 transition-all appearance-none cursor-pointer"
                 >
                   <option value="bug">Bug / Error</option>
-                  <option value="transaction">Payment Issue</option>
+                  {formData.transaction_id && <option value="transaction">Payment Issue</option>}
                   <option value="account">Account Issue</option>
                   <option value="feature">Feature Request</option>
                   <option value="other">Other</option>

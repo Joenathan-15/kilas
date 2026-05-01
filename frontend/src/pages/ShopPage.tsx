@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
-import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2 } from 'lucide-react';
+import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2, AlertCircle } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import ReportIssueModal from '../components/common/ReportIssueModal';
 
@@ -303,9 +303,10 @@ export default function ShopPage() {
                           setSelectedTxId(tx.id.toString());
                           setIsReportModalOpen(true);
                         }}
-                        className="text-gray-400 hover:text-red-500 font-bold text-xs uppercase tracking-wider transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 border-2 border-transparent hover:border-red-100"
                       >
-                        {t.common.reportIssue}
+                        <AlertCircle className="w-3 h-3" />
+                        {t.shop.reportPaymentIssue}
                       </button>
                     </td>
                   </tr>
