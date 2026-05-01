@@ -271,7 +271,7 @@ export default function StudyPage() {
               {t.stats.reStudy.toUpperCase()}
             </button>
             <button
-              onClick={() => navigate('/decks')}
+              onClick={() => navigate('/dashboard')}
               className="w-full md:flex-1 px-10 py-5 bg-white border-b-4 border-gray-200 text-gray-400 font-black rounded-2xl hover:bg-gray-50 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2 shadow-md text-lg"
             >
               {t.study.goToDashboard}
