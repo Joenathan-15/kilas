@@ -24,14 +24,6 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
   const [pageCount, setPageCount] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (!isOpen) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ text, count, file: activeTab === 'pdf' ? selectedFile : null, language: targetLang });
-    onClose();
-  };
-
   useEffect(() => {
     if (selectedFile) {
       const reader = new FileReader();
@@ -47,6 +39,14 @@ export default function AIGenerateCardsModal({ isOpen, onClose, onSubmit, title 
       setPageCount(null);
     }
   }, [selectedFile]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({ text, count, file: activeTab === 'pdf' ? selectedFile : null, language: targetLang });
+    onClose();
+  };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
