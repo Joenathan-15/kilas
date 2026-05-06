@@ -154,7 +154,7 @@ export const translations = {
       pageOf: 'Halaman {page} dari {total}',
     },
     shop: {
-      title: 'Toko Kilas',
+      title: 'TOKO',
       subtitle: 'Tingkatkan pengalaman belajar Anda',
       shopTab: 'Toko',
       historyTab: 'Riwayat',
@@ -194,7 +194,7 @@ export const translations = {
       startingPrice: 'Mulai dari Rp79.000/bulan',
     },
     profile: {
-      title: 'Edit Profil',
+      title: 'EDIT PROFIL',
       username: 'Nama Pengguna',
       email: 'Alamat Email',
       avatar: 'Foto Profil',
@@ -211,7 +211,7 @@ export const translations = {
       saving: 'Menyimpan...',
     },
     stats: {
-      title: 'Performa',
+      title: 'PERFORMA',
       subtitle: 'Visualisasikan perjalanan belajar dan penguasaan Anda.',
       calculating: 'Menghitung metrik...',
       totalStudyTime: 'Total Waktu Belajar',
@@ -483,7 +483,7 @@ export const translations = {
       pageOf: 'Page {page} of {total}',
     },
     shop: {
-      title: 'Kilas Shop',
+      title: 'SHOP',
       subtitle: 'Enhance your learning experience',
       shopTab: 'Shop',
       historyTab: 'History',
@@ -523,7 +523,7 @@ export const translations = {
       startingPrice: 'Starting from just Rp79.000/month',
     },
     profile: {
-      title: 'Edit Profile',
+      title: 'EDIT PROFILE',
       username: 'Username',
       email: 'Email Address',
       avatar: 'Profile Picture',
@@ -540,7 +540,7 @@ export const translations = {
       saving: 'Saving...',
     },
     stats: {
-      title: 'Performance',
+      title: 'PERFORMANCE',
       subtitle: 'Visualize your learning journey and mastery.',
       calculating: 'Calculating metrics...',
       totalStudyTime: 'Total Study Time',

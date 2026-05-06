@@ -3,6 +3,7 @@ import { useAuthStore } from '../stores/authStore';
 import api, { getFullImageUrl } from '../lib/api';
 import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
@@ -15,6 +16,8 @@ export default function ProfilePage() {
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
+
+  usePageTitle(t.nav.profile);
 
   useEffect(() => {
     if (user) {

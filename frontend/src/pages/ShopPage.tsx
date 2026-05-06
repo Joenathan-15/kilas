@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2, AlertCircle } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import ReportIssueModal from '../components/common/ReportIssueModal';
 
 interface Product {
@@ -30,6 +31,7 @@ export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { t, lang } = useTranslation();
+  usePageTitle(t.nav.shop);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'shop' | 'history'>('shop');
   const [isPurchasing, setIsPurchasing] = useState<number | null>(null);

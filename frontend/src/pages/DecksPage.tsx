@@ -9,6 +9,7 @@ import DeckModal from '../components/decks/DeckModal';
 import { useAuthStore } from '../stores/authStore';
 import { useUIStore } from '../stores/uiStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 
 export default function DecksPage() {
@@ -20,6 +21,8 @@ export default function DecksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDeck, setEditingDeck] = useState<Deck | undefined>();
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
+
+  usePageTitle(t.nav.myDecks);
 
   const { data: decksData, isLoading } = useQuery<{ data: Deck[] }>({
     queryKey: ['decks'],

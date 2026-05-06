@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { useTranslation } from '../hooks/useTranslation';
 import type { AIGenerationHistory } from '../types';
 
@@ -43,6 +44,8 @@ export default function StatsPage() {
   const [activeDayIdx, setActiveDayIdx] = useState<number | null>(null);
   const [historyTab, setHistoryTab] = useState<'study' | 'ai'>('study');
   const { t, lang } = useTranslation();
+
+  usePageTitle(t.nav.stats);
 
   const { data: overview, isLoading: overviewLoading } = useQuery<OverviewStats>({
     queryKey: ['stats-overview'],

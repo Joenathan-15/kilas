@@ -30,6 +30,7 @@ export default function AppLayout() {
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 bg-surface border-r-2 border-gray-200 z-50">
         <div className="p-6">
           <h1 className="text-3xl font-black text-feather-green tracking-tight flex items-center gap-2">
+            <img src="/logo.png" alt="Kilas Logo" className="h-8 w-auto" />
             <span>Kilas</span>
           </h1>
         </div>
@@ -139,7 +140,8 @@ export default function AppLayout() {
 
       {/* Mobile Top Bar */}
       <header className="md:hidden sticky top-0 bg-surface border-b-2 border-gray-200 z-40 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-2xl font-black text-feather-green tracking-tight flex items-center gap-1">
+        <h1 className="text-2xl font-black text-feather-green tracking-tight flex items-center gap-2">
+          <img src="/logo.png" alt="Kilas Logo" className="h-7 w-auto" />
           <span>Kilas</span>
         </h1>
         <div className="relative">

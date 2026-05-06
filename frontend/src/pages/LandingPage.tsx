@@ -2,12 +2,14 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { BrainCircuit, Sparkles, Library, Search, CalendarCheck, Trophy, Calculator, Microscope, Landmark, Globe, Code, Scale, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  usePageTitle('');
 
   useEffect(() => {
     if (isAuthenticated) {

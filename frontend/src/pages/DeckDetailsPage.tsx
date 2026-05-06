@@ -28,6 +28,8 @@ import { Latex } from '../components/common/Latex';
 import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 import { useTranslation } from '../hooks/useTranslation';
 
+import { usePageTitle } from '../hooks/usePageTitle';
+
 export default function DeckDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,6 +49,8 @@ export default function DeckDetailsPage() {
     },
     enabled: !!id,
   });
+
+  usePageTitle(deck?.title || 'Deck Details');
 
   const isOwner = user?.id === deck?.user_id;
 

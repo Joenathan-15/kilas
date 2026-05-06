@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { LibraryDeck } from '../types';
 
 interface BrowseResult {
@@ -17,6 +18,7 @@ interface BrowseResult {
 export default function LibraryPage() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
+  usePageTitle(t.nav.library);
   const [searchInput, setSearchInput] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'popular'>('newest');

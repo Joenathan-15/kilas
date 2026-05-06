@@ -15,6 +15,8 @@ interface StudyDueResponse {
   total_due: number;
 }
 
+import { usePageTitle } from '../hooks/usePageTitle';
+
 export default function StudyPage() {
   const { id: deckId } = useParams();
   const navigate = useNavigate();
@@ -47,6 +49,8 @@ export default function StudyPage() {
     },
     enabled: !!deckId,
   });
+
+  usePageTitle(deck?.title ? `Study: ${deck.title}` : 'Study');
 
   // Start session mutation
   const startSessionMutation = useMutation({
