@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { ShoppingBag, Coins, CreditCard, History, CheckCircle2, ArrowRight, Clock, XCircle, Sparkles, Zap, Loader2, AlertCircle } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import ReportIssueModal from '../components/common/ReportIssueModal';
 
 interface Product {
@@ -30,6 +31,7 @@ export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { t, lang } = useTranslation();
+  usePageTitle(t.nav.shop);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'shop' | 'history'>('shop');
   const [isPurchasing, setIsPurchasing] = useState<number | null>(null);
@@ -77,7 +79,7 @@ export default function ShopPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-4xl font-black text-gray-800 tracking-tight flex items-center gap-3">
-            <ShoppingBag className="w-10 h-10 text-orange-500" />
+            <ShoppingBag className="w-10 h-10 text-feather-green" />
             {t.shop.title}
           </h1>
           <p className="text-gray-400 font-bold mt-1 uppercase tracking-widest text-xs">

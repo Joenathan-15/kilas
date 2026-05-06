@@ -9,6 +9,7 @@ import DeckModal from '../components/decks/DeckModal';
 import { useAuthStore } from '../stores/authStore';
 import { useUIStore } from '../stores/uiStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 
 export default function DecksPage() {
@@ -20,6 +21,8 @@ export default function DecksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDeck, setEditingDeck] = useState<Deck | undefined>();
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
+
+  usePageTitle(t.nav.myDecks);
 
   const { data: decksData, isLoading } = useQuery<{ data: Deck[] }>({
     queryKey: ['decks'],
@@ -132,11 +135,14 @@ export default function DecksPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-700 tracking-tight">{t.decks.title}</h1>
+          <h1 className="text-3xl font-black text-gray-700 tracking-tight flex items-center gap-3">
+            <Layers className="w-8 h-8 text-feather-green" />
+            {t.decks.title}
+          </h1>
           <p className="text-gray-400 font-bold">{t.decks.subtitle}</p>
         </div>
-        
-        <button 
+
+        <button
           onClick={openCreateModal}
           className="btn-primary py-3 px-6 flex items-center justify-center gap-2"
         >
@@ -166,11 +172,11 @@ export default function DecksPage() {
       ) : filteredDecks && filteredDecks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDecks.map((deck) => (
-            <DeckCard 
-              key={deck.id} 
-              deck={deck} 
-              onEdit={openEditModal} 
-              onDelete={handleDeleteDeck} 
+            <DeckCard
+              key={deck.id}
+              deck={deck}
+              onEdit={openEditModal}
+              onDelete={handleDeleteDeck}
             />
           ))}
         </div>
@@ -179,7 +185,7 @@ export default function DecksPage() {
           <Layers className="w-20 h-20 text-gray-200 mb-6" />
           <h2 className="text-2xl font-black text-gray-400 uppercase">{t.decks.noDecksFound}</h2>
           <p className="text-gray-400 font-bold mt-2">{t.decks.trySearch}</p>
-          <button 
+          <button
             onClick={openCreateModal}
             className="mt-8 text-sky-blue font-black hover:underline underline-offset-4"
           >

@@ -4,7 +4,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { getFullImageUrl } from '../../lib/api';
 import { useUIStore } from '../../stores/uiStore';
 import { useTranslation } from '../../hooks/useTranslation';
-import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles, MessageSquare, Coins } from 'lucide-react';
 import ReportIssueModal from '../common/ReportIssueModal';
 
 export default function AppLayout() {
@@ -30,6 +30,7 @@ export default function AppLayout() {
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 bg-surface border-r-2 border-gray-200 z-50">
         <div className="p-6">
           <h1 className="text-3xl font-black text-feather-green tracking-tight flex items-center gap-2">
+            <img src="/logo.png" alt="Kilas Logo" className="h-8 w-auto" />
             <span>Kilas</span>
           </h1>
         </div>
@@ -128,7 +129,7 @@ export default function AppLayout() {
                   <span className="text-gold">🔥</span> {user?.login_streak || 0}
                 </p>
                 <p className="text-xs text-gray-400 font-bold flex items-center gap-1">
-                  <span className="text-yellow-500 text-sm">🪙</span> {user?.tokens || 0}
+                  <Coins className="w-3.5 h-3.5 text-gold" /> {user?.tokens || 0}
                 </p>
               </div>
             </div>
@@ -139,7 +140,8 @@ export default function AppLayout() {
 
       {/* Mobile Top Bar */}
       <header className="md:hidden sticky top-0 bg-surface border-b-2 border-gray-200 z-40 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-2xl font-black text-feather-green tracking-tight flex items-center gap-1">
+        <h1 className="text-2xl font-black text-feather-green tracking-tight flex items-center gap-2">
+          <img src="/logo.png" alt="Kilas Logo" className="h-7 w-auto" />
           <span>Kilas</span>
         </h1>
         <div className="relative">
@@ -151,7 +153,7 @@ export default function AppLayout() {
               <span className="text-gold text-lg">🔥</span> {user?.login_streak || 0}
             </span>
             <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
-              <span className="text-yellow-500 text-lg">🪙</span> {user?.tokens || 0}
+              <Coins className="w-4 h-4 text-gold" /> {user?.tokens || 0}
             </span>
             <div className="relative">
               <img

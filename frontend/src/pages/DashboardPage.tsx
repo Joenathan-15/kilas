@@ -16,6 +16,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { OverviewStats, ActivityData, Deck } from '../types';
 
 export default function DashboardPage() {
@@ -23,6 +24,8 @@ export default function DashboardPage() {
   const { t, lang } = useTranslation();
   const [isClaiming, setIsClaiming] = React.useState(false);
   const [activeDayIdx, setActiveDayIdx] = React.useState<number | null>(null);
+
+  usePageTitle(t.nav.dashboard);
 
   const { data: stats, refetch: refetchStats } = useQuery<OverviewStats>({
     queryKey: ['stats-overview'],
@@ -37,7 +40,7 @@ export default function DashboardPage() {
     try {
       const res = await api.post('/auth/daily-login');
       toast.success(t.common.claimedTokens.replace('{amount}', res.data.reward.toString()), {
-        icon: '🪙',
+        icon: <Coins className="w-5 h-5 text-gold" />,
         duration: 5000,
       });
       await fetchMe();

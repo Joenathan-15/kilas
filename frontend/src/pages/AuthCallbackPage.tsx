@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function AuthCallbackPage() {
   const [searchParams] = useSearchParams();
@@ -11,6 +12,8 @@ export default function AuthCallbackPage() {
   const { setTokens } = useAuthStore();
   const { t } = useTranslation();
   const processed = useRef(false);
+
+  usePageTitle('Authenticating...');
 
   useEffect(() => {
     if (processed.current) return;

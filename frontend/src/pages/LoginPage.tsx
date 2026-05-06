@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { BASE_URL } from '../lib/api';
 
 export default function LoginPage() {
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const { t } = useTranslation();
+  usePageTitle('Login');
   const { login, isAuthenticated, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
