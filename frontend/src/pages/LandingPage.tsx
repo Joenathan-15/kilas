@@ -53,7 +53,7 @@ export default function LandingPage() {
               <img
                 src="/learning_crow.png"
                 alt="Learning Mascot"
-                className="max-w-[280px] md:max-w-[400px] w-full object-contain animate-float"
+                className="max-w-70 md:max-w-100 w-full object-contain animate-float"
               />
             </div>
 
@@ -86,13 +86,13 @@ export default function LandingPage() {
         <section className="w-full border-t-2 border-b-2 border-gray-200 bg-surface overflow-hidden relative flex items-center h-16">
           <button 
             onClick={() => scrollBanner('left')}
-            className="flex absolute left-0 top-0 bottom-0 w-12 md:w-16 bg-gradient-to-r from-surface to-transparent z-10 items-center justify-start pl-1 md:pl-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            className="flex absolute left-0 top-0 bottom-0 w-12 md:w-16 bg-linear-to-r from-surface to-transparent z-10 items-center justify-start pl-1 md:pl-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 drop-shadow-sm" />
           </button>
           <button 
             onClick={() => scrollBanner('right')}
-            className="flex absolute right-0 top-0 bottom-0 w-12 md:w-16 bg-gradient-to-l from-surface to-transparent z-10 items-center justify-end pr-1 md:pr-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            className="flex absolute right-0 top-0 bottom-0 w-12 md:w-16 bg-linear-to-l from-surface to-transparent z-10 items-center justify-end pr-1 md:pr-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6 drop-shadow-sm" />
           </button>
@@ -113,7 +113,7 @@ export default function LandingPage() {
               ].map((subject, idx) => {
                 const Icon = subject.icon;
                 return (
-                  <div key={idx} className="flex items-center gap-2 flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity cursor-default">
+                  <div key={idx} className="flex items-center gap-2 shrink-0 opacity-70 hover:opacity-100 transition-opacity cursor-default">
                     <Icon className={`w-7 h-7 ${subject.color}`} />
                     <span className="font-bold text-gray-500 text-sm tracking-widest uppercase mt-0.5">{subject.name}</span>
                   </div>
@@ -203,7 +203,7 @@ export default function LandingPage() {
             <img
               src="/grauate_crow.png"
               alt="Graduate Mascot"
-              className="max-w-[200px] w-full object-contain mb-8 animate-float"
+              className="max-w-50 w-full object-contain mb-8 animate-float"
               style={{ animationDelay: '1s' }}
             />
             <h3 className="text-2xl md:text-3xl font-black text-gray-800 mb-8 tracking-tight">

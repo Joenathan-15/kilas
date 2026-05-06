@@ -120,7 +120,7 @@ export default function StatsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* Study Time Card */}
-        <div className="card-duo p-6 bg-gradient-to-br from-sky-50 to-white border-sky-100">
+        <div className="card-duo p-6 bg-linear-to-br from-sky-50 to-white border-sky-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 bg-sky-100 rounded-2xl flex items-center justify-center text-sky-500 border-b-4 border-sky-200">
               <Clock className="w-7 h-7" />
@@ -136,7 +136,7 @@ export default function StatsPage() {
         </div>
 
         {/* Cards Mastered Card */}
-        <div className="card-duo p-6 bg-gradient-to-br from-green-50 to-white border-green-100">
+        <div className="card-duo p-6 bg-linear-to-br from-green-50 to-white border-green-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-green-500 border-b-4 border-green-200">
               <Trophy className="w-7 h-7" />
@@ -155,7 +155,7 @@ export default function StatsPage() {
         </div>
 
         {/* Sessions Card */}
-        <div className="card-duo p-6 bg-gradient-to-br from-orange-50 to-white border-orange-100">
+        <div className="card-duo p-6 bg-linear-to-br from-orange-50 to-white border-orange-100">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-500 border-b-4 border-orange-200">
               <Flame className="w-7 h-7" />
@@ -229,7 +229,7 @@ export default function StatsPage() {
                     )}
 
                     <div
-                      className={`w-full aspect-square max-w-[40px] rounded-xl border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]} ${isActive ? 'ring-4 ring-sky-blue/20 scale-110 border-sky-blue' : ''}`}
+                      className={`w-full aspect-square max-w-10 rounded-xl border-2 transition-all hover:scale-110 cursor-pointer ${colors[colorIdx]} ${isActive ? 'ring-4 ring-sky-blue/20 scale-110 border-sky-blue' : ''}`}
                     />
                     <span className={`text-[10px] font-black uppercase whitespace-nowrap w-full text-center h-5 leading-tight transition-colors ${isActive ? 'text-sky-blue' : 'text-gray-300'}`}>
                       {i % 5 === 0 ? new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', day: 'numeric' }).format(dateObj) : ''}
@@ -289,7 +289,7 @@ export default function StatsPage() {
               </button>
             </div>
 
-            <div className="space-y-4 flex-1 overflow-auto max-h-[500px] pr-2 custom-scrollbar">
+            <div className="space-y-4 flex-1 overflow-auto max-h-125 pr-2 custom-scrollbar">
               {historyTab === 'study' ? (
                 (!sessions || sessions.length === 0) ? (
                   <div className="text-center py-10 opacity-50">
