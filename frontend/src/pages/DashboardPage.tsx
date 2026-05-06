@@ -40,7 +40,7 @@ export default function DashboardPage() {
     try {
       const res = await api.post('/auth/daily-login');
       toast.success(t.common.claimedTokens.replace('{amount}', res.data.reward.toString()), {
-        icon: '🪙',
+        icon: <Coins className="w-5 h-5 text-gold" />,
         duration: 5000,
       });
       await fetchMe();
