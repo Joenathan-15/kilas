@@ -109,7 +109,7 @@ export default function StatsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-gray-700 flex items-center gap-3">
-            <BarChart2 className="w-8 h-8 text-sky-blue" />
+            <BarChart2 className="w-8 h-8 text-feather-green" />
             {t.stats.title}
           </h1>
           <p className="text-gray-400 font-bold mt-1">{t.stats.subtitle}</p>

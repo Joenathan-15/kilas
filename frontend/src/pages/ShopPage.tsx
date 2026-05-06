@@ -79,7 +79,7 @@ export default function ShopPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-4xl font-black text-gray-800 tracking-tight flex items-center gap-3">
-            <ShoppingBag className="w-10 h-10 text-orange-500" />
+            <ShoppingBag className="w-10 h-10 text-feather-green" />
             {t.shop.title}
           </h1>
           <p className="text-gray-400 font-bold mt-1 uppercase tracking-widest text-xs">

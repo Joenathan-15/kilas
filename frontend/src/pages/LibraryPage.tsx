@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api, { getFullImageUrl } from '../lib/api';
 import { Link } from 'react-router-dom';
-import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { Search, Loader2, BookOpen, Copy, Layers, ArrowLeft, ArrowRight, Sparkles, Globe } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../hooks/useTranslation';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -70,7 +70,10 @@ export default function LibraryPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-3xl font-black text-gray-700 tracking-tight">{t.library.title}</h1>
+        <h1 className="text-3xl font-black text-gray-700 tracking-tight flex items-center gap-3">
+          <Globe className="w-8 h-8 text-feather-green" />
+          {t.library.title}
+        </h1>
         <p className="text-gray-400 font-bold">{t.library.subtitle}</p>
       </div>
 
