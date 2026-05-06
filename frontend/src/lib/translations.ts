@@ -326,6 +326,16 @@ export const translations = {
       subjLanguages: 'BAHASA',
       subjProgramming: 'KODING',
       subjLaw: 'HUKUM',
+    },
+    offline: {
+      banner: 'Anda sedang offline — mode latihan tersedia',
+      offlineMode: 'Mode Offline',
+      studySandbox: 'Latihan Offline',
+      noOfflineDecks: 'Belum ada deck tersimpan untuk offline',
+      savedForOffline: 'Tersimpan untuk offline',
+      backOnline: 'Kembali online!',
+      noDecksCached: 'Kartu belum tersimpan offline',
+      syncingOffline: 'Menyimpan kartu untuk penggunaan offline...',
     }
   },
   en: {
@@ -655,6 +665,16 @@ export const translations = {
       subjLanguages: 'LANGUAGES',
       subjProgramming: 'CODING',
       subjLaw: 'LAW',
+    },
+    offline: {
+      banner: "You're offline — sandbox study available",
+      offlineMode: 'Offline Mode',
+      studySandbox: 'Study Offline',
+      noOfflineDecks: 'No decks saved for offline yet',
+      savedForOffline: 'Saved for offline',
+      backOnline: 'Back online!',
+      noDecksCached: 'Cards not cached offline yet',
+      syncingOffline: 'Syncing cards for offline use...',
     }
   }
 };

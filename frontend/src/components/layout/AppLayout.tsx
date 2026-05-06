@@ -4,8 +4,10 @@ import { useAuthStore } from '../../stores/authStore';
 import { getFullImageUrl } from '../../lib/api';
 import { useUIStore } from '../../stores/uiStore';
 import { useTranslation } from '../../hooks/useTranslation';
-import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles, MessageSquare, Coins } from 'lucide-react';
+import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles, MessageSquare, Coins, WifiOff } from 'lucide-react';
 import ReportIssueModal from '../common/ReportIssueModal';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
+import toast from 'react-hot-toast';
 
 export default function AppLayout() {
   const { user, logout } = useAuthStore();
@@ -14,6 +16,18 @@ export default function AppLayout() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
+  const { isOnline } = useOnlineStatus();
+  const [wasOffline, setWasOffline] = useState(false);
+
+  // Show toast when coming back online
+  React.useEffect(() => {
+    if (!isOnline) {
+      setWasOffline(true);
+    } else if (wasOffline) {
+      setWasOffline(false);
+      toast.success(t.offline.backOnline, { icon: '🌐', id: 'online-toast' });
+    }
+  }, [isOnline]);
 
   const navLinks = [
     { to: '/dashboard', label: t.nav.dashboard, icon: <LayoutDashboard /> },
@@ -201,6 +215,14 @@ export default function AppLayout() {
           )}
         </div>
       </header>
+
+      {/* Offline Banner */}
+      {!isOnline && (
+        <div className="md:ml-64 bg-amber-50 border-b-2 border-amber-200 px-4 py-2.5 flex items-center justify-center gap-2 text-amber-700">
+          <WifiOff className="w-4 h-4" />
+          <span className="text-xs font-black uppercase tracking-widest">{t.offline.banner}</span>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8 max-w-5xl mx-auto">

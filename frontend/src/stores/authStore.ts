@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import api from '../lib/api';
 import type { User } from '../types';
+import { clearOfflineData } from '../lib/offlineStorage';
 
 interface AuthState {
   user: User | null;
@@ -50,6 +51,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    clearOfflineData(); // Clear cached offline deck/card data
     set({ user: null, isAuthenticated: false, isLoading: false });
     window.location.href = '/login';
   },
