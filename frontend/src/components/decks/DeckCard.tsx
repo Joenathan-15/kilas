@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
-import { Edit2, Trash2, Globe, Lock, Layers, Play, Sparkles, AlertCircle } from 'lucide-react';
+import { Edit2, Trash2, Globe, Lock, Layers, Play, Sparkles, AlertCircle, Wifi, WifiOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import type { Deck } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
+import { hasOfflineCards } from '../../lib/offlineStorage';
 
 interface DeckCardProps {
   deck: Deck;
@@ -11,8 +14,14 @@ interface DeckCardProps {
 
 export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
   const { t } = useTranslation();
+  const { isOnline } = useOnlineStatus();
+  const [isCached, setIsCached] = useState(false);
   const visibleTags = deck.tags?.slice(0, 3) || [];
   const extraTagCount = (deck.tags?.length || 0) - 3;
+
+  useEffect(() => {
+    hasOfflineCards(deck.id).then(setIsCached);
+  }, [deck.id]);
 
   return (
     <div className="card-duo p-6 group hover:-translate-y-1 transition-all duration-200 flex flex-col h-full">
@@ -39,6 +48,16 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
           {deck.is_ai_generated && (
             <span className="flex items-center gap-1 bg-purple-50 text-purple-500 px-2 py-1 rounded-lg shrink-0 border border-purple-100 animate-pulse">
               <Sparkles className="w-3 h-3 fill-current" /> AI
+            </span>
+          )}
+          {isCached && (
+            <span className="flex items-center gap-1 bg-blue-50 text-blue-500 px-2 py-1 rounded-lg shrink-0 border border-blue-100" title="Available Offline">
+              <Wifi className="w-3 h-3" />
+            </span>
+          )}
+          {!isOnline && !isCached && (
+            <span className="flex items-center gap-1 bg-amber-50 text-amber-500 px-2 py-1 rounded-lg shrink-0 border border-amber-100" title="Not Available Offline">
+              <WifiOff className="w-3 h-3" />
             </span>
           )}
         </div>
@@ -86,11 +105,11 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
       {/* Actions */}
       <div className="flex gap-2.5 mt-auto pt-2">
         <Link 
-          to={`/decks/${deck.id}/study${deck.due_count === 0 ? '?mode=sandbox' : ''}`}
-          className="btn-primary flex-[3] py-4 text-xs font-black flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
+          to={`/decks/${deck.id}/study${(!isOnline || deck.due_count === 0) ? '?mode=sandbox' : ''}`}
+          className={`btn-primary flex-[3] py-4 text-xs font-black flex items-center justify-center gap-2 whitespace-nowrap shadow-md ${!isOnline && !isCached ? 'opacity-50 grayscale pointer-events-none' : ''}`}
         >
           <Play className="w-4 h-4 fill-current" />
-          {deck.due_count === 0 ? t.stats.reStudy.toUpperCase() : t.decks.studyNow.toUpperCase()}
+          {!isOnline ? t.offline.offlineMode.toUpperCase() : (deck.due_count === 0 ? t.stats.reStudy.toUpperCase() : t.decks.studyNow.toUpperCase())}
         </Link>
         <Link 
           to={`/decks/${deck.id}`}

@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import { useTranslation } from '../hooks/useTranslation';
 import type { Card, Deck } from '../types';
 import confetti from 'canvas-confetti';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
+import { getOfflineDeckCards } from '../lib/offlineStorage';
 
 import { Latex } from '../components/common/Latex';
 
@@ -23,7 +25,9 @@ export default function StudyPage() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const isSandbox = searchParams.get('mode') === 'sandbox';
+  const { isOnline } = useOnlineStatus();
+  const isOfflineMode = !isOnline;
+  const isSandbox = searchParams.get('mode') === 'sandbox' || isOfflineMode;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -31,15 +35,35 @@ export default function StudyPage() {
   const [startTime] = useState(Date.now());
   const [studiedCount, setStudiedCount] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  // Fetch due cards
-  const { data: dueData, isLoading, error } = useQuery<StudyDueResponse>({
-    queryKey: ['study-due', deckId, isSandbox],
+  // Fetch due cards (online only)
+  const onlineSandbox = searchParams.get('mode') === 'sandbox';
+  const { data: dueData, isLoading: isOnlineLoading, error } = useQuery<StudyDueResponse>({
+    queryKey: ['study-due', deckId, onlineSandbox],
     queryFn: async () => {
-      const endpoint = isSandbox ? `/decks/${deckId}/cards` : `/decks/${deckId}/study/due`;
+      const endpoint = onlineSandbox ? `/decks/${deckId}/cards` : `/decks/${deckId}/study/due`;
       const res = await api.get(endpoint);
       return res.data;
     },
+    enabled: isOnline,
   });
+
+  // Offline card loading
+  const [offlineCards, setOfflineCards] = useState<Card[]>([]);
+  const [isOfflineLoading, setIsOfflineLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOfflineMode && deckId) {
+      setIsOfflineLoading(true);
+      getOfflineDeckCards(Number(deckId))
+        .then((cards) => setOfflineCards(cards))
+        .finally(() => setIsOfflineLoading(false));
+    }
+  }, [isOfflineMode, deckId]);
+
+  const effectiveData: StudyDueResponse | undefined = isOfflineMode
+    ? (offlineCards.length > 0 ? { data: offlineCards, total_due: offlineCards.length } : undefined)
+    : dueData;
+  const isLoading = isOfflineMode ? isOfflineLoading : isOnlineLoading;
 
   const { data: deck } = useQuery<Deck>({
     queryKey: ['deck', deckId],
@@ -47,7 +71,7 @@ export default function StudyPage() {
       const res = await api.get(`/decks/${deckId}`);
       return res.data;
     },
-    enabled: !!deckId,
+    enabled: !!deckId && isOnline,
   });
 
   usePageTitle(deck?.title ? `Study: ${deck.title}` : 'Study');
@@ -80,10 +104,10 @@ export default function StudyPage() {
   });
 
   useEffect(() => {
-    if (dueData && dueData.data.length > 0 && !sessionId && !startSessionMutation.isPending && !isSandbox) {
+    if (effectiveData && effectiveData.data.length > 0 && !sessionId && !startSessionMutation.isPending && !isSandbox) {
       startSessionMutation.mutate();
     }
-  }, [dueData, sessionId, isSandbox]);
+  }, [effectiveData, sessionId, isSandbox]);
 
   useEffect(() => {
     if (isFinished) {
@@ -119,16 +143,19 @@ export default function StudyPage() {
   }, [deckId, isSandbox]);
 
   useEffect(() => {
-    if (isSandbox && dueData) {
-      toast(t.study.sandboxNotification, {
-        icon: 'ℹ️',
+    if (isSandbox && effectiveData) {
+      const toastMsg = isOfflineMode
+        ? `📴 ${t.offline.offlineMode}: ${t.study.sandboxNotification}`
+        : t.study.sandboxNotification;
+      toast(toastMsg, {
+        icon: isOfflineMode ? undefined : 'ℹ️',
         duration: 4000,
         id: 'sandbox-toast'
       });
     }
-  }, [isSandbox, dueData]);
+  }, [isSandbox, effectiveData]);
 
-  const cards = dueData?.data || [];
+  const cards = effectiveData?.data || [];
   const currentCard = cards[currentIndex];
 
   const handleRate = useCallback(async (quality: number) => {
@@ -200,15 +227,22 @@ export default function StudyPage() {
     );
   }
 
-  if (error || (dueData && dueData.data.length === 0 && !isFinished)) {
+  // Handle empty or error states
+  const hasNoCards = effectiveData ? effectiveData.data.length === 0 : true;
+  
+  if (error || (hasNoCards && !isFinished && !isLoading)) {
+    const isOfflineNoCards = isOfflineMode && hasNoCards;
+
     return (
       <div className="flex flex-col items-center justify-center py-20 animate-in fade-in zoom-in duration-300 w-full text-center">
         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-500 mb-6">
           <CheckCircle2 className="w-12 h-12" />
         </div>
-        <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight text-center">{t.study.allCaughtUp}</h2>
+        <h2 className="text-3xl font-black text-gray-700 uppercase tracking-tight text-center">
+          {isOfflineNoCards ? t.offline.noDecksCached : t.study.allCaughtUp}
+        </h2>
         <p className="text-gray-400 font-bold mt-2 text-center max-w-xs mx-auto">
-          {t.study.noCardsDue}
+          {isOfflineNoCards ? t.offline.offlineMode : t.study.noCardsDue}
         </p>
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8 w-full max-w-2xl mx-auto px-4">
           <button

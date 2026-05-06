@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
-import { Plus, Search, Loader2, Layers } from 'lucide-react';
+import { Plus, Search, Loader2, Layers, WifiOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { Deck } from '../types';
 import DeckCard from '../components/decks/DeckCard';
@@ -11,6 +11,8 @@ import { useUIStore } from '../stores/uiStore';
 import { useTranslation } from '../hooks/useTranslation';
 import { usePageTitle } from '../hooks/usePageTitle';
 import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
+import { useOnlineStatus } from '../hooks/useOnlineStatus';
+import { saveDecksOffline, getOfflineDecks, saveDeckCardsOffline, cleanOrphanedCards } from '../lib/offlineStorage';
 
 export default function DecksPage() {
   const queryClient = useQueryClient();
@@ -21,6 +23,9 @@ export default function DecksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDeck, setEditingDeck] = useState<Deck | undefined>();
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
+  const [offlineDecks, setOfflineDecks] = useState<Deck[]>([]);
+  const { isOnline } = useOnlineStatus();
+  const [isSyncing, setIsSyncing] = useState(false);
 
   usePageTitle(t.nav.myDecks);
 
@@ -30,7 +35,52 @@ export default function DecksPage() {
       const res = await api.get('/decks');
       return res.data;
     },
+    enabled: isOnline,
   });
+
+  // Auto-sync decks + cards to IndexedDB when fetched online
+  useEffect(() => {
+    if (decksData?.data && isOnline) {
+      const decks = decksData.data;
+      // Save decks (full-replace, handles deletions)
+      saveDecksOffline(decks);
+      // Clean up cards from deleted decks
+      cleanOrphanedCards(decks.map(d => d.id));
+      
+      // Pre-cache cards for ALL decks in the background
+      const syncCards = async () => {
+        setIsSyncing(true);
+        let successCount = 0;
+        
+        for (const deck of decks) {
+          try {
+            const res = await api.get(`/decks/${deck.id}/cards`);
+            const cards = res.data?.data || res.data || [];
+            if (Array.isArray(cards) && cards.length > 0) {
+              await saveDeckCardsOffline(deck.id, cards);
+              successCount++;
+            }
+          } catch {
+            // Silently skip
+          }
+        }
+        
+        setIsSyncing(false);
+        if (successCount > 0) {
+          // Optional: toast or status indicator
+        }
+      };
+      
+      syncCards();
+    }
+  }, [decksData, isOnline]);
+
+  // Load offline decks when offline
+  useEffect(() => {
+    if (!isOnline) {
+      getOfflineDecks().then(setOfflineDecks);
+    }
+  }, [isOnline]);
 
   const createMutation = useMutation({
     mutationFn: (newDeck: any) => api.post('/decks', newDeck),
@@ -126,7 +176,8 @@ export default function DecksPage() {
     setIsModalOpen(true);
   };
 
-  const filteredDecks = decksData?.data?.filter((deck) =>
+  const activeDeckList = isOnline ? decksData?.data : offlineDecks;
+  const filteredDecks = activeDeckList?.filter((deck) =>
     deck.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     deck.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
@@ -138,17 +189,31 @@ export default function DecksPage() {
           <h1 className="text-3xl font-black text-gray-700 tracking-tight flex items-center gap-3">
             <Layers className="w-8 h-8 text-feather-green" />
             {t.decks.title}
+            {!isOnline && (
+              <span className="ml-2 text-xs font-black bg-amber-100 text-amber-600 px-3 py-1 rounded-full flex items-center gap-1.5">
+                <WifiOff className="w-3 h-3" />
+                {t.offline.offlineMode}
+              </span>
+            )}
+            {isOnline && isSyncing && (
+              <span className="ml-2 text-xs font-black bg-blue-50 text-blue-500 px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                {t.offline.syncingOffline}
+              </span>
+            )}
           </h1>
           <p className="text-gray-400 font-bold">{t.decks.subtitle}</p>
         </div>
 
-        <button
-          onClick={openCreateModal}
-          className="btn-primary py-3 px-6 flex items-center justify-center gap-2"
-        >
-          <Plus className="w-6 h-6" />
-          {t.decks.createNew}
-        </button>
+        {isOnline && (
+          <button
+            onClick={openCreateModal}
+            className="btn-primary py-3 px-6 flex items-center justify-center gap-2"
+          >
+            <Plus className="w-6 h-6" />
+            {t.decks.createNew}
+          </button>
+        )}
       </div>
 
       <div className="relative">
@@ -181,9 +246,9 @@ export default function DecksPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-4 border-dashed border-gray-200">
+        <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-3xl border-4 border-dashed border-gray-200 text-center px-4">
           <Layers className="w-20 h-20 text-gray-200 mb-6" />
-          <h2 className="text-2xl font-black text-gray-400 uppercase">{t.decks.noDecksFound}</h2>
+          <h2 className="text-2xl font-black text-gray-400 uppercase tracking-tight">{t.decks.noDecksFound}</h2>
           <p className="text-gray-400 font-bold mt-2">{t.decks.trySearch}</p>
           <button
             onClick={openCreateModal}

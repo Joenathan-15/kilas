@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -27,6 +27,7 @@ import { useAuthStore } from '../stores/authStore';
 import { Latex } from '../components/common/Latex';
 import SubscriptionPromoModal from '../components/subscription/SubscriptionPromoModal';
 import { useTranslation } from '../hooks/useTranslation';
+import { saveDeckCardsOffline } from '../lib/offlineStorage';
 
 import { usePageTitle } from '../hooks/usePageTitle';
 
@@ -51,6 +52,13 @@ export default function DeckDetailsPage() {
   });
 
   usePageTitle(deck?.title || 'Deck Details');
+
+  // Auto-sync cards to IndexedDB for offline study
+  useEffect(() => {
+    if (deck?.cards && id) {
+      saveDeckCardsOffline(Number(id), deck.cards);
+    }
+  }, [deck, id]);
 
   const isOwner = user?.id === deck?.user_id;
 
