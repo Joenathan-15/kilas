@@ -195,14 +195,14 @@ export default function DecksPage() {
                 {t.offline.offlineMode}
               </span>
             )}
-            {isOnline && isSyncing && (
-              <span className="ml-2 text-xs font-black bg-blue-50 text-blue-500 px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                {t.offline.syncingOffline}
-              </span>
-            )}
           </h1>
           <p className="text-gray-400 font-bold">{t.decks.subtitle}</p>
+          {isOnline && isSyncing && (
+            <div className="flex items-center gap-2 mt-1 text-blue-500 animate-pulse">
+              <Loader2 className="w-3 h-3 animate-spin" />
+              <span className="text-[10px] font-black uppercase tracking-widest">{t.offline.syncingOffline}</span>
+            </div>
+          )}
         </div>
 
         {isOnline && (
