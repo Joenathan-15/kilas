@@ -450,7 +450,7 @@ export const translations = {
       uploadPdf: 'Upload PDF Study Material',
       maxPages: 'Maximum 50 pages',
       freeUserLimit: 'Free users: 3 AI uploads max',
-      cardCount: 'Number of Cards',
+      cardCount: 'Cards',
       generateDeck: 'GENERATE DECK',
       readyToGenerate: 'Ready to generate',
       noFileSelected: 'No file selected',
