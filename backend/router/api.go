@@ -34,6 +34,7 @@ func ApiRoutes(
 	auth.POST("/logout", authHandler.Logout)
 	auth.GET("/me", middleware.AuthMiddleware(), authHandler.Me)
 	auth.PUT("/profile", middleware.AuthMiddleware(), authHandler.UpdateProfile)
+	auth.POST("/onboarding", middleware.AuthMiddleware(), authHandler.CompleteOnboarding)
 	auth.GET("/tokens", middleware.AuthMiddleware(), authHandler.GetTokens)
 	auth.POST("/daily-login", middleware.AuthMiddleware(), authHandler.ClaimDailyReward)
 

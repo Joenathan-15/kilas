@@ -85,3 +85,7 @@ func (r *UserRepository) UpdateDailyLogin(userID uint, newStreak int, newDate ti
 func (r *UserRepository) Update(user *model.User) error {
 	return r.DB.Save(user).Error
 }
+
+func (r *UserRepository) SetOnboardingCompleted(userID uint, completed bool) error {
+	return r.DB.Model(&model.User{}).Where("id = ?", userID).Update("onboarding_completed", completed).Error
+}

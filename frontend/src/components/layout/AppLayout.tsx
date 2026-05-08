@@ -57,7 +57,7 @@ export default function AppLayout() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${isActive
+                `tour-sidebar-${link.to.substring(1)} flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${isActive
                   ? 'bg-emerald-50 text-feather-green border-emerald-100'
                   : 'text-gray-500 border-transparent hover:bg-gray-100'
                 }`
@@ -126,7 +126,7 @@ export default function AppLayout() {
 
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
+            className={`tour-sidebar-profile w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
           >
             <img
               src={getFullImageUrl(user?.avatar_url, user?.username)}
@@ -160,7 +160,7 @@ export default function AppLayout() {
           <img src="/logo.png" alt="Kilas Logo" className="h-7 w-auto" />
           <span>Kilas</span>
         </h1>
-        <Link to="/shop" className="flex items-center gap-3 hover:bg-gray-50 p-1.5 -mr-1.5 rounded-xl transition-colors">
+        <Link to="/shop" className="tour-mobile-shop flex items-center gap-3 hover:bg-gray-50 p-1.5 -mr-1.5 rounded-xl transition-colors">
           <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
             <span className="text-gold text-lg">🔥</span> {user?.login_streak || 0}
           </span>
@@ -198,7 +198,7 @@ export default function AppLayout() {
             key={link.to}
             to={link.to}
             className={({ isActive }) =>
-              `tour-step-${link.to.substring(1)} p-3.5 rounded-2xl transition-all duration-200 ${isActive ? 'bg-emerald-50 text-feather-green scale-110 shadow-sm' : 'text-gray-400 hover:bg-gray-50'}`
+              `tour-mobile-${link.to.substring(1)} p-3.5 rounded-2xl transition-all duration-200 ${isActive ? 'bg-emerald-50 text-feather-green scale-110 shadow-sm' : 'text-gray-400 hover:bg-gray-50'}`
             }
           >
             {link.isAvatar ? (

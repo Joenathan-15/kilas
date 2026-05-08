@@ -147,7 +147,7 @@ export default function DashboardPage() {
       </section>
 
       {/* Stats Grid */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={<Clock className="text-sky-blue" />}
           label={t.dashboard.dueToday}
