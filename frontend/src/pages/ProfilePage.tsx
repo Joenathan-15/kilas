@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
+import { useLanguageStore } from '../stores/languageStore';
 import api, { getFullImageUrl } from '../lib/api';
 import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { usePageTitle } from '../hooks/usePageTitle';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuthStore();
@@ -11,7 +13,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState(user?.username || '');
   const [avatarURL, setAvatarURL] = useState(user?.avatar_url || '');
-  const [language, setLanguage] = useState(user?.language || 'id');
+  const language = useLanguageStore((s) => s.language);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -23,7 +25,6 @@ export default function ProfilePage() {
     if (user) {
       setUsername(user.username);
       setAvatarURL(user.avatar_url);
-      setLanguage(user.language || 'id');
     }
   }, [user]);
 
@@ -180,14 +181,7 @@ export default function ProfilePage() {
               <label className="block text-sm font-black text-gray-400 uppercase tracking-widest">
                 {t.profile.interfaceLanguage}
               </label>
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-sky-blue focus:ring-4 focus:ring-sky-blue/10 outline-none transition-all font-bold text-gray-700 appearance-none cursor-pointer"
-              >
-                <option value="id">Bahasa Indonesia</option>
-                <option value="en">English (US)</option>
-              </select>
+              <LanguageSwitcher variant="dropdown" />
               <p className="text-xs text-gray-400 font-bold">
                 {t.profile.languageHint}
               </p>

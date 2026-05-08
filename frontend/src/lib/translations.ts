@@ -642,7 +642,7 @@ export const translations = {
     landing: {
       tagline: 'The free, fun, and effective way to master anything!',
       getStarted: 'GET STARTED',
-      haveAccount: 'I ALREADY HAVE AN ACCOUNT',
+      haveAccount: 'ALREADY HAVE AN ACCOUNT',
       featuresTitle: 'Take your learning to the next level',
       feature1Title: 'Smart Spaced Repetition',
       feature1Desc: 'Our algorithm ensures you review cards right before you forget them, maximizing memory retention.',

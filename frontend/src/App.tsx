@@ -13,8 +13,10 @@ import ProfilePage from './pages/ProfilePage';
 import ShopPage from './pages/ShopPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
+import { useLanguageSync } from './hooks/useLanguageSync';
 
 export default function App() {
+  useLanguageSync();
   return (
     <Routes>
       {/* Public Routes */}
