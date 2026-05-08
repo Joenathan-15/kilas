@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useTranslation } from '../hooks/useTranslation';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { BrainCircuit, Sparkles, Library, Search, CalendarCheck, Trophy, Calculator, Microscope, Landmark, Globe, Code, Scale, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuthStore();
@@ -37,9 +38,9 @@ export default function LandingPage() {
           <div className="flex items-center gap-2">
             <h1 className="text-3xl font-black text-feather-green tracking-tight flex items-center gap-2">
               <img src="/logo.png" alt="Kilas Logo" className="h-10 w-auto" />
-              Kilas
             </h1>
           </div>
+          <LanguageSwitcher variant="header" />
         </div>
       </header>
 
@@ -63,17 +64,17 @@ export default function LandingPage() {
                 {t.landing.tagline}
               </h2>
 
-              <div className="flex flex-col w-full max-w-[320px] gap-4">
+              <div className="flex flex-col w-full max-w-[360px] gap-4">
                 <Link
                   to="/register"
-                  className="btn-primary w-full py-4 text-lg"
+                  className="btn-primary w-full py-5 text-lg"
                 >
                   {t.landing.getStarted}
                 </Link>
 
                 <Link
                   to="/login"
-                  className="btn-ghost w-full py-4 text-lg border-2 border-gray-200 bg-white hover:bg-gray-50 text-sky-blue hover:text-sky-blue-dark shadow-sm"
+                  className="btn-ghost w-full py-5 text-lg border-2 border-gray-200 bg-white hover:bg-gray-50 text-sky-blue hover:text-sky-blue-dark shadow-sm tracking-wide"
                 >
                   {t.landing.haveAccount}
                 </Link>
@@ -211,7 +212,7 @@ export default function LandingPage() {
             </h3>
             <Link
               to="/register"
-              className="btn-primary w-full max-w-[320px] py-4 text-lg"
+              className="btn-primary w-full max-w-[360px] py-5 text-lg"
             >
               {t.landing.getStarted}
             </Link>

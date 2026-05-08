@@ -106,7 +106,7 @@ export default function DeckCard({ deck, onEdit, onDelete }: DeckCardProps) {
       <div className="flex gap-2.5 mt-auto pt-2">
         <Link 
           to={`/decks/${deck.id}/study${(!isOnline || deck.due_count === 0) ? '?mode=sandbox' : ''}`}
-          className={`btn-primary flex-[3] py-4 text-xs font-black flex items-center justify-center gap-2 whitespace-nowrap shadow-md ${!isOnline && !isCached ? 'opacity-50 grayscale pointer-events-none' : ''}`}
+          className={`btn-primary flex-3 py-4 text-xs font-black flex items-center justify-center gap-2 whitespace-nowrap shadow-md ${!isOnline && !isCached ? 'opacity-50 grayscale pointer-events-none' : ''}`}
         >
           <Play className="w-4 h-4 fill-current" />
           {!isOnline ? t.offline.offlineMode.toUpperCase() : (deck.due_count === 0 ? t.stats.reStudy.toUpperCase() : t.decks.studyNow.toUpperCase())}

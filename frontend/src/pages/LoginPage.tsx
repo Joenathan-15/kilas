@@ -6,6 +6,7 @@ import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { BASE_URL } from '../lib/api';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -50,6 +51,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4">
+      <div className="w-full max-w-md mb-3 flex justify-end">
+        <LanguageSwitcher variant="header" />
+      </div>
       <div className="w-full max-w-md bg-surface p-8 rounded-2xl border-2 border-gray-200">
 
         <div className="text-center mb-8">
