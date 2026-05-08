@@ -117,7 +117,7 @@ export default function AppLayout() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-danger-red transition-colors font-bold text-left"
               >
                 <LogOut className="w-5 h-5" />
-                Log Out
+                {t.nav.logout}
               </button>
             </div>
           )}
@@ -193,6 +193,14 @@ export default function AppLayout() {
                 <User className="w-5 h-5" />
                 {t.nav.profile}
               </Link>
+              <Link
+                to="/shop"
+                onClick={() => setIsProfileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {t.nav.shop}
+              </Link>
               <button
                 onClick={() => {
                   setIsReportModalOpen(true);
@@ -201,7 +209,7 @@ export default function AppLayout() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold text-left"
               >
                 <MessageSquare className="w-5 h-5" />
-                Report Issue
+                {t.common.reportIssue}
               </button>
               <div className="h-px bg-gray-100 my-1" />
               <button
@@ -209,7 +217,7 @@ export default function AppLayout() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-danger-red transition-colors font-bold text-left"
               >
                 <LogOut className="w-5 h-5" />
-                Log Out
+                {t.nav.logout}
               </button>
             </div>
           )}
@@ -231,7 +239,7 @@ export default function AppLayout() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 bg-surface border-t-2 border-gray-200 z-50 px-2 py-2 flex justify-around">
-        {navLinks.map((link) => (
+        {navLinks.filter(l => l.to !== '/shop').map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
