@@ -76,10 +76,10 @@ export default function DashboardPage() {
   ) : false;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500" onClick={() => setActiveDayIdx(null)}>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500" onClick={() => setActiveDayIdx(null)}>
 
       {/* Header: Streak & Goal */}
-      <section className="card-duo p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <section className="card-duo p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 z-10">
           <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-500 border-b-4 border-orange-200">
             <Flame className="w-10 h-10 fill-current" />
@@ -147,7 +147,7 @@ export default function DashboardPage() {
       </section>
 
       {/* Stats Grid */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={<Clock className="text-sky-blue" />}
           label={t.dashboard.dueToday}
@@ -278,9 +278,9 @@ export default function DashboardPage() {
 
 function StatCard({ icon, label, value, color, borderColor }: { icon: React.ReactNode, label: string, value: number | string, color: string, borderColor: string }) {
   return (
-    <div className={`card-duo p-4 flex flex-col items-center text-center group hover:-translate-y-1 transition-transform`}>
-      <div className={`w-12 h-12 ${color} ${borderColor} border-2 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-        {React.cloneElement(icon as React.ReactElement<any>, { className: 'w-6 h-6' })}
+    <div className={`card-duo p-3 flex flex-col items-center text-center group hover:-translate-y-1 transition-transform`}>
+      <div className={`w-10 h-10 ${color} ${borderColor} border-2 rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform`}>
+        {React.cloneElement(icon as React.ReactElement<any>, { className: 'w-5 h-5' })}
       </div>
       <p className="text-2xl font-black text-gray-700">{value}</p>
       <p className="text-xs font-black text-gray-400 uppercase tracking-wider mt-1">{label}</p>
