@@ -27,6 +27,7 @@ type UserResponse struct {
 	LastLoginDate     *time.Time `json:"last_login_date"`
 	SubscriptionUntil *time.Time `json:"subscription_until"`
 	Language          string     `json:"language"`
+	OnboardingCompleted bool     `json:"onboarding_completed"`
 }
 
 type AuthResponse struct {

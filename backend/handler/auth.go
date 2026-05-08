@@ -46,6 +46,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			LastLoginDate:     user.LastLoginDate,
 			SubscriptionUntil: user.SubscriptionUntil,
 			Language:          user.Language,
+			OnboardingCompleted: user.OnboardingCompleted,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -76,6 +77,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 			LastLoginDate:     user.LastLoginDate,
 			SubscriptionUntil: user.SubscriptionUntil,
 			Language:          user.Language,
+			OnboardingCompleted: user.OnboardingCompleted,
 		},
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
@@ -126,6 +128,7 @@ func (h *AuthHandler) Me(c *gin.Context) {
 		LastLoginDate:     user.LastLoginDate,
 		SubscriptionUntil: user.SubscriptionUntil,
 		Language:          user.Language,
+		OnboardingCompleted: user.OnboardingCompleted,
 	})
 }
 
@@ -194,5 +197,17 @@ func (h *AuthHandler) UpdateProfile(c *gin.Context) {
 		LastLoginDate:     user.LastLoginDate,
 		SubscriptionUntil: user.SubscriptionUntil,
 		Language:          user.Language,
+		OnboardingCompleted: user.OnboardingCompleted,
 	})
+}
+
+func (h *AuthHandler) CompleteOnboarding(c *gin.Context) {
+	userID, _ := middleware.GetUserID(c)
+
+	if err := h.AuthService.CompleteOnboarding(userID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to complete onboarding"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "onboarding completed"})
 }

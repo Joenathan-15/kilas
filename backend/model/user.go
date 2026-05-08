@@ -14,6 +14,7 @@ type User struct {
 	LoginStreak       int        `gorm:"default:0" json:"login_streak"`
 	SubscriptionUntil *time.Time `json:"subscription_until"`
 	Language          string     `gorm:"size:10;default:'id'" json:"language"`
+	OnboardingCompleted bool     `gorm:"default:false" json:"onboarding_completed"`
 	CreatedAt         time.Time  `json:"created_at"`
 	UpdatedAt         time.Time `json:"updated_at"`
 }

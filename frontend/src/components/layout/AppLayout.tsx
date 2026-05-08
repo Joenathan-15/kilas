@@ -6,6 +6,7 @@ import { useUIStore } from '../../stores/uiStore';
 import { useTranslation } from '../../hooks/useTranslation';
 import { LayoutDashboard, Layers, BookOpen, BarChart2, LogOut, User, ShoppingBag, ChevronUp, Loader2, Sparkles, MessageSquare, Coins, WifiOff } from 'lucide-react';
 import ReportIssueModal from '../common/ReportIssueModal';
+import GuidedTour from '../onboarding/GuidedTour';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import toast from 'react-hot-toast';
 
@@ -39,6 +40,7 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <GuidedTour />
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 left-0 bg-surface border-r-2 border-gray-200 z-50">
@@ -55,7 +57,7 @@ export default function AppLayout() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${isActive
+                `tour-sidebar-${link.to.substring(1)} flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all border-2 ${isActive
                   ? 'bg-emerald-50 text-feather-green border-emerald-100'
                   : 'text-gray-500 border-transparent hover:bg-gray-100'
                 }`
@@ -117,14 +119,14 @@ export default function AppLayout() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-danger-red transition-colors font-bold text-left"
               >
                 <LogOut className="w-5 h-5" />
-                Log Out
+                {t.nav.logout}
               </button>
             </div>
           )}
 
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
+            className={`tour-sidebar-profile w-full flex items-center gap-3 px-2 py-3 rounded-2xl transition-all ${isProfileOpen ? 'bg-gray-50 ring-2 ring-gray-100' : 'hover:bg-gray-50'}`}
           >
             <img
               src={getFullImageUrl(user?.avatar_url, user?.username)}
@@ -158,62 +160,16 @@ export default function AppLayout() {
           <img src="/logo.png" alt="Kilas Logo" className="h-7 w-auto" />
           <span>Kilas</span>
         </h1>
-        <div className="relative">
-          <button
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center gap-2"
-          >
-            <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
-              <span className="text-gold text-lg">🔥</span> {user?.login_streak || 0}
-            </span>
-            <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
-              <Coins className="w-4 h-4 text-gold" /> {user?.tokens || 0}
-            </span>
-            <div className="relative">
-              <img
-                src={getFullImageUrl(user?.avatar_url, user?.username)}
-                alt="Avatar"
-                className={`w-8 h-8 rounded-full border-2 object-cover ${isSubscribed ? 'border-yellow-400' : 'border-gray-200'}`}
-              />
-              {isSubscribed && (
-                <div className="absolute -top-1 -right-1 bg-yellow-400 text-white text-[6px] font-black px-1 rounded-full border border-white">S</div>
-              )}
-            </div>
-          </button>
+        <Link to="/shop" className="tour-mobile-shop flex items-center gap-3 hover:bg-gray-50 p-1.5 -mr-1.5 rounded-xl transition-colors">
+          <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
+            <span className="text-gold text-lg">🔥</span> {user?.login_streak || 0}
+          </span>
+          <span className="text-sm font-bold text-gray-400 flex items-center gap-1">
+            <Coins className="w-4 h-4 text-gold" /> {user?.tokens || 0}
+          </span>
+        </Link>
 
-          {/* Mobile Profile Menu */}
-          {isProfileOpen && (
-            <div className="absolute top-full right-0 mt-2 bg-white border-2 border-gray-100 rounded-2xl shadow-xl p-2 animate-in slide-in-from-top-2 duration-200 z-50 w-48">
-
-              <Link
-                to="/profile"
-                onClick={() => setIsProfileOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold"
-              >
-                <User className="w-5 h-5" />
-                {t.nav.profile}
-              </Link>
-              <button
-                onClick={() => {
-                  setIsReportModalOpen(true);
-                  setIsProfileOpen(false);
-                }}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-50 text-gray-600 hover:text-feather-green transition-colors font-bold text-left"
-              >
-                <MessageSquare className="w-5 h-5" />
-                Report Issue
-              </button>
-              <div className="h-px bg-gray-100 my-1" />
-              <button
-                onClick={logout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-50 text-gray-400 hover:text-danger-red transition-colors font-bold text-left"
-              >
-                <LogOut className="w-5 h-5" />
-                Log Out
-              </button>
-            </div>
-          )}
-        </div>
+        {/* Mobile top bar content remains clean */}
       </header>
 
       {/* Offline Banner */}
@@ -229,19 +185,38 @@ export default function AppLayout() {
         <Outlet />
       </main>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-surface border-t-2 border-gray-200 z-50 px-2 py-2 flex justify-around">
-        {navLinks.map((link) => (
+      {/* Mobile Bottom Navigation (Icon Only, 5 Tabs) */}
+      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 z-[80] px-6 py-2 flex justify-between items-center pb-safe shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+        {[
+          { to: '/dashboard', icon: <LayoutDashboard /> },
+          { to: '/decks', icon: <Layers /> },
+          { to: '/library', icon: <BookOpen /> },
+          { to: '/stats', icon: <BarChart2 /> },
+          { to: '/profile', isAvatar: true },
+        ].map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
             className={({ isActive }) =>
-              `flex flex-col items-center p-2 rounded-2xl transition-colors ${isActive ? 'text-feather-green' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-              }`
+              `tour-mobile-${link.to.substring(1)} p-3.5 rounded-2xl transition-all duration-200 ${isActive ? 'bg-emerald-50 text-feather-green scale-110 shadow-sm' : 'text-gray-400 hover:bg-gray-50'}`
             }
           >
-            {React.cloneElement(link.icon as React.ReactElement<any>, { className: 'w-6 h-6 mb-1' })}
-            <span className="text-[10px] font-bold uppercase tracking-wider">{link.label}</span>
+            {link.isAvatar ? (
+              <div className={`relative rounded-full p-[2px] transition-colors ${isSubscribed ? 'bg-gradient-to-tr from-yellow-300 to-yellow-500' : 'bg-transparent'}`}>
+                <img
+                  src={getFullImageUrl(user?.avatar_url, user?.username)}
+                  alt="Profile"
+                  className="w-6 h-6 rounded-full object-cover bg-white"
+                />
+                {isSubscribed && (
+                  <div className="absolute -top-1 -right-1 bg-yellow-400 text-white text-[7px] font-black px-1 py-0.5 rounded-full border border-white shadow-sm">
+                    S
+                  </div>
+                )}
+              </div>
+            ) : (
+              React.cloneElement(link.icon as React.ReactElement<any>, { className: 'w-6 h-6' })
+            )}
           </NavLink>
         ))}
       </nav>

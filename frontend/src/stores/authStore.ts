@@ -13,6 +13,7 @@ interface AuthState {
   fetchMe: () => Promise<void>;
   updateUser: (username: string, avatarURL: string, language?: string) => Promise<void>;
   setTokens: (accessToken: string, refreshToken: string) => Promise<void>;
+  completeOnboarding: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -92,6 +93,17 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.removeItem('refresh_token');
       set({ user: null, isAuthenticated: false, isLoading: false });
       throw err;
+    }
+  },
+  
+  completeOnboarding: async () => {
+    try {
+      await api.post('/auth/onboarding');
+      set((state) => ({
+        user: state.user ? { ...state.user, onboarding_completed: true } : null
+      }));
+    } catch (err) {
+      console.error('Failed to update onboarding status:', err);
     }
   },
 }));

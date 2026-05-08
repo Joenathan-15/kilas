@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useLanguageStore } from '../stores/languageStore';
 import api, { getFullImageUrl } from '../lib/api';
-import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages } from 'lucide-react';
+import { User, Camera, Save, CheckCircle2, AlertCircle, Upload, Languages, ShoppingBag, LogOut, ChevronRight, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { usePageTitle } from '../hooks/usePageTitle';
 import LanguageSwitcher from '../components/common/LanguageSwitcher';
+import ReportIssueModal from '../components/common/ReportIssueModal';
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuthStore();
+  const { user, updateUser, logout } = useAuthStore();
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [username, setUsername] = useState(user?.username || '');
@@ -16,6 +18,7 @@ export default function ProfilePage() {
   const language = useLanguageStore((s) => s.language);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const isSubscribed = user?.subscription_until && new Date(user.subscription_until) > new Date();
 
@@ -215,6 +218,46 @@ export default function ProfilePage() {
           )}
         </button>
       </form>
+
+      {/* Support & Account Section */}
+      <div className="bg-white border-2 border-gray-100 rounded-3xl p-6 shadow-sm space-y-2 mt-8">
+          <Link to="/shop" className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-colors group">
+            <div className="flex items-center gap-4 text-gray-700 font-bold text-lg">
+              <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
+                <ShoppingBag className="w-5 h-5" />
+              </div>
+              {t.nav.shop}
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-400 transition-transform group-hover:translate-x-1" />
+          </Link>
+
+          <button 
+            onClick={() => setIsReportModalOpen(true)}
+            className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-colors group"
+          >
+            <div className="flex items-center gap-4 text-gray-700 font-bold text-lg">
+              <div className="w-10 h-10 rounded-xl bg-sky-blue/10 flex items-center justify-center text-sky-blue">
+                <MessageSquare className="w-5 h-5" />
+              </div>
+              {t.common.reportIssue}
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-400 transition-transform group-hover:translate-x-1" />
+          </button>
+
+          <button onClick={(e) => { e.preventDefault(); logout(); }} className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-red-50 active:bg-red-100 transition-colors group">
+            <div className="flex items-center gap-4 text-danger-red font-bold text-lg">
+              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                <LogOut className="w-5 h-5" />
+              </div>
+              {t.nav.logout}
+            </div>
+          </button>
+      </div>
+
+      <ReportIssueModal 
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </div>
   );
 }

@@ -251,3 +251,7 @@ func (s *AuthService) UpdateProfile(userID uint, username, avatarURL, language s
 
 	return user, nil
 }
+
+func (s *AuthService) CompleteOnboarding(userID uint) error {
+	return s.UserRepo.SetOnboardingCompleted(userID, true)
+}

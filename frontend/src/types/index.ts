@@ -9,6 +9,7 @@ export interface User {
   login_streak: number;
   subscription_until: string | null;
   language: string;
+  onboarding_completed: boolean;
 }
 
 export interface Deck { 
